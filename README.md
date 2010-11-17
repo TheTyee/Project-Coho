@@ -1,6 +1,8 @@
 ## Running locally
 
-
+You should be able to run this by cloning the repository and running the files
+through a local webserver (this part is important!). You'll also need to view
+the files in a Webkit browser. That's it. 
 
 ## Application outline
 
