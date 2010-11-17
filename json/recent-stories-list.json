@@ -1,0 +1,113 @@
+{
+    "status": "OK",
+        "copyright": "Copyright (c) 2010 TheTyee.ca.  All Rights Reserved.",
+        "num_results": 91,
+        "results": [
+        {
+            "uuid": "05DC4008-ED25-11DF-A407-F809B6501B05",
+            "url": "http:\/\/thetyee.ca\/News\/2010\/11\/11\/PackedWithOpportunities\/",
+            "section": "News",
+            "series": "Growing the Local Bounty: Reports from Farmlands in Flux, Ontario and BC",
+            "byline": "By Colleen Kimmett",
+            "title": "Packed With Opportunities",
+            "abstract": "How small farmers are turning their crops into tasty products without relying on the big global processors.",
+            "published_date": "2010-10-11",
+            "source": "TheTyee.ca",
+            "media": [
+            {
+                "type": "image",
+                "subtype": "Thumbnail",
+                "caption": "",
+                "copyright": "",
+                "metadata": [
+                {
+                    "url": "http:\/\/thetyee.ca\/News\/2010\/11\/10\/jenn-pfenning_thumb.jpg",
+                    "format": "Thumbnail",
+                    "height": 69,
+                    "width": 90
+                }
+                ]
+            }
+            ],
+                "story": [
+                {
+                    "page": [
+                    { "paragraph": "A string" },
+                    { "paragraph": "A string" }
+                    ],
+                        "media": [
+                        {
+                            "type": "image",
+                            "subtype": "Photograph",
+                            "caption": "",
+                            "copyright": "",
+                            "metadata": [
+                            {
+                                "url":
+                                "http:\/\/thetyee.ca\/News\/2010\/11\/10\/thetyee.ca/News/2010/11/10/jenn-pfenning_large_thumb.jpg",
+                                "format": "Wide Thumbnail",
+                                "height": 115,
+                                "width": 300
+                            }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        {
+            "uuid": "05DC4008-ED25-11DF-A407-F809B6501B05",
+            "url": "http:\/\/thetyee.ca\/News\/2010\/11\/11\/PackedWithOpportunities\/",
+            "section": "News",
+            "series": "Growing the Local Bounty: Reports from Farmlands in Flux, Ontario and BC",
+            "byline": "By Colleen Kimmett",
+            "title": "Packed With Opportunities 2",
+            "abstract": "How small farmers are turning their crops into tasty products without relying on the big global processors.",
+            "published_date": "2010-10-11",
+            "source": "TheTyee.ca",
+            "media": [
+            {
+                "type": "image",
+                "subtype": "Thumbnail",
+                "caption": "",
+                "copyright": "",
+                "metadata": [
+                {
+                    "url": "http:\/\/thetyee.ca\/News\/2010\/11\/10\/jenn-pfenning_thumb.jpg",
+                    "format": "Thumbnail",
+                    "height": 69,
+                    "width": 90
+                }
+                ]
+            }
+            ]
+        },
+        {
+            "uuid": "05DC4008-ED25-11DF-A407-F809B6501B05",
+            "url": "http:\/\/thetyee.ca\/News\/2010\/11\/11\/PackedWithOpportunities\/",
+            "section": "News",
+            "series": "Growing the Local Bounty: Reports from Farmlands in Flux, Ontario and BC",
+            "byline": "By Colleen Kimmett",
+            "title": "Packed With Opportunities 3",
+            "abstract": "How small farmers are turning their crops into tasty products without relying on the big global processors.",
+            "published_date": "2010-10-11",
+            "source": "TheTyee.ca",
+            "media": [
+            {
+                "type": "image",
+                "subtype": "Thumbnail",
+                "caption": "",
+                "copyright": "",
+                "metadata": [
+                {
+                    "url": "http:\/\/thetyee.ca\/News\/2010\/11\/10\/jenn-pfenning_thumb.jpg",
+                    "format": "Thumbnail",
+                    "height": 69,
+                    "width": 90
+                }
+                ]
+            }
+            ]
+        }
+    ]
+}
