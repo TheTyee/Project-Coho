@@ -69,7 +69,7 @@ pushPanelStackByUUID: function(uuid)
         model: "searchResultStory",
         proxy: {
             type: "scripttag",
-            url: "http://preview.app.thetyee.ca/proxy/story.pl?uuid="+uuid,
+            url: "http://preview.app.thetyee.ca/proxy/v1/story/"+uuid,
             reader: {
                 type: "json",
                 root: "hits.hits"

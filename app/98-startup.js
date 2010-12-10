@@ -5,7 +5,7 @@
  */
 var mainTabPanels = [
     latestStoriesTab.panel,
-    popularStoriesTab.panel,
+    searchTab.panel,
     {   
         iconCls: "favorites",
         title: "Saved",
