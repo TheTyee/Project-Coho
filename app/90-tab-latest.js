@@ -9,6 +9,7 @@ var latestStoriesTab = new Coho.StoryListObject({
         model: "searchResultStory",
         proxy: {
             type: "scripttag",
+            extraParams: {filters: []},
             url: "http://preview.app.thetyee.ca/proxy/v1/latest",
             reader: {
                 type: "json",
