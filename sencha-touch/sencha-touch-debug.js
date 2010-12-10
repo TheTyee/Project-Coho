@@ -46,10 +46,10 @@ Ext.apply = (function() {
 })();
 
 Ext.apply(Ext, {
-    platformVersion: '0.2',
+    platformVersion: '1.0',
     platformVersionDetail: {
-        major: 0,
-        minor: 2,
+        major: 1,
+        minor: 0,
         patch: 0
     },
     userAgent: navigator.userAgent.toLowerCase(),
@@ -1155,23 +1155,24 @@ Ext.extend(Ext.util.MixedCollection, Ext.util.Observable, {
     allowFunctions : false,
 
     
-    add : function(key, o){
+    add : function(key, obj){
+        var myObj = obj, myKey = key;
         if(arguments.length == 1){
-            o = arguments[0];
-            key = this.getKey(o);
+            myObj = myKey;
+            myKey = this.getKey(myObj);
         }
-        if(typeof key != 'undefined' && key !== null){
-            var old = this.map[key];
+        if(typeof myKey != 'undefined' && myKey !== null){
+            var old = this.map[myKey];
             if(typeof old != 'undefined'){
-                return this.replace(key, o);
+                return this.replace(myKey, myObj);
             }
-            this.map[key] = o;
+            this.map[myKey] = myObj;
         }
         this.length++;
-        this.items.push(o);
-        this.keys.push(key);
-        this.fireEvent('add', this.length-1, o, key);
-        return o;
+        this.items.push(myObj);
+        this.keys.push(myKey);
+        this.fireEvent('add', this.length-1, myObj, myKey);
+        return myObj;
     },
 
     
@@ -1243,31 +1244,32 @@ Ext.extend(Ext.util.MixedCollection, Ext.util.Observable, {
     },
     
     find : function() {
-        throw "Stateful: find has been deprecated. Please use findBy.";
+        throw new Error("[Ext.util.MixedCollection] Stateful: find has been deprecated. Please use findBy.");
     },
 
     
-    insert : function(index, key, o){
+    insert : function(index, key, obj){
+        var myKey = key, myObj = obj;
         if(arguments.length == 2){
-            o = arguments[1];
-            key = this.getKey(o);
+            myObj = myKey;
+            myKey = this.getKey(myObj);
         }
-        if(this.containsKey(key)){
+        if(this.containsKey(myKey)){
             this.suspendEvents();
-            this.removeByKey(key);
+            this.removeByKey(myKey);
             this.resumeEvents();
         }
         if(index >= this.length){
-            return this.add(key, o);
+            return this.add(myKey, myObj);
         }
         this.length++;
-        this.items.splice(index, 0, o);
-        if(typeof key != 'undefined' && key !== null){
-            this.map[key] = o;
+        this.items.splice(index, 0, myObj);
+        if(typeof myKey != 'undefined' && myKey !== null){
+            this.map[myKey] = myObj;
         }
-        this.keys.splice(index, 0, key);
-        this.fireEvent('add', index, o, key);
-        return o;
+        this.keys.splice(index, 0, myKey);
+        this.fireEvent('add', index, myObj, myKey);
+        return myObj;
     },
 
     
@@ -1987,6 +1989,8 @@ Ext.util.GeoLocation = Ext.extend(Ext.util.Observable, {
         }
     }
 });
+
+
 Ext.util.Point = Ext.extend(Object, {
     constructor: function(x, y) {
         this.x = (x != null && !isNaN(x)) ? x : 0;
@@ -1995,34 +1999,36 @@ Ext.util.Point = Ext.extend(Object, {
         return this;
     },
 
+    
     copy: function() {
         return new Ext.util.Point(this.x, this.y);
     },
 
+    
     copyFrom: function(p) {
         this.x = p.x;
         this.y = p.y;
+
+        return this;
     },
 
+    
     toString: function() {
         return "Point[" + this.x + "," + this.y + "]";
     },
 
+    
     equals: function(p) {
-        if(!(p instanceof Ext.util.Point))
-            throw new Error('p must be an instance of Ext.util.Point');
-
         return (this.x == p.x && this.y == p.y);
     },
 
+    
     isWithin: function(p, threshold) {
-        if(!(p instanceof Ext.util.Point))
-            throw new Error('p must be an instance of Ext.util.Point');
-
         return (this.x <= p.x + threshold.x && this.x >= p.x - threshold.x &&
                 this.y <= p.y + threshold.y && this.y >= p.y - threshold.y);
     },
 
+    
     translate: function(x, y) {
         if (x != null && !isNaN(x))
             this.x += x;
@@ -2031,17 +2037,17 @@ Ext.util.Point = Ext.extend(Object, {
             this.y += y;
     },
 
+    
     roundedEquals: function(p) {
         return (Math.round(this.x) == Math.round(p.x) && Math.round(this.y) == Math.round(p.y));
     }
 });
 
-Ext.apply(Ext.util.Point, {
-    fromEvent: function(e) {
-        var a = (e.touches && e.touches.length > 0) ? e.touches[0] : e;
-        return new Ext.util.Point(a.screenX, a.screenY);
-    }
-});
+
+Ext.util.Point.fromEvent = function(e) {
+    var a = (e.changedTouches && e.changedTouches.length > 0) ? e.changedTouches[0] : e;
+    return new Ext.util.Point(a.pageX, a.pageY);
+};
 Ext.util.Offset = Ext.extend(Object, {
     constructor: function(x, y) {
         this.x = (x != null && !isNaN(x)) ? x : 0;
@@ -2170,6 +2176,7 @@ Ext.util.Region = Ext.extend(Object, {
 
     },
 
+    
     getOutOfBoundOffsetX: function(p) {
         if (p <= this.left) {
             return this.left - p;
@@ -2180,6 +2187,7 @@ Ext.util.Region = Ext.extend(Object, {
         return 0;
     },
 
+    
     getOutOfBoundOffsetY: function(p) {
         if (p <= this.top) {
             return this.top - p;
@@ -2190,6 +2198,7 @@ Ext.util.Region = Ext.extend(Object, {
         return 0;
     },
 
+    
     isOutOfBound: function(axis, p) {
         if (!Ext.isObject(axis)) {
             if (axis == 'x') {
@@ -2203,17 +2212,18 @@ Ext.util.Region = Ext.extend(Object, {
         }
     },
 
+    
     isOutOfBoundX: function(p) {
         return (p < this.left || p > this.right);
     },
 
+    
     isOutOfBoundY: function(p) {
         return (p < this.top || p > this.bottom);
     },
 
     
     restrict: function(axis, p, factor) {
-
         if (Ext.isObject(axis)) {
             var newP;
 
@@ -2242,6 +2252,7 @@ Ext.util.Region = Ext.extend(Object, {
         }
     },
 
+    
     restrictX : function(p, factor) {
         if (!factor) {
             factor = 1;
@@ -2256,6 +2267,7 @@ Ext.util.Region = Ext.extend(Object, {
         return p;
     },
 
+    
     restrictY : function(p, factor) {
         if (!factor) {
             factor = 1;
@@ -2270,6 +2282,7 @@ Ext.util.Region = Ext.extend(Object, {
         return p;
     },
 
+    
     getSize: function() {
         return {
             width: this.right - this.left,
@@ -2287,13 +2300,18 @@ Ext.util.Region = Ext.extend(Object, {
         return "Region[" + this.top + "," + this.right + "," + this.bottom + "," + this.left + "]";
     },
 
+
+    
     translateBy: function(offset) {
         this.left += offset.x;
         this.right += offset.x;
         this.top += offset.y;
         this.bottom += offset.y;
+
+        return this;
     },
 
+    
     round: function() {
         this.top = Math.round(this.top);
         this.right = Math.round(this.right);
@@ -2301,6 +2319,11 @@ Ext.util.Region = Ext.extend(Object, {
         this.left = Math.round(this.left);
 
         return this;
+    },
+
+    
+    equals: function(region) {
+        return (this.top == region.top && this.right == region.right && this.bottom == region.bottom && this.left == region.left)
     }
 });
 
@@ -2308,6 +2331,7 @@ Ext.util.Region = Ext.extend(Object, {
 Ext.util.Region.getRegion = function(el) {
     return Ext.fly(el).getPageBox(true);
 };
+
 
 Ext.util.Region.from = function(o) {
     return new Ext.util.Region(o.top, o.right, o.bottom, o.left);
@@ -3429,7 +3453,7 @@ Ext.LoadMask = Ext.extend(Ext.util.Observable, {
     
     onBeforeLoad : function() {
         if (!this.disabled) {
-            this.el.mask(this.msg, this.msgCls, false);
+            this.el.mask('<div class="x-loading-spinner"><span class="x-loading-top"></span><span class="x-loading-right"></span><span class="x-loading-bottom"></span><span class="x-loading-left"></span></div><div class="x-loading-msg">' + this.msg + '</div>', this.msgCls, false);
             this.fireEvent('show', this, this.el, this.store);
         }
     },
@@ -8181,11 +8205,12 @@ Ext.data.AjaxProxy = Ext.extend(Ext.data.ServerProxy, {
         }
         
         Ext.apply(request, {
-            headers : this.headers,
-            timeout : this.timeout,
-            scope   : this,
-            callback: this.createRequestCallback(request, operation, callback, scope),
-            method  : this.getMethod(request)
+            headers       : this.headers,
+            timeout       : this.timeout,
+            scope         : this,
+            callback      : this.createRequestCallback(request, operation, callback, scope),
+            method        : this.getMethod(request),
+            disableCaching: false 
         });
         
         Ext.Ajax.request(request);
@@ -10901,8 +10926,9 @@ Ext.applyIf(Ext.Element, {
     getComputedTransformOffset: function(el) {
         if (el instanceof Ext.Element)
             el = el.dom;
-
-        var cssMatrix = new WebKitCSSMatrix(window.getComputedStyle(el).webkitTransform);
+            
+        var transform = window.getComputedStyle(el).webkitTransform,
+            cssMatrix = transform != 'none' ? new WebKitCSSMatrix(transform) : new WebKitCSSMatrix();
 
         if (typeof cssMatrix.m41 != 'undefined') {
             return new Ext.util.Offset(cssMatrix.m41, cssMatrix.m42);
@@ -10937,7 +10963,20 @@ Ext.applyIf(Ext.Element, {
         } else {
             el.style.webkitTransform = m;
         }
+    },
+
+    
+    cssTranslate: function(el, offset) {
+        if (el instanceof Ext.Element)
+            el = el.dom;
+
+        if (Ext.supports.CSS3DTransform) {
+            el.style.webkitTransform = 'translate3d('+offset.x+'px, '+offset.y+'px, 0px)';
+        } else {
+            el.style.webkitTransform = 'translate('+offset.x+'px, '+offset.y+'px)';
+        }
     }
+
 });
 
 
@@ -13093,11 +13132,11 @@ Ext.apply(Ext.anims, {
 
 Ext.apply(Ext, {
     
-    version : '1.0.0RC',
+    version : '1.0.0',
     versionDetail : {
         major : 1,
         minor : 0,
-        patch : '0RC'
+        patch : 0
     },
     
     
@@ -13269,7 +13308,6 @@ Ext.Viewport = new (Ext.extend(Ext.util.Observable, {
 
             setTimeout(function() {
 
-
                 Ext.getBody().setStyle('overflow', 'hidden');
 
                 if (Ext.is.Android && me.stretchEl) {
@@ -13329,35 +13367,24 @@ Ext.Viewport = new (Ext.extend(Ext.util.Observable, {
         }
 
         if (Ext.is.Android) {
+            if (target.nodeType == 3) {
+                target = target.parentNode;
+            }
+            
             if (target.tagName && (/input|select|textarea/i.test(target.tagName))) {
                 return;
             }
-            
+
             e.preventDefault();
             e.stopPropagation();
         }
     },
 
+
     onTouchMoveBubbling: function(e) {
         e.preventDefault();
         e.stopPropagation();
     },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
     onOrientationChange: function() {
         var me = this;
@@ -14007,10 +14034,14 @@ Ext.util.JSONP = {
 
 Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
     baseCls: 'x-draggable',
+
     draggingCls: 'x-dragging',
+
     proxyCls: 'x-draggable-proxy',
 
+    
     outOfBoundRestrictFactor: 1,
+
     
     direction: 'both',
 
@@ -14059,10 +14090,11 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
     
     horizontal: false,
 
-    monitorOrientation : true,
-    
     
     animationDuration: 300,
+
+    
+    monitorOrientation: true,
 
     constructor: function(el, config) {
         this.el = Ext.get(el);
@@ -14078,8 +14110,6 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
         );
 
         Ext.util.Draggable.superclass.constructor.call(this, config);
-
-        this.offset = new Ext.util.Offset();
 
         if (this.eventTarget === 'parent') {
             this.eventTarget = this.el.parent();
@@ -14101,7 +14131,7 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
         this.el.addCls(this.baseCls);
 
         if (this.proxy) {
-            this.proxy.addCls(this.proxyCls);
+            this.getProxyEl().addCls(this.proxyCls);
         }
 
         this.startEventName = (this.delay > 0) ? 'taphold' : 'dragstart';
@@ -14113,7 +14143,7 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
         this.container = window;
 
         if (this.constrain) {
-            if (this.constrain == 'parent') {
+            if (this.constrain === 'parent') {
                 this.container = this.el.parent();
             }
             else if (this.constrain !== window) {
@@ -14127,19 +14157,17 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
             x: new Ext.util.Draggable.Animation.Linear(),
             y: new Ext.util.Draggable.Animation.Linear()
         };
-        
-        Ext.EventManager.onOrientationChange(this.onOrientationChange, this);
-        
+
         this.updateBoundary(true);
         this.setDragging(false);
 
         if (!this.disabled) {
             this.enable();
         }
-        
+
         return this;
     },
-    
+
     
     enable: function() {
         return this.setEnabled(true);
@@ -14155,9 +14183,16 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
         this.eventTarget[enabled ? 'on' : 'un'](this.startEventName, this.onStart, this, this.dragOptions);
         this.eventTarget[enabled ? 'on' : 'un']('drag', this.onDrag, this, this.dragOptions);
         this.eventTarget[enabled ? 'on' : 'un']('dragend', this.onDragEnd, this, this.dragOptions);
-        
+        this.eventTarget[enabled ? 'on' : 'un']('touchstart', this.onTouchStart, this);
+
+        if (enabled) {
+            Ext.EventManager.onOrientationChange(this.onOrientationChange, this);
+        } else {
+            Ext.EventManager.orientationEvent.removeListener(this.onOrientationChange, this);
+        }
+
         this.disabled = !enabled;
-        
+
         return this;
     },
 
@@ -14166,10 +14201,10 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
         if (typeof useCssTransform == 'undefined') {
             useCssTransform = true;
         }
-        
+
         if (useCssTransform != this.useCssTransform) {
             this.useCssTransform = useCssTransform;
-            
+
             var resetOffset = new Ext.util.Offset();
 
             if (useCssTransform == false) {
@@ -14185,96 +14220,107 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
     },
 
     
-    setOffset: function(point, animate) {
+    setOffset: function(offset, animate) {
         if (!this.horizontal) {
-            point.x = 0;
+            offset.x = 0;
         }
 
         if (!this.vertical) {
-            point.y = 0;
+            offset.y = 0;
         }
 
         if (animate) {
-            this.startAnimation(point, animate);
+            this.startAnimation(offset, animate);
         }
         else {
-            this.offset = point;
+            this.offset = offset;
             this.region = new Ext.util.Region(
-                this.initialRegion.top + point.y,
-                this.initialRegion.right + point.x,
-                this.initialRegion.bottom + point.y,
-                this.initialRegion.left + point.x
+                this.initialRegion.top + offset.y,
+                this.initialRegion.right + offset.x,
+                this.initialRegion.bottom + offset.y,
+                this.initialRegion.left + offset.x
             );
 
             if (this.useCssTransform) {
-                this.setTransformOffset(point);
-            } 
-            else {
-                this.setStyleOffset(point);
+                this.setTransformOffset(offset);
             }
-            
+            else {
+                this.setStyleOffset(offset);
+            }
+
             this.fireEvent('offsetchange', this, this.offset);
         }
+
+        return this;
+    },
+
+    
+    setTransformOffset: function(offset) {
+
         
+        Ext.Element.cssTranslate(this.getProxyEl(), offset);
+
         return this;
     },
 
     
-    setTransformOffset: function(point) {
-        Ext.Element.cssTransform(this.getProxyEl(), {translate: [point.x, point.y]});
+    setStyleOffset: function(offset) {
+        this.getProxyEl().setLeft(offset.x);
+        this.getProxyEl().setTop(offset.y);
         return this;
     },
 
     
-    setStyleOffset: function(p) {
-        this.getProxyEl().setLeft(p.x);
-        this.getProxyEl().setTop(p.y);
-        return this;
-    },
+    startAnimation: function(offset, animate) {
+        this.stopAnimation();
 
-    
-    startAnimation: function(p, animate) {
-        var currentTime = (new Date()).getTime();
-
+        var currentTime = Date.now();
         animate = Ext.isNumber(animate) ? animate : this.animationDuration;
-            
+
         this.linearAnimation.x.set({
             startOffset: this.offset.x,
-            endOffset: p.x,
+            endOffset: offset.x,
             startTime: currentTime,
             duration: animate
         });
-        
+
         this.linearAnimation.y.set({
             startOffset: this.offset.y,
-            endOffset: p.y,
+            endOffset: offset.y,
             startTime: currentTime,
             duration: animate
         });
-        
+
         this.isAnimating = true;
         this.animationTimer = Ext.defer(this.handleAnimationFrame, 0, this);
         return this;
     },
 
-        
+    
     stopAnimation: function() {
-        clearTimeout(this.animationTimer);
-        this.isAnimating = false;
-        this.setDragging(false);
+        if (this.isAnimating) {
+            clearTimeout(this.animationTimer);
+            this.isAnimating = false;
+            this.setDragging(false);
+        }
+
         return this;
     },
 
-        
+    
     handleAnimationFrame: function() {
+        if (!this.isAnimating) {
+            return;
+        }
+
         var newOffset = new Ext.util.Offset();
         newOffset.x = this.linearAnimation.x.getOffset();
         newOffset.y = this.linearAnimation.y.getOffset();
 
         this.setOffset(newOffset);
-        
+
         this.animationTimer = Ext.defer(this.handleAnimationFrame, 10, this);
-        
+
         if ((newOffset.x === this.linearAnimation.x.endOffset) && (newOffset.y === this.linearAnimation.y.endOffset)) {
             this.stopAnimation();
         }
@@ -14290,10 +14336,10 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
 
     
     updateBoundary: function(init) {
+        var offsetBoundary;
+
         if (typeof init == 'undefined')
             init = false;
-        
-        this.offsetBoundary = null;
 
         this.size = {
             width: this.el.dom.scrollWidth,
@@ -14363,7 +14409,13 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
             bottom += this.containerBox.bottom - this.elBox.bottom;
         }
 
-        this.offsetBoundary = new Ext.util.Region(top, right, bottom, left).round();
+        offsetBoundary = new Ext.util.Region(top, right, bottom, left).round();
+
+        if (this.offsetBoundary && this.offsetBoundary.equals(offsetBoundary)) {
+            return this;
+        }
+
+        this.offsetBoundary = offsetBoundary;
 
         var currentComputedOffset;
 
@@ -14381,13 +14433,18 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
     },
 
     
+    onTouchStart: function() {
+
+    },
+
+    
     onStart: function(e) {
-        if (e.targetTouches && e.targetTouches.length != 1)
-            return;
-        
+        this.updateBoundary();
+
+        this.stopAnimation();
+
         if (this.dragging) {
             this.onDragEnd(e);
-            this.stopAnimation();
         }
 
         this.setDragging(true);
@@ -14395,10 +14452,6 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
         this.startTouchPoint = Ext.util.Point.fromEvent(e);
         this.startOffset = this.offset.copy();
 
-        
-        if (this.el.dom.scrollWidth != this.size.width || this.el.dom.scrollHeight != this.size.height) {
-            this.updateBoundary();
-        }
 
         this.fireEvent('dragstart', this, e);
 
@@ -14426,7 +14479,7 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
 
     
     onDrag: function(e) {
-        if (!this.dragging || (e.targetTouches && e.targetTouches.length != 1)) {
+        if (!this.dragging) {
             return;
         }
 
@@ -14438,9 +14491,11 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
         }
 
         this.setOffset(newOffset);
-        
+
         this.fireEvent('drag', this, e);
 
+        
+        
         return true;
     },
 
@@ -14455,8 +14510,11 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
                 this.setDragging(false);
             }
 
-            this.fireEvent('dragend', this, e);            
+            this.fireEvent('dragend', this, e);
         }
+
+        
+        
         return true;
     },
 
@@ -14489,9 +14547,8 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
 
     
     destroy: function() {
-        Ext.EventManager.orientationEvent.removeListener(this.onOrientationChange, this);
-        
         this.el.removeCls(this.baseCls);
+        this.getProxyEl().removeCls(this.proxyCls);
         this.clearListeners();
         this.disable();
     },
@@ -14516,15 +14573,15 @@ Ext.util.Draggable = Ext.extend(Ext.util.Observable, {
     },
 
     
-    isDragging : function() {
+    isDragging: function() {
         return this.dragging;
-    },    
-    
+    },
+
     
     isVertical : function() {
         return this.vertical;
     },
-    
+
     
     isHorizontal : function() {
         return this.horizontal;
@@ -14537,7 +14594,7 @@ Ext.util.Draggable.Animation = {};
 Ext.util.Draggable.Animation.Abstract = Ext.extend(Object, {
     
     startTime: null,
-    
+
     
     startOffset: 0,
 
@@ -14548,7 +14605,7 @@ Ext.util.Draggable.Animation.Abstract = Ext.extend(Object, {
         this.set(config);
 
         if (!this.startTime)
-            this.startTime = (new Date()).getTime();
+            this.startTime = Date.now();
     },
 
     
@@ -14571,15 +14628,15 @@ Ext.util.Draggable.Animation.Abstract = Ext.extend(Object, {
 Ext.util.Draggable.Animation.Linear = Ext.extend(Ext.util.Draggable.Animation.Abstract, {
     
     duration: 0,
-    
+
     
     endOffset: 0,
-    
+
     getOffset : function() {
         var distance = this.endOffset - this.startOffset,
-            deltaTime = (new Date()).getTime() - this.startTime,
+            deltaTime = Date.now() - this.startTime,
             omegaTime = Math.min(1, (deltaTime / this.duration));
-        
+
         return this.startOffset + (omegaTime * distance);
     }
 });
@@ -14763,9 +14820,12 @@ Ext.ScrollManager = new Ext.AbstractManager();
 
 Ext.util.ScrollView = Ext.extend(Ext.util.Observable, {
 
+    
     useIndicators: true,
 
+    
     indicatorConfig: {},
+
     
     indicatorMargin: 4,
 
@@ -14809,26 +14869,17 @@ Ext.util.ScrollView = Ext.extend(Ext.util.Observable, {
         });
     },
 
+    
     onScrollStart: function() {
         this.showIndicators();
     },
 
+    
     onScrollEnd: function() {
         this.hideIndicators();
     },
-    
-    showIndicators : function() {
-        Ext.iterate(this.indicators, function(axis, indicator) {
-            indicator.show();
-        }, this);        
-    },
-    
-    hideIndicators : function() {
-        Ext.iterate(this.indicators, function(axis, indicator) {
-            indicator.hide();
-        }, this);        
-    },
 
+    
     onScroll: function(scroller) {
         if (scroller.offsetBoundary == null || (!this.indicators.vertical && !this.indicators.horizontal))
             return;
@@ -14872,7 +14923,6 @@ Ext.util.ScrollView = Ext.extend(Ext.util.Observable, {
                                               * (this.containerSize[sizeAxis] - this.indicatorSizes[axis]));
             } else if (offset[offsetAxis] < boundary[offsetMark]) {
                 this.indicatorOffsets[axis] = this.containerSize[sizeAxis] - this.indicatorSizes[axis];
-
             } else {
                 this.indicatorOffsets[axis] = 0;
             }
@@ -14880,6 +14930,35 @@ Ext.util.ScrollView = Ext.extend(Ext.util.Observable, {
             indicator.setOffset(this.indicatorOffsets[axis] + this.indicatorMargin);
             indicator.setSize(this.indicatorSizes[axis] - (this.indicatorMargin * 2));
         }, this);
+    },
+
+    
+    showIndicators : function() {
+        Ext.iterate(this.indicators, function(axis, indicator) {
+            indicator.show();
+        }, this);
+
+        return this;
+    },
+
+     
+    hideIndicators : function() {
+        Ext.iterate(this.indicators, function(axis, indicator) {
+            indicator.hide();
+        }, this);
+    },
+
+    
+    destroy: function() {
+        this.scroller.destroy();
+
+        if (this.indicators) {
+            Ext.iterate(this.indicators, function(axis, indicator) {
+                indicator.destroy();
+            }, this);
+        }
+
+        return Ext.util.ScrollView.superclass.destroy.apply(this, arguments);
     }
 });
 
@@ -14904,7 +14983,7 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
     acceleration: 30,
     
     
-    fps: 100,
+    fps: 80,
 
     
     friction: 0.5,
@@ -14974,7 +15053,7 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
         }
 
         this.frameDuration = 1000 / this.fps;
-        this.omega = 1 - (this.friction / 10);
+        this.theta = Math.log(1 - (this.friction / 10));
 
 
 
@@ -14990,7 +15069,7 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
             if (!this.decelerationAnimation[a]) {
                 this.decelerationAnimation[a] = new Ext.util.Scroller.Animation.Deceleration({
                     acceleration: this.acceleration,
-                    omega: this.omega
+                    theta: this.theta
                 });
             }
 
@@ -15005,35 +15084,39 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
         return this;
     },
 
-    setEnabled: function(enabled) {
-        Ext.util.Scroller.superclass.setEnabled.apply(this, arguments);
-
-        this.eventTarget[enabled ? 'on' : 'un']('touchstart', this.onTouchStart, this);
-    },
-
-
+    
     updateBoundary: function() {
         Ext.util.Scroller.superclass.updateBoundary.apply(this, arguments);
         
         this.snapToBoundary();
+
+        return this;
     },
+
     
     setOffset: function(p) {
-        p.round();
+
         
         Ext.util.Scroller.superclass.setOffset.apply(this, arguments);
 
         this.fireEvent('scroll', this, this.getOffset());
+
+        return this;
     },
 
+    
     onTouchStart: function(e) {
+        Ext.util.Scroller.superclass.onTouchStart.apply(this, arguments);
+        
         this.stopMomentumAnimation();
     },
 
+    
     onDragStart: function(e) {
         this.fireEvent('scrollstart', this, e);
     },
 
+    
     onStart: function(e) {
         if (Ext.util.Scroller.superclass.onStart.apply(this, arguments) !== true)
             return;
@@ -15041,8 +15124,11 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
         this.startTime = e.event.timeStamp;
         this.lastEventTime = e.event.timeStamp;
         this.startTimeOffset = this.offset.copy();
+
+        this.framesHandled = 0;
     },
 
+    
     onDrag: function(e) {
         if (Ext.util.Scroller.superclass.onDrag.apply(this, arguments) !== true)
             return;
@@ -15055,6 +15141,7 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
         }
     },
 
+    
     onDragEnd: function(e) {
         if (Ext.util.Scroller.superclass.onDragEnd.apply(this, arguments) !== true)
             return;
@@ -15064,18 +15151,30 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
         }
     },
 
+    
     onOrientationChange: function() {
         Ext.util.Scroller.superclass.onOrientationChange.apply(this, arguments);
         
         this.snapToBoundary();
     },
 
+    
     fireScrollEndEvent: function() {
-        this.isAnimating = false;
+        this.isMomentumAnimating = false;
         this.snapToBoundary();
         this.fireEvent('scrollend', this, this.getOffset());
+        this.endTime = Date.now();
+        this.snapToSlot();
     },
 
+
+    
+    getLastActualFps: function() {
+        var duration = (this.endTime - this.startTime) * 1000;
+        return this.framesHandled / duration;
+    },
+
+    
     scrollTo: function(pos, animate) {
         this.stopMomentumAnimation();
 
@@ -15085,12 +15184,25 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
 
         return this;
     },
+
     
-    setSnap : function(snap) {
+    setSnap: function(snap) {
         this.snap = snap;
     },
 
+    
     snapToBoundary: function() {
+        var offset = this.offsetBoundary.restrict(this.offset);
+        offset.round();
+        
+        if (!this.offset.equals(offset)) {
+            this.setOffset(offset);
+        }
+
+        return this;
+    },
+
+    snapToSlot: function() {
         var offset = this.offsetBoundary.restrict(this.offset);
         offset.round();
         
@@ -15118,13 +15230,9 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
                 this.scrollTo({x: -offset.x, y: -offset.y}, this.snapDuration);
             }
         }
-        else if (!this.offset.equals(offset)) {
-            this.setOffset(offset);
-        }
-
-        return this;
     },
 
+    
     startMomentumAnimation: function(e) {
         if (
             (!this.momentum || !((e.event.timeStamp - this.lastEventTime) <= this.startMomentumResetTime)) &&
@@ -15184,20 +15292,21 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
         }, this);
         
         if (this.isDecelerating.x || this.isDecelerating.y || this.isBouncing.x || this.isBouncing.y) {
-            this.isAnimating = true;
+            this.isMomentumAnimating = true;
             this.framesHandled = 0;
             this.fireEvent('momentumanimationstart');
-            this.animationTimer = Ext.defer(this.handleFrame, this.frameDuration, this);
+            this.momentumAnimationTimer = Ext.defer(this.handleMomentumAnimationFrame, this.frameDuration, this);
             return true;
         }
 
         return false;
     },
 
+    
     stopMomentumAnimation: function() {
-        if (this.isAnimating) {
-            if (this.animationTimer) {
-                clearTimeout(this.animationTimer);
+        if (this.isMomentumAnimating) {
+            if (this.momentumAnimationTimer) {
+                clearTimeout(this.momentumAnimationTimer);
             }
 
             this.isDecelerating = {};
@@ -15211,14 +15320,14 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
     },
     
     
-    handleFrame : function() {
-        if (!this.isAnimating) {
+    handleMomentumAnimationFrame : function() {
+        if (!this.isMomentumAnimating) {
             return;
         }
 
-        this.animationTimer = Ext.defer(this.handleFrame, this.frameDuration, this);
+        this.momentumAnimationTimer = Ext.defer(this.handleMomentumAnimationFrame, this.frameDuration, this);
         
-        var currentTime = (new Date()).getTime(),
+        var currentTime = Date.now(),
             newOffset = this.offset.copy(),
             currentVelocity,
             restrictedOffset,
@@ -15275,12 +15384,12 @@ Ext.util.Scroller = Ext.extend(Ext.util.Draggable, {
             return;
         }
 
-
-
+        this.framesHandled++;
+        
         this.setOffset(newOffset);
-
     },
 
+    
     destroy: function() {
         return Ext.util.Scroller.superclass.destroy.apply(this, arguments);
     }
@@ -15290,20 +15399,17 @@ Ext.util.Scroller.Animation = {};
 
 Ext.util.Scroller.Animation.Deceleration = Ext.extend(Ext.util.Draggable.Animation.Abstract, {
     acceleration: 30,
-    omega: null,
+    theta: null,
     startVelocity: null,
     
     getOffset: function() {
-        return this.startOffset - (
-            (this.startVelocity / Math.log(this.omega)) -
-            (this.startVelocity * (this.getFrictionFactor() / Math.log(this.omega)))
-        );
+        return this.startOffset - this.startVelocity * (1 - this.getFrictionFactor()) / this.theta;
     },
     
     getFrictionFactor : function() {
-        var deltaTime = (new Date()).getTime() - this.startTime;
+        var deltaTime = Date.now() - this.startTime;
 
-        return Math.pow(this.omega, deltaTime / this.acceleration);        
+        return Math.exp(deltaTime / this.acceleration * this.theta);
     }
 });
 
@@ -15313,7 +15419,7 @@ Ext.util.Scroller.Animation.Bouncing = Ext.extend(Ext.util.Draggable.Animation.A
     startVelocity: null,
     
     getOffset: function() {
-        var deltaTime = ((new Date()).getTime() - this.startTime),
+        var deltaTime = (Date.now() - this.startTime),
             powTime = (deltaTime / this.acceleration) * Math.pow(Math.E, -this.springTension * (deltaTime / this.acceleration));
 
         return this.startOffset + (this.startVelocity * powTime);
@@ -15323,10 +15429,11 @@ Ext.util.Scroller.Animation.Bouncing = Ext.extend(Ext.util.Draggable.Animation.A
 
 Ext.util.Scroller.Indicator = Ext.extend(Object, {
     baseCls: 'x-scrollbar',
-  
-    type: 'horizontal',
-    
+
     ui: 'dark',
+    
+    
+    type: 'horizontal',
 
     constructor: function(container, config) {
         this.container = container;
@@ -15337,9 +15444,12 @@ Ext.util.Scroller.Indicator = Ext.extend(Object, {
             cls: [this.baseCls, this.baseCls + '-' + this.type, this.baseCls + '-' + this.ui].join(' ')
         });
 
+        this.offset = new Ext.util.Offset();
+
         this.hide();
     },
 
+    
     hide: function() {
         var me = this;
 
@@ -15354,6 +15464,7 @@ Ext.util.Scroller.Indicator = Ext.extend(Object, {
         return this;
     },
 
+    
     show: function() {
         if (this.hideTimer) {
             clearTimeout(this.hideTimer);
@@ -15364,12 +15475,12 @@ Ext.util.Scroller.Indicator = Ext.extend(Object, {
         return this;
     },
 
+    
     setVisibility: function(isVisible) {
-        this[isVisible ? 'show' : 'hide']();
-
-        return this;
+        return this[isVisible ? 'show' : 'hide']();
     },
 
+    
     setSize: function(size) {
         if (this.size && size > this.size) {
             size = Math.round(size);
@@ -15383,12 +15494,15 @@ Ext.util.Scroller.Indicator = Ext.extend(Object, {
         return this;
     },
 
-    setOffset: function(p) {
-        p = Math.round(p);
+    
+    setOffset: function(offset) {
+        if (this.type == 'vertical') {
+            this.offset.y = offset;
+        } else {
+            this.offset.x = offset;
+        }
         
-        var offset = (this.type == 'vertical') ? [0, p] : [p];
-        
-        Ext.Element.cssTransform(this.el, {translate: offset});
+        Ext.Element.cssTranslate(this.el, this.offset);
 
         return this;
     }
@@ -16828,18 +16942,18 @@ Ext.Ajax = new Ext.data.Connection({
 
 
 Ext.gesture.Manager = new Ext.AbstractManager({
-    startEvent: 'touchstart',
-    moveEvent: 'touchmove',
-    endEvent: 'touchend',
+    startEventName: 'touchstart',
+    moveEventName: 'touchmove',
+    endEventName: 'touchend',
     
     init: function() {
         this.targets = []; 
 
         if (!Ext.supports.Touch) {
             Ext.apply(this, {
-                startEvent: 'mousedown',
-                moveEvent: 'mousemove',
-                endEvent: 'mouseup'
+                startEventName: 'mousedown',
+                moveEventName: 'mousemove',
+                endEventName: 'mouseup'
             });
         }
         
@@ -16847,35 +16961,18 @@ Ext.gesture.Manager = new Ext.AbstractManager({
         this.currentGestures = [];
         this.currentTargets = [];
         
-        document.addEventListener(this.startEvent, Ext.createDelegate(this.onTouchStart, this), true);
-        document.addEventListener(this.endEvent, Ext.createDelegate(this.onTouchEnd, this), true);
-
-        if (!Ext.is.Desktop) {
-            document.addEventListener('click', Ext.createDelegate(this.onClick, this), true);
-            this.addEventListener(Ext.getBody(), 'tap', Ext.emptyFn, {capture: true, fireClickEvent: true});
-        }
-
-        
-
-
-
+        document.addEventListener(this.startEventName, Ext.createDelegate(this.onTouchStart, this), true);
+        document.addEventListener(this.endEventName, Ext.createDelegate(this.onTouchEnd, this), true);
     },
 
-    onClick: function(e) {
-        var target = e.target;
-
-        if (!(e.isManufactured == true) || target.disabled == true) {
-            e.stopPropagation();
-            e.preventDefault();
-        }
-    },
-    
-    onMouseDown: function(e) {
-        e.stopPropagation();
-        e.preventDefault();    
-    },
-    
     onTouchStart: function(e) {
+        
+        
+        
+        if (this.startEvent) {
+            this.onTouchEnd(e);
+        }
+
         var targets = [],
             target = e.target;
         
@@ -16887,11 +16984,13 @@ Ext.gesture.Manager = new Ext.AbstractManager({
             if (this.targets.indexOf(target) != -1) {
                 targets.unshift(target);
             }
+            
             target = target.parentNode;
             this.currentTargets.push(target);
         }
         
         this.startEvent = e;
+        this.startPoint = Ext.util.Point.fromEvent(e);
         this.handleTargets(targets, e);
     },
     
@@ -16899,19 +16998,36 @@ Ext.gesture.Manager = new Ext.AbstractManager({
     onTouchEnd: function(e) {
         var gestures = this.currentGestures.slice(0),
             ln = gestures.length,
-            i, gesture;
+            i, gesture, endPoint,
+            hasMoved = false,
+            touch = e.changedTouches ? e.changedTouches[0] : e;
 
+        if (this.startPoint) {
+            endPoint = Ext.util.Point.fromEvent(e);
+
+            
+            
+            
+            if (!this.startPoint.equals(endPoint)) {
+                hasMoved = true;
+            }
+        }
+        
         this.followTouches = [];
         this.startedChangedTouch = false;
         this.currentTargets = [];
         this.startEvent = null;
+        this.startPoint = null;
         
         for (i = 0; i < ln; i++) {
             gesture = gestures[i];
-            
+
             if (!e.stopped && gesture.listenForEnd) {
-                gesture.onTouchEnd(e, e.changedTouches ? e.changedTouches[0]: e);
-                gesture.lastMovePoint = null;
+                if (hasMoved) {
+                    gesture.onTouchMove(e, touch);
+                }
+
+                gesture.onTouchEnd(e, touch);
             }
 
             this.stopGesture(gesture);
@@ -16925,24 +17041,12 @@ Ext.gesture.Manager = new Ext.AbstractManager({
         
         if (gesture.listenForMove) {
             gesture.onTouchMoveWrap = function(e) {
-                var point = Ext.util.Point.fromEvent(e);
-
-                if (!gesture.lastMovePoint) {
-                    gesture.lastMovePoint = point;
-                } else {
-                    if (gesture.lastMovePoint.equals(point)) {
-                        return;
-                    } else {
-                        gesture.lastMovePoint.copyFrom(point);
-                    }
-                }
-                
                 if (!e.stopped) {
-                    gesture.onTouchMove(e, e.changedTouches ? e.changedTouches[0]: e);
+                    gesture.onTouchMove(e, e.changedTouches ? e.changedTouches[0] : e);
                 }
             };
             
-            gesture.target.addEventListener(me.moveEvent, gesture.onTouchMoveWrap, !!gesture.capture);
+            gesture.target.addEventListener(me.moveEventName, gesture.onTouchMoveWrap, !!gesture.capture);
         }
         
         this.currentGestures.push(gesture);
@@ -16951,7 +17055,7 @@ Ext.gesture.Manager = new Ext.AbstractManager({
     stopGesture: function(gesture) {
         gesture.started = false;
         if (gesture.listenForMove) {
-            gesture.target.removeEventListener(this.moveEvent, gesture.onTouchMoveWrap, !!gesture.capture);
+            gesture.target.removeEventListener(this.moveEventName, gesture.onTouchMoveWrap, !!gesture.capture);
         }
         this.currentGestures.remove(gesture);
     },
@@ -16982,7 +17086,7 @@ Ext.gesture.Manager = new Ext.AbstractManager({
         }
         
         if (this.startedChangedTouch) {
-            this.followTouches = this.followTouches.concat(Ext.supports.Touch ? Ext.toArray(e.targetTouches) : [e]);
+            this.followTouches = this.followTouches.concat((Ext.supports.Touch && e.targetTouches) ? Ext.toArray(e.targetTouches) : [e]);
         }
     },
     
@@ -16996,7 +17100,7 @@ Ext.gesture.Manager = new Ext.AbstractManager({
             if (
                 (!!gesture.capture === !!capture) &&
                 (this.followTouches.length < gesture.touches) && 
-                (Ext.supports.Touch ? (e.targetTouches.length === gesture.touches) : true)
+                ((Ext.supports.Touch && e.targetTouches) ? (e.targetTouches.length === gesture.touches) : true)
             ) {
                 this.startedChangedTouch = true;
                 this.startGesture(gesture);
@@ -17022,7 +17126,7 @@ Ext.gesture.Manager = new Ext.AbstractManager({
         
         
         if (!name) {
-            throw 'Trying to subscribe to unknown event ' + eventName;
+            throw new Error('Trying to subscribe to unknown event ' + eventName);
         }
         
         
@@ -17170,7 +17274,7 @@ Ext.gesture.Gesture = Ext.extend(Object, {
         
         
         if (!this.target) {
-            throw 'Trying to bind a ' + this.type + ' event to element that does\'nt exist: ' + this.target;
+            throw new Error('Trying to bind a ' + this.type + ' event to element that does\'nt exist: ' + this.target);
         }
         
         
@@ -17209,7 +17313,7 @@ Ext.gesture.Gesture = Ext.extend(Object, {
         var listeners = this.listeners[type],
             ln = listeners && listeners.length,
             i;
-        
+
         if (!this.disableLocking && this.isLocked(type)) {
             return false;
         }
@@ -17316,7 +17420,7 @@ Ext.gesture.Touch = Ext.extend(Ext.gesture.Gesture, {
     },
     
     getInfo : function(touch) {
-        var time = (new Date()).getTime(),
+        var time = Date.now(),
             deltaX = touch.pageX - this.startX,
             deltaY = touch.pageY - this.startY,
             info = {
@@ -17534,27 +17638,21 @@ Ext.gesture.Drag = Ext.extend(Ext.gesture.Touch, {
         this.startX = this.previousX = touch.pageX;
         this.startY = this.previousY = touch.pageY;
         this.startTime = this.previousTime = e.timeStamp;
-        
-        if (!this.dragThreshold) {
-            var info = this.getInfo(touch);
-            if (this.fire('dragstart', e, info)) {
-                this.dragging = true;
-                this.lock('drag', 'dragstart', 'dragend');
-                this.fire('drag', e, info);                
-            }
-        }
-        else {
-            this.dragging = false;
-        }
+ 
+        this.dragging = false;
     },    
     
     onTouchMove: function(e, touch) {
+        if (this.isLocked('drag')) {
+            return;
+        }
+        
         var info = this.getInfo(touch);
+        
         if (!this.dragging) {
             if (this.isDragging(info) && this.fire('dragstart', e, info)) {
                 this.dragging = true;
                 this.lock('drag', 'dragstart', 'dragend');
-                this.fire('drag', e, info);
             }
         }
         else {
@@ -17566,6 +17664,7 @@ Ext.gesture.Drag = Ext.extend(Ext.gesture.Touch, {
         if (this.dragging) {
             this.fire('dragend', e, this.lastInfo);
         }
+        
         this.dragging = false;
     },
     
@@ -18577,9 +18676,8 @@ Ext.lib.Component = Ext.extend(Ext.util.Observable, {
             if (load) {
                 this.loadMask = this.loadMask || new Ext.LoadMask(targetEl ? this.getTargetEl() : this.el, Ext.applyIf(Ext.isObject(load) ? load : {}));
                 this.loadMask.show();
-            }
-            else {
-                this.loadMask.destroy();
+            } else {
+                Ext.destroy(this.loadMask);
                 this.loadMask = null;
             }
         }
@@ -18600,7 +18698,7 @@ Ext.lib.Component = Ext.extend(Ext.util.Observable, {
         if (this.monitorResize && Ext.EventManager.resizeEvent) {
             Ext.EventManager.resizeEvent.removeListener(this.setSize, this);
         }
-        Ext.destroy(this.componentLayout);
+        Ext.destroy(this.componentLayout, this.loadMask);
     },
 
     
@@ -19626,9 +19724,10 @@ Ext.Container = Ext.extend(Ext.lib.Container, {
         if (!this.fieldEventWrap)
             this.fieldEventWrap = {};
             
-        
         if (['textfield', 'passwordfield', 'emailfield',
-             'textarea', 'textareafield', 'searchfield', 'urlfield', 'numberfield', 'spinnerfield'].indexOf(item.xtype) !== -1) {
+             'textarea',
+             'textareafield', 'searchfield', 'urlfield',
+             'numberfield', 'spinnerfield'].indexOf(item.xtype) !== -1) {
             if (isAdding) {
                 this.fieldEventWrap[item.id] = {
                     beforefocus: function(e) {this.onFieldBeforeFocus(item, e);},
@@ -19702,17 +19801,21 @@ Ext.Container = Ext.extend(Ext.lib.Container, {
 
         
         if (this.focusingField == field) {
+            if (Ext.is.iOS && window.pageYOffset == 0) {
+                window.scrollTo(0, 0);
+            }
+            
             var offsetContainerRegion = containerRegion.copy();
             offsetContainerRegion.bottom -= fieldSize.height;
             offsetContainerRegion.right -= fieldSize.width;
 
-            var outOfBoundDistance = offsetContainerRegion.getOutOfBoundOffset({
-                x: fieldRegion.left, y: fieldRegion.top
-            })
+            var outOfBoundDistance = new Ext.util.Offset(
+                offsetContainerRegion.left - scroller.offset.x, offsetContainerRegion.top - scroller.offset.top
+            );
 
-            if (outOfBoundDistance.x != 0 || outOfBoundDistance.y != 0) {
+            if (outOfBoundDistance.x > 0 || outOfBoundDistance.y > 0) {
                 this.adjustScroller(new Ext.util.Offset(
-                    scroller.offset.x, scroller.offset.y + outOfBoundDistance.y
+                    scroller.offset.x + outOfBoundDistance.x, scroller.offset.y + outOfBoundDistance.y
                 ));
             }
         }
@@ -19799,7 +19902,8 @@ Ext.Container = Ext.extend(Ext.lib.Container, {
     },
     
     setCard: function() {
-        throw new Error("Stateful: setCard has been deprecated. Please use setActiveItem.");
+        console.warn("Stateful: setCard has been deprecated. Please use setActiveItem.");
+        this.setActiveItem.apply(this, arguments);
     },
 
     
@@ -20540,6 +20644,9 @@ Ext.AbstractStoreSelectionModel = Ext.extend(Ext.util.Observable, {
     
 
     
+    
+    
+    allowDeselect: false,
 
     
     selected: null,
@@ -20631,7 +20738,13 @@ Ext.AbstractStoreSelectionModel = Ext.extend(Ext.util.Observable, {
                 }
                 break;
             case 'SINGLE':
-                this.doSelect(record, false);
+                
+                if (this.allowDeselect && this.isSelected(record)) {
+                    this.doDeselect(record);
+                
+                } else {
+                    this.doSelect(record, false);
+                }
                 break;
         }
     },
@@ -21094,7 +21207,9 @@ Ext.DataView = Ext.extend(Ext.Component, {
     onRender : function() {
         Ext.DataView.superclass.onRender.apply(this, arguments);
         if (this.loadingText) {
-            this.loadMask = new Ext.LoadMask(this.el);
+            this.loadMask = new Ext.LoadMask(this.el, {
+                msg: this.loadingText
+            });
         }
     },
 
@@ -22897,42 +23012,31 @@ Ext.Carousel = Ext.extend(Ext.Panel, {
 
         
         this.mon(this.body, {
-            dragstart: this.onDragStart,
             drag: this.onDrag,
-            dragThreshold: 6,
+            dragThreshold: 5,
             dragend: this.onDragEnd,
             direction: this.direction,
-            disableLocking: true,
             scope: this
         });
         
         this.el.addCls(this.baseCls + '-' + this.direction);
     },
     
-    onDragStart : function(e) {
-        var gesture = e.gesture,
-            type = e.type;
-        
-        
-        
-        
-        if (gesture.isLocked(type)) {
-            var lockingGesture = gesture.getLockingGesture(type),
-                lockingTarget = lockingGesture.target,
-                scrollEl = Ext.get(lockingTarget).down('.x-scroller'),
-                scroller = scrollEl && scrollEl.getScrollParent();
-            
-            if (scroller && ((scroller.vertical && this.vertical) || (scroller.horizontal && this.vertical))) {
-                this.inScrollBounds = false;
-                this.checkScrollBounds = scroller;
-            }
-            else {
-                e.gesture.stop();
-            }
-        }
-        else {
-            e.gesture.disableLocking = false;
-            e.gesture.lock();
+    
+    onAdd: function(){
+        Ext.Carousel.superclass.onAdd.apply(this, arguments);
+        var indicator = this.indicator;
+        if (indicator) {
+            indicator.onCardAdd();
+        }    
+    },
+    
+    
+    onRemove: function(){
+        Ext.Carousel.superclass.onRemove.apply(this, arguments);
+        var indicator = this.indicator;
+        if (indicator) {
+            indicator.onCardRemove();
         }
     },
     
@@ -22957,35 +23061,6 @@ Ext.Carousel = Ext.extend(Ext.Panel, {
             x: e.deltaX,
             y: e.deltaY
         };
-
-        var scroller = this.checkScrollBounds;
-        if (scroller) {
-            var offset = scroller.getNewOffsetFromTouchPoint(Ext.util.Point.fromEvent(e));
-            if (
-                (this.vertical && !scroller.offsetBoundary.isOutOfBound('y', offset.y)) ||
-                (this.horizontal && !scroller.offsetBoundary.isOutOfBound('x', offset.x))
-            ) {
-                if (this.outOfScrollBounds) {
-                    this.outOfScrollBounds = false;
-                    this.checkDragEnd = false;
-                    scroller.onStart(e);
-                }
-                return;
-            }
-            else {
-                if (!this.outOfScrollBounds) {
-                    this.checkDragEnd = true;
-                    this.outOfScrollBounds = true;
-                    scroller.scrollView.hideIndicators();
-                    Ext.apply(e.gesture, {
-                        startX: e.pageX,
-                        startY: e.pageY,
-                        startTime: e.time 
-                    });
-                    return;
-                }
-            }
-        }
         
         
         var activeIndex = this.items.items.indexOf(this.layout.activeItem);
@@ -22997,17 +23072,8 @@ Ext.Carousel = Ext.extend(Ext.Panel, {
                 
                 (activeIndex == this.items.length - 1 && e.deltaX < 0)
             ) {
-                if (scroller) {
-                    
-                    return;
-                }
-                else {
-                    
-                    this.currentScroll.x = e.deltaX / 2;                
-                }                
-            }
-            else if (scroller) {
-                scroller.isDragging = false;
+                
+                this.currentScroll.x = e.deltaX / 2;             
             }
         }
         
@@ -23018,17 +23084,8 @@ Ext.Carousel = Ext.extend(Ext.Panel, {
                 
                 (activeIndex == this.items.length - 1 && e.deltaY < 0)
             ) {
-                if (scroller) {
-                    
-                    return;
-                }
-                else {
-                    
-                    this.currentScroll.y = e.deltaY / 2;                
-                }
-            }
-            else if (scroller) {
-                scroller.isDragging = false;
+                
+                this.currentScroll.y = e.deltaY / 2;
             }
         }
         
@@ -23110,11 +23167,6 @@ Ext.Carousel = Ext.extend(Ext.Panel, {
 
             
     onDragEnd : function(e, t) {
-        e.gesture.disableLocking = true;
-        if (this.checkScrollBounds && !this.outOfScrollBounds) {
-            return;
-        }
-        
         var previousDelta, deltaOffset; 
             
         if (this.horizontal) {
@@ -23214,6 +23266,12 @@ Ext.Carousel = Ext.extend(Ext.Panel, {
     
     isHorizontal : function() {
         return this.horizontal;
+    },
+    
+    
+    beforeDestroy: function(){
+        Ext.destroy(this.indicator);
+        Ext.Carousel.superclass.beforeDestroy.call(this);
     }
 });
 
@@ -23246,8 +23304,6 @@ Ext.Carousel.Indicator = Ext.extend(Ext.Component, {
 
         this.mon(this.carousel, {
             beforecardswitch: this.onBeforeCardSwitch,
-            add: this.onCardAdd,
-            remove: this.onCardRemove,
             scope: this
         });
 
@@ -23263,15 +23319,12 @@ Ext.Carousel.Indicator = Ext.extend(Ext.Component, {
     onTap: function(e, t) {
         var box = this.el.getPageBox(),
             centerX = box.left + (box.width / 2),
-            centerY = box.top + (box.height / 2);
+            centerY = box.top + (box.height / 2),
+            carousel = this.carousel;
 
-        if (
-            (this.carousel.direction == 'horizontal' && e.pageX > centerX) || 
-            (this.carousel.direction == 'vertical' && e.pageY > centerY)
-        ) {
+        if ((carousel.isHorizontal() && e.pageX > centerX) || (carousel.isVertical() && e.pageY > centerY)) {
             this.carousel.next();
-        }
-        else {
+        } else {
             this.carousel.prev();
         }
     },
@@ -23293,17 +23346,20 @@ Ext.Carousel.Indicator = Ext.extend(Ext.Component, {
 
     
     onCardAdd: function() {
-        this.createIndicator();
+        if (this.rendered) {
+            this.createIndicator();
+        }
     },
 
     
     onCardRemove: function() {
-        this.indicators.pop().remove();
+        if (this.rendered) {
+            this.indicators.pop().remove();
+        }
     }
 });
 
 Ext.reg('carouselindicator', Ext.Carousel.Indicator);
-
 
 Ext.Map = Ext.extend(Ext.Component, {
     
@@ -24098,7 +24154,7 @@ Ext.Picker = Ext.extend(Ext.Sheet, {
         
         if (!values) {
             for (var i = 0; i < ln; i++) {
-                items[i].setValue(0);
+                items[i].setSelectedNode(0);
             }
             
             return this;
@@ -24198,7 +24254,8 @@ Ext.Picker.Slot = Ext.extend(Ext.DataView, {
             friction: 0.7,
             acceleration: 25,
             snapDuration: 150,
-            animationDuration: 150
+            animationDuration: 150,
+            eventTarget: 'parent'
         };
 
         this.tpl = new Ext.XTemplate([
@@ -24234,6 +24291,7 @@ Ext.Picker.Slot = Ext.extend(Ext.DataView, {
                 model: 'x-textvalue',
                 data: parsedData
             });
+            
             this.tempStore = true;
         }
         else if (this.store) {
@@ -24530,7 +24588,7 @@ Ext.DatePicker = Ext.extend(Ext.Picker, {
 
 Ext.reg('datepicker', Ext.DatePicker);
 
-Ext.Media = Ext.extend(Ext.Container, {
+Ext.Media = Ext.extend(Ext.Component, {
     
 
     
@@ -25063,6 +25121,9 @@ Ext.form.FormPanel = Ext.extend(Ext.Panel, {
     waitTpl: new Ext.XTemplate(
         '<div class="{cls}">{message}&hellip;</div>'
     ),
+    
+    
+    submitOnAction : true,    
 
     getElConfig: function() {
         return Ext.apply(Ext.form.FormPanel.superclass.getElConfig.call(this), {
@@ -25082,6 +25143,8 @@ Ext.form.FormPanel = Ext.extend(Ext.Panel, {
         );
 
         Ext.form.FormPanel.superclass.initComponent.call(this);
+        
+        this.on('action', this.onFieldAction, this);
     },
     
     
@@ -25096,6 +25159,14 @@ Ext.form.FormPanel = Ext.extend(Ext.Panel, {
             if (e) {
                 e.stopEvent();
             }       
+        }
+    },
+    
+    
+    onFieldAction : function(field) {
+        if (this.submitOnAction) {
+            field.blur();
+            this.submit();
         }
     },
     
@@ -25159,16 +25230,16 @@ Ext.form.FormPanel = Ext.extend(Ext.Panel, {
                           response = Ext.decode(response.responseText);
                           success = !!response.success;
                         if (success) {
-                            if (typeof options.success == 'function') {
-                                options.scope ? options.success.call(options.scope, this, response) : options.success(this, response);
+                            if (Ext.isFunction(options.success)) {
+                                options.success.call(options.scope || this, this, response);
                             }
                             this.fireEvent('submit', this, response);
                             return;
                         }
                     }
 
-                    if (typeof options.failure == 'function') {
-                        options.scope ? options.failure.call(options.scope, this, response) : options.failure(this, response);
+                    if (Ext.isFunction(options.failure)) {
+                        options.failure.call(options.scope || this, this, response);
                     }
                     
                     this.fireEvent('exception', this, response);
@@ -25223,24 +25294,31 @@ Ext.form.FormPanel = Ext.extend(Ext.Panel, {
     setValues: function(values) {
          var fields = this.getFields(),
              name,
-             field;
+             field,
+             value;
              
         values = values || {};
         
         for (name in values) {
             if (values.hasOwnProperty(name)) {
-                if (Ext.isArray(fields[name])) {
-                    fields[name].forEach(function(field) {
-                        if (Ext.isArray(values[name])) {
-                            field.setChecked((values[name].indexOf(field.getValue()) != -1));
+                field = fields[name];
+                value = values[name];
+                if (field) {
+                    if (Ext.isArray(field)) {
+                        field.forEach(function(field){
+                            if (Ext.isArray(values[name])) {
+                                field.setChecked((value.indexOf(field.getValue()) != -1));
+                            } else {
+                                field.setChecked((value == field.getValue()));
+                            }
+                        });
+                    } else {  
+                        if (field.setChecked) {
+                            field.setChecked(value);
                         } else {
-                            field.setChecked((values[name] == field.getValue()));
+                            field.setValue(value);
                         }
-                    });
-                } else {
-                    field = fields[name];
-
-                    field.setValue(values[name]);
+                    }
                 }
             }       
         }
@@ -25487,7 +25565,9 @@ Ext.form.Field = Ext.extend(Ext.Component,  {
     disabled: false,
 
     renderTpl: [
-        '<tpl if="label"><div class="x-form-label"><span>{label}</span></div></tpl>',
+        '<tpl if="label">',
+            '<div class="x-form-label"><span>{label}</span></div>',
+        '</tpl>',
         '<tpl if="fieldEl">',
             '<div class="x-form-field-container"><input id="{inputId}" type="{inputType}" name="{name}" class="{fieldCls}"',
                 '<tpl if="tabIndex">tabIndex="{tabIndex}" </tpl>',
@@ -25500,7 +25580,7 @@ Ext.form.Field = Ext.extend(Ext.Component,  {
             '<tpl if="useMask"><div class="x-field-mask"></div></tpl>',
             '</div>',
             '<tpl if="useClearIcon"><div class="x-field-clear-container"><div class="x-field-clear x-hidden-visibility">&#215;</div><div></tpl>',
-        '</tpl>',
+        '</tpl>'
     ],
 
     
@@ -25514,8 +25594,9 @@ Ext.form.Field = Ext.extend(Ext.Component,  {
     
     
     label: null,
+
     
-    labelWidth: 100, 
+    labelWidth: '30%',
 
     
     labelAlign: 'left',
@@ -25523,6 +25604,7 @@ Ext.form.Field = Ext.extend(Ext.Component,  {
     
     required: false,
 
+    
     useMask: false,
 
     
@@ -25559,33 +25641,58 @@ Ext.form.Field = Ext.extend(Ext.Component,  {
     applyRenderSelectors: function() {
         this.renderSelectors = Ext.applyIf(this.renderSelectors || {}, {
             mask: '.x-field-mask',
-            labelEl: 'label',
+            labelEl: '.x-form-label',
             fieldEl: '.' + Ext.util.Format.trim(this.renderData.fieldCls).replace(/ /g, '.')
         });
 
         Ext.form.Field.superclass.applyRenderSelectors.call(this);
     },
+
     
     initRenderData: function() {
         Ext.form.Field.superclass.initRenderData.apply(this, arguments);
         
         Ext.applyIf(this.renderData, {
-            disabled    :   this.disabled,
-            fieldCls    :   'x-input-' + this.inputType + (this.inputCls ? ' ' + this.inputCls: ''),
-            fieldEl     :   !this.fieldEl && this.autoCreateField,
-            inputId     :   Ext.id(),
-            label       :    this.label,
-            labelAlign  :   'x-label-align-' + this.labelAlign,
-            name        :   this.getName(),
-            required    :   this.required,
-            style       :   this.style,
-            tabIndex    :   this.tabIndex,
-            inputType   :   this.inputType,
-            useMask     :   this.useMask
+            disabled        :   this.disabled,
+            fieldCls        :   'x-input-' + this.inputType + (this.inputCls ? ' ' + this.inputCls: ''),
+            fieldEl         :   !this.fieldEl && this.autoCreateField,
+            inputId         :   Ext.id(),
+            label           :    this.label,
+            labelAlign      :   'x-label-align-' + this.labelAlign,
+            name            :   this.getName(),
+            required        :   this.required,
+            style           :   this.style,
+            tabIndex        :   this.tabIndex,
+            inputType       :   this.inputType,
+            useMask         :   this.useMask
         });
         
         return this.renderData;
     },
+
+    
+    initEvents: function() {
+        Ext.form.Field.superclass.initEvents.apply(this, arguments);
+        
+        if (this.fieldEl) {
+            if (this.useMask && this.mask) {
+                if (Ext.is.iOS) {
+                    this.mon(this.mask, {
+                        tap: Ext.emptyFn,
+                        click: this.onMaskTap,
+                        fireClickEvent: true,
+                        scope: this
+                    });
+                } else {
+                    this.mon(this.mask, {
+                        tap: this.onMaskTap,
+                        scope: this
+                    });
+                }
+            }
+        }
+    },
+
     
     onRender: function() {
         Ext.form.Field.superclass.onRender.apply(this, arguments);
@@ -25601,18 +25708,16 @@ Ext.form.Field = Ext.extend(Ext.Component,  {
 
         this.el.addCls(cls);
     },
+
     
-    initEvents: function() {
-        Ext.form.Field.superclass.initEvents.call(this);
-        
-        if (this.fieldEl) {
-            if (this.useMask && this.mask) {
-                this.mon(this.mask, {
-                    click: this.onMaskTap,
-                    scope: this
-                });
-            }
-        }        
+    afterRender: function() {
+        Ext.form.Field.superclass.afterRender.apply(this, arguments);
+
+        if (this.label) {
+            this.setLabelWidth(this.labelWidth);
+        }
+
+        this.initValue();
     },
 
     isDisabled: function() {
@@ -25647,23 +25752,21 @@ Ext.form.Field = Ext.extend(Ext.Component,  {
     },
 
     
-    afterRender: function() {
-        Ext.form.Field.superclass.afterRender.call(this);
-        
-        this.initValue();
-    },
-
     onMaskTap: function(e) {
         if (this.disabled) {
-            return;
+            return false;
         }
 
-        if (this.mask) {
-            this.hideMask();
-            this.maskCorrectionTimer = Ext.defer(this.showMask, 1000, this);
+        if (Ext.is.iOS && e.browserEvent && !e.browserEvent.isManufactured) {
+            e.preventDefault();
+            e.stopPropagation();
+            return false;
         }
+
+        return true;
     },
 
+    
     showMask: function(e) {
         if (this.mask) {
             this.mask.setStyle('display', 'block');
@@ -25699,6 +25802,15 @@ Ext.form.Field = Ext.extend(Ext.Component,  {
         }
 
         return this;
+    },
+
+    
+    setLabelWidth: function(width) {
+        if (this.labelEl) {
+            this.labelEl.setWidth(width);
+        }
+
+        return this;
     }
 });
 
@@ -25721,7 +25833,7 @@ Ext.form.Slider = Ext.extend(Ext.form.Field, {
     maxValue: 100,
 
     
-    animate: 200,
+    animationDuration: 200,
 
     
     value: 0,
@@ -25730,12 +25842,10 @@ Ext.form.Slider = Ext.extend(Ext.form.Field, {
     trackWidth: null,
 
     monitorOrientation: true,
-
-    tabIndex: -1,
      
     renderTpl: [
         '<tpl if="label">',
-            '<label <tpl if="fieldEl">for="{inputId}"</tpl> class="x-form-label"><span>{label}</span></label>',
+            '<div class="x-form-label"><span>{label}</span></div>',
         '</tpl>',
         '<tpl if="fieldEl">',
             '<div id="{inputId}" name="{name}" class="{fieldCls}"',
@@ -25771,35 +25881,41 @@ Ext.form.Slider = Ext.extend(Ext.form.Field, {
 
     
     initComponent: function() {
-        var me = this;
-        
-        
-        
-        me.values = [me.value];
+        this.tabIndex = -1;
 
-        Ext.form.Slider.superclass.initComponent.apply(me, arguments);
+        if (this.increment == 0) {
+            this.increment = 1;
+        }
 
-        if (me.thumbs == undefined) {
+        this.increment = Math.abs(this.increment);
+        
+        
+        
+        this.values = [this.value];
+
+        Ext.form.Slider.superclass.initComponent.apply(this, arguments);
+
+        if (this.thumbs == undefined) {
             var thumbs = [],
-                values = me.values,
+                values = this.values,
                 length = values.length,
                 i,
-                Thumb = me.getThumbClass();
+                Thumb = this.getThumbClass();
 
             for (i = 0; i < length; i++) {
                 thumbs[thumbs.length] = new Thumb({
                     value: values[i],
-                    slider: me,
+                    slider: this,
 
                     listeners: {
-                        scope  : me,
-                        drag   : me.onDrag,
-                        dragend: me.onThumbDragEnd
+                        scope  : this,
+                        drag   : this.onDrag,
+                        dragend: this.onThumbDragEnd
                     }
                 });
             }
 
-            me.thumbs = thumbs;
+            this.thumbs = thumbs;
         }
     },
 
@@ -25819,35 +25935,46 @@ Ext.form.Slider = Ext.extend(Ext.form.Field, {
     },
 
     
-    setValue: function(value, moveThumb, animate) {
-        
-        var me       = this,
-            thumb    = me.getThumb(),
-            oldValue = thumb.getValue(),
-            newValue = me.constrain(value);
+    setValue: function(value, animationDuration, moveThumb) {
+        if (typeof moveThumb == 'undefined') {
+            moveThumb = true;
+        }
 
-        if (me.fireEvent('beforechange', me, thumb, newValue, oldValue) !== false) {
+        moveThumb = !!moveThumb;
+        
+        
+        var thumb    = this.getThumb(),
+            oldValue = thumb.getValue(),
+            newValue = this.constrain(value);
+
+        if (this.fireEvent('beforechange', this, thumb, newValue, oldValue) !== false) {
             if (moveThumb) {
-                me.moveThumb(thumb, me.getPixelValue(newValue, thumb), animate);
+                this.moveThumb(thumb, this.getPixelValue(newValue, thumb), animationDuration);
             }
             
             thumb.setValue(newValue);
-            me.doComponentLayout();
+            this.doComponentLayout();
 
-            me.fireEvent('change', me, thumb, newValue, oldValue);
+            this.fireEvent('change', this, thumb, newValue, oldValue);
         }
+
+        return this;
     },
 
     
     constrain: function(value) {
-        var increment = this.increment,
-        div = Math.floor(Math.abs(value / increment)),
-        lower = this.minValue + (div * increment),
-        higher = Math.min(lower + increment, this.maxValue),
-        dLower = value - lower,
-        dHigher = higher - value;
+        var remainder = value % this.increment;
 
-        return (dLower < dHigher) ? lower: higher;
+        value -= remainder;
+
+        if (Math.abs(remainder) >= (this.increment / 2)) {
+            value += (remainder > 0) ? this.increment : -this.increment;
+        }
+
+        value = Math.max(this.minValue, value);
+        value = Math.min(this.maxValue, value);
+
+        return value;
     },
 
     
@@ -25900,11 +26027,10 @@ Ext.form.Slider = Ext.extend(Ext.form.Field, {
 
     
     onThumbDragEnd: function(draggable) {
-        var value = this.getThumbValue(draggable),
-            me = this;
+        var value = this.getThumbValue(draggable);
 
-        me.setValue(value, true);
-        me.fireEvent('dragend', me, draggable.thumb, me.constrain(value));
+        this.setValue(value);
+        this.fireEvent('dragend', this, draggable.thumb, this.constrain(value));
     },
 
     
@@ -25928,13 +26054,13 @@ Ext.form.Slider = Ext.extend(Ext.form.Field, {
                 thumb = this.getNearest(leftOffset),
                 halfThumbWidth = thumb.dragObj.size.width / 2;
 
-            this.setValue(this.getSliderValue(leftOffset - halfThumbWidth, thumb), true, this.animate);
+            this.setValue(this.getSliderValue(leftOffset - halfThumbWidth, thumb), this.animationDuration, true);
         }
     },
 
     
-    moveThumb: function(thumb, pixel, animate) {
-        thumb.dragObj.setOffset(new Ext.util.Offset(pixel, 0), animate);
+    moveThumb: function(thumb, pixel, animationDuration) {
+        thumb.dragObj.setOffset(new Ext.util.Offset(pixel, 0), animationDuration);
     },
 
     
@@ -25981,8 +26107,9 @@ Ext.form.Slider = Ext.extend(Ext.form.Field, {
     }
 });
 
-Ext.reg('slider', Ext.form.Slider);
+Ext.reg('sliderfield', Ext.form.Slider);
 
+Ext.reg('slider', Ext.form.Slider);
 
 Ext.form.Slider.Thumb = Ext.extend(Ext.form.Field, {
     isField: false,
@@ -26001,7 +26128,6 @@ Ext.form.Slider.Thumb = Ext.extend(Ext.form.Field, {
             direction: 'horizontal',
             constrain: this.slider.fieldEl,
             revert: false,
-            useCssTransform: true,
             thumb: this
         };
 
@@ -26011,6 +26137,8 @@ Ext.form.Slider.Thumb = Ext.extend(Ext.form.Field, {
     
     setValue: function(newValue) {
         this.value = newValue;
+
+        return this;
     },
 
     
@@ -26027,8 +26155,11 @@ Ext.reg('thumb', Ext.form.Slider.Thumb);
 
 Ext.form.Toggle = Ext.extend(Ext.form.Slider, {
     minValue: 0,
+
     maxValue: 1,
+
     ui: 'toggle',
+    
     inputType: 'toggle',
 
     
@@ -26040,29 +26171,29 @@ Ext.form.Toggle = Ext.extend(Ext.form.Slider, {
     maxValueCls: 'x-toggle-on',
 
     
+    animationDuration: 70,
+    
+    
     toggle: function() {
-        var me = this,
-            thumb = me.thumbs[0],
+        var thumb = this.thumbs[0],
             value = thumb.getValue();
 
-        me.setValue(value == me.minValue ? me.maxValue : me.minValue, true);
+        this.setValue(value == this.minValue ? this.maxValue : this.minValue, this.animationDuration);
     },
 
     
     setValue: function(value) {
-        var me = this;
-        
-        Ext.form.Toggle.superclass.setValue.apply(me, arguments);
+        Ext.form.Toggle.superclass.setValue.call(this, value, this.animationDuration);
 
-        var fieldEl = me.fieldEl;
+        var fieldEl = this.fieldEl;
         
-        if (me.constrain(value) === me.minValue) {
-            fieldEl.addCls(me.minValueCls);
-            fieldEl.removeCls(me.maxValueCls);
+        if (this.constrain(value) === this.minValue) {
+            fieldEl.addCls(this.minValueCls);
+            fieldEl.removeCls(this.maxValueCls);
         }
         else {
-            fieldEl.addCls(me.maxValueCls);
-            fieldEl.removeCls(me.minValueCls);
+            fieldEl.addCls(this.maxValueCls);
+            fieldEl.removeCls(this.minValueCls);
         }
     },
 
@@ -26081,9 +26212,7 @@ Ext.form.Toggle = Ext.extend(Ext.form.Slider, {
 Ext.reg('togglefield', Ext.form.Toggle);
 
 
-
 Ext.reg('toggle', Ext.form.Toggle);
-
 
 
 Ext.form.Toggle.Thumb = Ext.extend(Ext.form.Slider.Thumb, {
@@ -26123,6 +26252,8 @@ Ext.form.Text = Ext.extend(Ext.form.Field, {
     autoCorrect: undefined,
 
     
+
+    
     isFocused: false,
 
     
@@ -26139,8 +26270,12 @@ Ext.form.Text = Ext.extend(Ext.form.Field, {
             
             'keyup',
             
-            'change'
+            'change',
+            
+            'action'
         );
+        
+        this.enableBubble('action');
 
         Ext.form.Text.superclass.initComponent.apply(this, arguments);
     },
@@ -26198,10 +26333,10 @@ Ext.form.Text = Ext.extend(Ext.form.Field, {
                 scope: this
             });
 
-            if(this.clearIconEl){
+            if (this.clearIconEl){
                 this.mon(this.clearIconContainerEl, {
                     scope: this,
-                    tap: this.onClearTap
+                    tap: this.onClearIconTap
                 });
             }
         }
@@ -26225,12 +26360,14 @@ Ext.form.Text = Ext.extend(Ext.form.Field, {
         this.hideClearIcon();
     },
 
-    onClearTap: function() {
+    
+    onClearIconTap: function() {
         if (!this.disabled) {
             this.setValue('');
         }
     },
 
+    
     updateClearIconVisibility: function() {
         var value = this.getValue();
 
@@ -26248,6 +26385,7 @@ Ext.form.Text = Ext.extend(Ext.form.Field, {
         return this;
     },
 
+    
     showClearIcon: function() {
         if (!this.disabled && this.fieldEl && this.clearIconEl && !this.isClearIconVisible) {
             this.isClearIconVisible = true;
@@ -26258,6 +26396,7 @@ Ext.form.Text = Ext.extend(Ext.form.Field, {
         return this;
     },
 
+    
     hideClearIcon: function() {
         if (this.fieldEl && this.clearIconEl && this.isClearIconVisible) {
             this.isClearIconVisible = false;
@@ -26278,7 +26417,18 @@ Ext.form.Text = Ext.extend(Ext.form.Field, {
         this.fireEvent('beforefocus', e);
     },
 
+    
     beforeFocus: Ext.emptyFn,
+
+    
+    onMaskTap: function(e) {
+        if (Ext.form.Text.superclass.onMaskTap.apply(this, arguments) !== true) {
+            return false;
+        }
+        
+        this.maskCorrectionTimer = Ext.defer(this.showMask, 1000, this);
+        this.hideMask();
+    },
 
     
     onFocus: function(e) {
@@ -26286,7 +26436,7 @@ Ext.form.Text = Ext.extend(Ext.form.Field, {
             if (this.maskCorrectionTimer) {
                 clearTimeout(this.maskCorrectionTimer);
             }
-
+            
             this.hideMask();
         }
 
@@ -26353,38 +26503,39 @@ Ext.form.Text = Ext.extend(Ext.form.Field, {
         return this;
     },
 
+    
     setValue: function() {
         Ext.form.Text.superclass.setValue.apply(this, arguments);
 
         this.updateClearIconVisibility();
     },
 
+    
     onKeyUp: function(e) {
         this.updateClearIconVisibility();
         
+        this.fireEvent('keyup', this, e);
+
         if (e.browserEvent.keyCode === 13) {
             this.blur();
-        } else {
-            this.fireEvent('keyup', this, e);
+            this.fireEvent('action', this, e);
         }
     }
-
-    
 });
 
 Ext.reg('textfield', Ext.form.Text);
 
 
 Ext.form.TextField = Ext.extend(Ext.form.Text, {
-
     constructor: function() {
         console.warn("Ext.form.TextField has been deprecated and will be removed in Sencha Touch 1.0. Please use Ext.form.Text instead");
         Ext.form.TextField.superclass.constructor.apply(this, arguments);
     }
 });
 
+
 Ext.form.Password = Ext.extend(Ext.form.Text, {
-    inputType: 'password',
+    inputType: Ext.is.Android ? 'text' : 'password',
     autoCapitalize : false
 });
 
@@ -26461,7 +26612,7 @@ Ext.form.Number = Ext.extend(Ext.form.Text, {
     stepValue : undefined,
 
     renderTpl: [
-        '<tpl if="label"><label <tpl if="fieldEl">for="{inputId}"</tpl> class="x-form-label"><span>{label}</span></label></tpl>',
+        '<tpl if="label"><div class="x-form-label"><span>{label}</span></div></tpl>',
         '<tpl if="fieldEl"><div class="x-form-field-container">',
             '<input id="{inputId}" type="{inputType}" name="{name}" class="{fieldCls}"',
                 '<tpl if="tabIndex">tabIndex="{tabIndex}" </tpl>',
@@ -26533,7 +26684,7 @@ Ext.form.Spinner = Ext.extend(Ext.form.Number, {
     autoCapitalize: false,
 
     renderTpl: [
-        '<tpl if="label"><label <tpl if="fieldEl">for="{inputId}"</tpl> class="x-form-label"><span>{label}</span></label></tpl>',
+        '<tpl if="label"><div class="x-form-label"><span>{label}</span></div></tpl>',
         '<tpl if="fieldEl">',
             '<div class="{componentCls}-body">',
                 '<div class="{componentCls}-down"><span>-</span></div>',
@@ -26655,6 +26806,16 @@ Ext.form.Spinner = Ext.extend(Ext.form.Number, {
         btn.el.removeCls('x-button-pressed');
     },
 
+    setValue: function(value) {
+        value = parseFloat(value);
+
+        if (isNaN(value)) {
+            value = this.defaultValue;
+        }
+
+        Ext.form.Spinner.superclass.setValue.call(this, value);
+    },
+
     
     spin: function(down) {
         var value = parseFloat(this.getValue()),
@@ -26727,7 +26888,6 @@ Ext.form.HiddenField = Ext.extend(Ext.form.Hidden, {
 
 Ext.reg('hidden', Ext.form.Hidden);
 
-
 Ext.form.Checkbox = Ext.extend(Ext.form.Field, {
     ui: 'checkbox',
     
@@ -26753,7 +26913,7 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field, {
     },
     
     renderTpl: [
-        '<tpl if="label"><label <tpl if="fieldEl">for="{inputId}"</tpl> class="x-form-label"><span>{label}</span></label></tpl>',
+        '<tpl if="label"><div class="x-form-label"><span>{label}</span></div></tpl>',
         '<tpl if="fieldEl"><input id="{inputId}" type="{inputType}" name="{name}" class="{fieldCls}" tabIndex="-1" ',
             '<tpl if="checked"> checked </tpl>',
             '<tpl if="style">style="{style}" </tpl> value="{inputValue}" />',
@@ -26765,7 +26925,7 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field, {
         var isChecked = this.getBooleanIsChecked(this.checked);
 
         Ext.apply(this.renderData, {
-            inputValue  : this.value || '',
+            inputValue  : String(this.value),
             checked     : isChecked
         });
 
@@ -26773,8 +26933,10 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field, {
 
         if (this.fieldEl) {
             this.mon(this.fieldEl, {
-                change: this.onChange,
-                scope: this
+                tap: Ext.emptyFn,
+                click: this.onChange,
+                scope: this,
+                fireClickEvent: true
             });
 
             this.setChecked(isChecked);
@@ -26783,7 +26945,19 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field, {
     },
     
     
-    onChange: function() {
+    onChange: function(e) {
+        if (e) {
+            if (e.browserEvent) {
+                e = e.browserEvent;
+            }
+
+            if (!e.isManufactured) {
+                e.preventDefault();
+                e.stopPropagation();
+                return;
+            }
+        }
+        
         if (this.isChecked()) {
             this.fireEvent('check', this);
         } else {
@@ -26793,13 +26967,35 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field, {
 
     
     isChecked: function() {
-        return this.fieldEl.dom.checked || false;
+        if (this.rendered) {
+            return this.fieldEl.dom.checked || false;
+        } else {
+            return !!this.checked;
+        }
     },
 
     
     setChecked: function(checked) {
-        this.fieldEl.dom.checked = this.getBooleanIsChecked(checked);
+        var newState = this.getBooleanIsChecked(checked),
+            rendered = this.rendered,
+            currentState,
+            field;
+    
+        if (rendered) {
+            field = this.fieldEl.dom;
+            currentState = field.checked;
+        } else {
+            currentState = !!this.checked;
+        }
 
+        if (currentState != newState) {
+            if (rendered) {
+                field.checked = newState;
+            } else {
+                this.checked = newState;
+            }
+            this.onChange();
+        }
         return this;
     },
 
@@ -26860,6 +27056,13 @@ Ext.form.Checkbox = Ext.extend(Ext.form.Field, {
         });
         
         return this;
+    },
+
+    
+    setValue: function(value) {
+        value = String(value);
+
+        Ext.form.Checkbox.superclass.setValue.call(this, value);
     }
 });
 
@@ -26894,9 +27097,11 @@ Ext.form.Radio = Ext.extend(Ext.form.Checkbox, {
     
     setGroupValue: function(value) {
         var field,
-            fields = this.getSameGroupFields();
+            fields = this.getSameGroupFields(),
+            i = 0,
+            len = fields.length;
 
-        for (var i=0; i<fields.length; i++) {
+        for (; i < len; i++) {
             field = fields[i];
 
             if (field.getValue() == value) {
@@ -26924,6 +27129,8 @@ Ext.form.Select = Ext.extend(Ext.form.Text, {
 
     
 
+    
+    
     
     
     
@@ -26955,6 +27162,19 @@ Ext.form.Select = Ext.extend(Ext.form.Text, {
             
             'change'
         );
+    },
+    
+    onRender: function(){
+        Ext.form.Select.superclass.onRender.apply(this, arguments);
+        
+        var name = this.hiddenName;
+        if (name) {
+            this.hiddenField = this.el.insertSibling({
+                name: name,
+                tag: 'input',
+                type: 'hidden'
+            }, 'after');
+        }    
     },
 
     getPicker: function() {
@@ -27020,7 +27240,7 @@ Ext.form.Select = Ext.extend(Ext.form.Text, {
         }
         else {
             var listPanel = this.getListPanel(),
-                index = this.store.find(this.valueField, this.value);
+                index = this.store.findExact(this.valueField, this.value);
 
             listPanel.showBy(this.el, 'fade', false);
             listPanel.down('#list').getSelectionModel().select(index != -1 ? index: 0, false, true);
@@ -27052,11 +27272,21 @@ Ext.form.Select = Ext.extend(Ext.form.Text, {
 
     
     setValue: function(value) {
-        var record = value ? this.store.findRecord(this.valueField, value) : this.store.getAt(0);
+        var idx = 0,
+            hiddenField = this.hiddenField,
+            record;
+
+        if (value) {
+            idx = this.store.findExact(this.valueField, value)
+        } 
+        record = this.store.getAt(idx);
 
         if (record && this.rendered) {
             this.fieldEl.dom.value = record.get(this.displayField);
             this.value = record.get(this.valueField);
+            if (hiddenField) {
+                hiddenField.dom.value = this.value;
+            }
         } else {
             this.value = value;
         }
@@ -27089,14 +27319,7 @@ Ext.form.Select = Ext.extend(Ext.form.Text, {
 
     destroy: function() {
         Ext.form.Select.superclass.destroy.apply(this, arguments);
-
-        if (this.listPanel) {
-            this.listPanel.destroy();
-        }
-
-        if (this.picker) {
-            this.picker.destroy();
-        }
+        Ext.destroy(this.listPanel, this.picker, this.hiddenField);
     }
 });
 
@@ -27112,9 +27335,9 @@ Ext.form.TextArea = Ext.extend(Ext.form.Text, {
     maxRows: undefined,
     
     autoCapitalize: false,
-    
+
     renderTpl: [
-        '<tpl if="label"><label <tpl if="fieldEl">for="{inputId}"</tpl> class="x-form-label"><span>{label}</span></label></tpl>',
+        '<tpl if="label"><div class="x-form-label"><span>{label}</span></div></tpl>',
         '<tpl if="fieldEl"><div class="x-form-field-container">',
             '<textarea id="{inputId}" type="{type}" name="{name}" class="{fieldCls}"',
             '<tpl if="tabIndex">tabIndex="{tabIndex}" </tpl>',
@@ -27135,6 +27358,10 @@ Ext.form.TextArea = Ext.extend(Ext.form.Text, {
         this.renderData.maxRows = this.maxRows;
         
         Ext.form.TextArea.superclass.onRender.apply(this, arguments);
+    },
+
+    onKeyUp: function(e) {
+        this.fireEvent('keyup', this, e);
     }
 });
 
@@ -27156,10 +27383,8 @@ Ext.form.DatePicker = Ext.extend(Ext.form.Field, {
     destroyPickerOnHide: false,
 
     
-    tabIndex: -1,
 
     
-    useMask: true,
     
     
     initComponent: function() {
@@ -27167,6 +27392,9 @@ Ext.form.DatePicker = Ext.extend(Ext.form.Field, {
             
             'select'
         );
+
+        this.tabIndex = -1;
+        this.useMask = true;
 
         Ext.form.Text.superclass.initComponent.apply(this, arguments);
     },
@@ -27194,8 +27422,8 @@ Ext.form.DatePicker = Ext.extend(Ext.form.Field, {
 
     
     onMaskTap: function() {
-        if (this.disabled) {
-            return;
+        if (Ext.form.DatePicker.superclass.onMaskTap.apply(this, arguments) !== true) {
+            return false;
         }
         
         this.getDatePicker().show();
@@ -27216,11 +27444,20 @@ Ext.form.DatePicker = Ext.extend(Ext.form.Field, {
 
     
     setValue: function(value, animated) {
-        var datePicker = this.getDatePicker();
+        if (this.datePicker) {
+            this.datePicker.setValue(value, animated);
+            this.value = (value != null) ? this.datePicker.getValue() : null;
+        } else {
+            if (!Ext.isDate(value) && !Ext.isObject(value)) {
+                value = null;
+            }
 
-        datePicker.setValue(value, animated);
-
-        this.value = datePicker.getValue();
+            if (Ext.isObject(value)) {
+                this.value = new Date(value.year, value.month-1, value.day);
+            } else {
+                this.value = value;
+            }
+        }
 
         if (this.rendered) {
             this.fieldEl.dom.value = this.getValue(true);
