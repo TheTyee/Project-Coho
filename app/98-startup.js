@@ -40,6 +40,6 @@ var mainPanel = new Ext.TabPanel({
             pack: "center"
         }
     },
-    onCardSwitch: Coho.onTopTabSwitch
+    onCardSwitch: Coho.Callbacks.topTabSwitch
 });
 

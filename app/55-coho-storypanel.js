@@ -14,6 +14,7 @@ Coho.StoryListObject = function(config)
         itemTpl: storyListTpl,
         itemSelector: "div.article",
         store: this.store,
+        onItemDisclosure: config.onItemDisclosure,
         listeners: {
             "itemtap": function(list, index, item, e) {
                 // let Coho know where we are
@@ -34,7 +35,7 @@ Coho.StoryListObject = function(config)
         iconCls: config.panelIcon,
         title: config.panelTitle,
         items: [this.list],
-        onCardSwitch: Coho.onStoryPanelStack
+        onCardSwitch: Coho.Callbacks.storyPanelStack
     });
 
     this.panel.wrapperObject = me;
@@ -47,5 +48,10 @@ Coho.StoryListObject = function(config)
         }
     });
 }
+
+Coho.CommonCallbacks.saveStoryDisclosure = function()
+{
+    return true;
+};
 
 

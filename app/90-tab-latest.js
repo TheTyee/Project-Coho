@@ -10,7 +10,7 @@ var latestStoriesTab = new Coho.StoryListObject({
         proxy: {
             type: "scripttag",
             extraParams: {filters: []},
-            url: "http://preview.app.thetyee.ca/proxy/v1/latest",
+            url: Coho.apiURL+"/latest",
             reader: {
                 type: "json",
                 root: "hits.hits"
@@ -18,6 +18,8 @@ var latestStoriesTab = new Coho.StoryListObject({
         },
         autoLoad: true
     }),
+
+    onItemDisclosure: Coho.CommonCallbacks.saveStoryDisclosure,
 
     titleBar: {
         xtype: "toolbar",

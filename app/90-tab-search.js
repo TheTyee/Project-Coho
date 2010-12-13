@@ -18,7 +18,7 @@ var searchTabField = new Ext.form.Search({
             searchTabStore.setProxy({
                 type: "scripttag",
                 extraParams: {filters: []},
-                url: "http://preview.app.thetyee.ca/proxy/v1/search/"+escape(s.getValue()),
+                url: Coho.apiURL+"/search/"+escape(s.getValue()),
                 reader: {
                     type: "json",
                     root: "hits.hits"
