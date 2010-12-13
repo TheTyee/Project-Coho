@@ -1,7 +1,11 @@
 // The main project Coho super-object
-// Keeps track of positioning, story stacks, some rendering, etc.
+// Code in this file keeps track of positioning, story stacks,
+// performs some rendering, etc.
 
 var Coho = {
+
+// configuration
+apiURL: "http://preview.app.thetyee.ca/proxy/v1",
 
 // quasi-globals
 currentTab: null,
@@ -65,26 +69,13 @@ renderStory: function(storyPanel, storyData) {
  */
 pushPanelStackByUUID: function(uuid)
 {
-    var selectedStoryStore = new Ext.data.Store({
-        model: "searchResultStory",
-        proxy: {
-            type: "scripttag",
-            extraParams: {filters: []},
-            url: "http://preview.app.thetyee.ca/proxy/v1/story/"+uuid,
-            reader: {
-                type: "json",
-                root: "hits.hits"
-            }
-        },
-        autoLoad: true,
-        listeners: { "load": function(store, records, success) {
-            if (success) {
-                Coho.renderStory(selectedStoryPanel, store.getAt(0).data);
-                selectedStoryPanel.doLayout();
-            }
-        } }
-    });
     var selectedStoryPanel = new Ext.Panel(genericStoryPanel);
+
+    Coho.Story.getStory(uuid, function(storyData) {
+        Coho.renderStory(selectedStoryPanel, storyData);
+        selectedStoryPanel.doLayout();
+    });
+
     Coho.pushPanelStack(selectedStoryPanel);
 },
 
@@ -152,34 +143,10 @@ addBackButton: function() {
 
 
 
-///////////////////////// callbacks
+// defined elsewhere...
+Story: {},
 
-/**
- * Called when a the middle-level container tab (containing latest, popular,
- * saved, etc.) slides left or right.
- *
- * We really only care about the user going "back" in which case we destroy
- * the old panel.
- */
-onStoryPanelStack: function(newCard, oldCard, newIndex, animated)
-{
-    if (Coho.dyingPanel && Coho.dyingPanel == oldCard) {
-        Coho.currentTab.panel.remove(oldCard);
-        Coho.dyingPanel = null;
-    }
-},
-
-/**
- * Called when the user switches the top-level tab
- * (Latest, popular, saved, etc.)
- */
-onTopTabSwitch: function(newCard, oldCard, newIndex, animated)
-{
-    if (newCard.wrapperObject) {
-        Coho.currentTab = newCard.wrapperObject;
-    }
-}
-
+CommonCallbacks: {},
 
 }; // end Coho
 
