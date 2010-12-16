@@ -26,7 +26,10 @@ Ext.setup({
             {
                 name: 'thumbnail',
                 mapping: 'media'
-            }
+            },
+           {
+               name: 'story'
+           },
         ]
         });
 
@@ -82,6 +85,9 @@ Ext.setup({
                 '<div id="{uuid}" class="storyDetail">',
                     '<h1>{title}</h1>',
                     '<h2>{abstract}</h2>',
+                    '<div class="content">',
+                    '{story}',
+                    '</div>',
                     // This is where I ran out of steam.
                     // Need to finish modelling a complex article/story with
                     // lots of deeply nested sub-elements. From there, the
