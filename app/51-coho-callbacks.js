@@ -1,0 +1,37 @@
+// the Coho.Callbacks object
+// namespace for common callbacks
+
+// in case we're testing this file on its own for some reason
+if (!Coho) Coho = {};
+
+Coho.Callbacks = {
+
+/**
+ * For when a the middle-level container tab (containing latest, popular,
+ * saved, etc.) slides left or right.
+ *
+ * We really only care about the user going "back" in which case we destroy
+ * the old panel.
+ */
+storyPanelStack: function(newCard, oldCard, newIndex, animated)
+{
+    if (Coho.dyingPanel && Coho.dyingPanel == oldCard) {
+        Coho.currentTab.panel.remove(oldCard);
+        Coho.dyingPanel = null;
+    }
+},
+
+
+/**
+ * For when the user switches the top-level tab
+ * (Latest, popular, saved, etc.)
+ */
+topTabSwitch: function(newCard, oldCard, newIndex, animated)
+{
+    if (newCard.wrapperObject) {
+        Coho.currentTab = newCard.wrapperObject;
+    }
+},
+
+};
+

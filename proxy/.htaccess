@@ -1,0 +1,5 @@
+Options +ExecCGI
+
+RewriteEngine on
+RewriteRule ^v1(.*) coho-proxy.pl$1 [L,QSA]
+
