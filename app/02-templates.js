@@ -14,7 +14,8 @@ var storyListTpl = new Ext.Template(
 var storyDetailTpl = new Ext.Template(
     '<div id="{uuid}" class="storyDetail">',
     '<h1>{title}</h1>',
-    '<h2>{content}</h2>',
+    '<h2>{abstract}</h2>',
+    '<div class="storyContent">{content}</div>',
     '</div></tpl>'
 );
 
