@@ -71,6 +71,9 @@ pushPanelStackByUUID: function(uuid)
 {
     var selectedStoryPanel = new Ext.Panel(genericStoryPanel);
 
+    Coho.currentTab.stack.unshift(uuid);
+    selectedStoryPanel.uuid = uuid;
+
     Coho.Story.getStory(uuid, function(storyData) {
         Coho.renderStory(selectedStoryPanel, storyData);
         selectedStoryPanel.doLayout();
@@ -89,6 +92,9 @@ pushPanelStackItemtap: function(list, index, item, e)
 
     var rec = list.getStore().getAt(index);
     Coho.renderStory(selectedStoryPanel, rec.data);
+
+    selectedStoryPanel.uuid = rec.get("uuid");
+    Coho.currentTab.stack.unshift(rec.get("uuid"));
 
     Coho.pushPanelStack(selectedStoryPanel);
 },
@@ -114,15 +120,19 @@ pushPanelStack: function(panel)
  */
 popPanelStack: function()
 {
+    // remove from our tab's story stack
+    Coho.currentTab.stack.shift();
+
     // schedule the old panel to be destroyed after the animation
     Coho.dyingPanel = Coho.currentTab.panel.getActiveItem();
 
     // animate going back
     Coho.currentTab.panel.getLayout().prev({type:"slide",direction:"right"}, false);
 
-    // if we're back at the start, kill the back button
+    // if we're back at the start, kill the toolbar buttons
     if (Coho.currentTab.panel.getActiveItem() == Coho.currentTab.panel.getComponent(0) && Coho.currentTab.titleBar) {
         Coho.currentTab.titleBar.remove(Coho.currentTab.titleBar.getId()+"BackButton");
+        Coho.currentTab.titleBar.remove(Coho.currentTab.titleBar.getId()+"ContextButton");
         Coho.currentTab.titleBar.doLayout();
     }
 },
@@ -136,11 +146,28 @@ addBackButton: function() {
     Coho.currentTab.titleBar.add({
         text: "Back",
         id: Coho.currentTab.titleBar.getId()+"BackButton",
+        ui: "back",
         handler: Coho.popPanelStack
     });
     Coho.currentTab.titleBar.doLayout();
 },
 
+
+/**
+ * Add a story context button to the current title bar.
+ *
+ */
+addStoryContextButton: function(uuid)
+{
+    if (!Coho.currentTab || !Coho.currentTab.titleBar) return;
+
+    Coho.currentTab.titleBar.add({
+        text: "Stuff",
+        id: Coho.currentTab.titleBar.getId()+"ContextButton",
+        handler: Coho.Callbacks.storyContextPressed
+    });
+    Coho.currentTab.titleBar.doLayout();
+},
 
 
 // defined elsewhere...

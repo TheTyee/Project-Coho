@@ -36,7 +36,7 @@ get '/search/(*query)' => sub {
     my $m = shift;
 
     my $ua = LWP::UserAgent->new;
-    my $elastic = { query => {term => { title => $m->param("query") } } };
+    my $elastic = { size => 25, query => {field => { title => $m->param("query") } } };
 
     my $r = $ua->post("http://localhost:9200/tyee/story/_search".($m->param("callback") ? "?callback=".$m->param("callback") : ""),
         Content => encode_json($elastic));
