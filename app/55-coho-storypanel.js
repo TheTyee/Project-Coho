@@ -17,14 +17,19 @@ Coho.StoryListObject = function(config)
         onItemDisclosure: config.onItemDisclosure,
         listeners: {
             "itemtap": function(list, index, item, e) {
+                var uuid = list.getStore().getAt(index).get("uuid");
+
                 // let Coho know where we are
                 Coho.currentTab = me;
+                me.stack.unshift(uuid);
 
                 // push the selected story onto the stack
                 Coho.pushPanelStackItemtap(list, index, item, e);
 
                 // set up the back button
                 Coho.addBackButton();
+
+                Coho.addStoryContextButton();
             }
         }
     });
@@ -47,11 +52,9 @@ Coho.StoryListObject = function(config)
             return;
         }
     });
-}
 
-Coho.CommonCallbacks.saveStoryDisclosure = function()
-{
-    return true;
-};
+    // to find the story currently on display
+    this.stack = [];
+}
 
 
