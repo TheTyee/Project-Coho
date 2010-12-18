@@ -117,19 +117,58 @@ getStoryFromStorage: function(uuid)
 },
 
 /**
- * Get a list of saved stories.
+ * Get a list of saved stories. This returns a set of UUIDs only.
+ *
  */
 getSaved: function()
 {
+    return JSON.parse(localStorage.getItem('savedStories'));
+},
+
+/**
+ * Get a list of saved stories. This returns the full JSON representation
+ * for each story.
+ *
+ */
+getSavedFull: function()
+{
+    var savedStories = Coho.Story.getSaved();
+
+    if (!savedStories) {
+        return [];
+    }
+
+    var data = [];
+    for (i = 0; i < savedStories.length; i++) {
+        one = Coho.Story.getStoryFromStorage(savedStories[i]);
+        if (one) data.push(one);
+    }
+
+    return data;
 },
 
 /**
  * Add a story to the list of saved stories.
+ *
  */
 addSaved: function(story)
 {
-    // try to add the story first in case we're out of room
+    if ((typeof story != 'object') || (typeof story == 'object' && !story.uuid)) {
+        return false;
+    }
 
+    var savedStories = [];
+    var aString = localStorage.getItem('savedStories');
+
+    if (aString) {
+        savedStories = JSON.parse(aString);
+    }
+
+    // try to add the story first in case we're out of room
+    stat = Coho.Story.saveStoryToStorage(story);
+
+    savedStories.push(story.uuid);
+    return localStorage.setItem('savedStories', JSON.stringify(savedStories));
 },
 
 /**
@@ -165,7 +204,7 @@ saveStoryToSession: function(json)
         return false;
 
     console.log("saving story "+json.uuid+" to session storage");
-    sessionStorage.setItem(json.uuid, JSON.stringify(json));
+    return sessionStorage.setItem(json.uuid, JSON.stringify(json));
 },
 
 /**
@@ -177,7 +216,7 @@ saveStoryToStorage: function(json)
         return false;
 
     console.log("saving story "+json.uuid+" to local storage");
-    localStorage.setItem(json.uuid, JSON.stringify(json));
+    return localStorage.setItem(json.uuid, JSON.stringify(json));
 },
 
 
