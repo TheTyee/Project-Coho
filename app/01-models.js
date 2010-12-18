@@ -12,7 +12,7 @@ Ext.regModel('searchResultStory', {
         {name:"score", mapping: "_score"},
         {name:"title", mapping: "_source.title"},
         {name:"abstract", mapping: "_source.teaser"},
-        {name:"uuid", mapping: "_source.uuid"},
+        {name:"uuid", mapping: "_id"},
         {name:"content", mapping: "_source.textWithHtml"},
         {name:"uri", mapping: "_source.uri"},
         {name:"related_stories", mapping: "_source.related_stories"},
