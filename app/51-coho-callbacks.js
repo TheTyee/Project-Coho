@@ -33,5 +33,23 @@ topTabSwitch: function(newCard, oldCard, newIndex, animated)
     }
 },
 
+
+/**
+ * For when the story context toolbar button is pressed.
+ *
+ */
+storyContextPressed: function(b, e)
+{
+    this.as = new Ext.ActionSheet({
+        items: [
+            { text: "Save story", scope: this, handler: function() { Coho.Story.addSaved(Coho.currentTab.stack[0]); this.as.hide(); } },
+            { text: Coho.currentTab.stack[0] },
+            { text: "Cancel", scope: this, handler: function() { this.as.hide(); } }
+        ]
+    });
+
+    this.as.show();
+},
+
 };
 
