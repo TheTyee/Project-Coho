@@ -143,11 +143,12 @@ getSaved: function()
  *
  * Doesn't need to process JSON so this should be relatively quick.
  */
-isStorySaved: function(uuid)
+isSaved: function(uuid)
 {
     savedStories = localStorage.getItem('savedStories');
     if (!savedStories) return false;
 
+    // taking advantage of JSON here
     if (savedStories.indexOf(uuid) >= 0)
         return true;
     else
@@ -183,7 +184,7 @@ getSavedFull: function()
  */
 addSaved: function(uuid)
 {
-    if (!uuid || Coho.Story.isStorySaved(uuid))
+    if (!uuid || Coho.Story.isSaved(uuid))
         return false;
 
     var savedStories = [];
@@ -213,10 +214,32 @@ addSaved: function(uuid)
 /**
  * Remove a story from the list of saved stories.
  */
-removeSaved: function(story)
+removeSaved: function(uuid)
 {
-    // TODO: do stuff here
+    if (!uuid || !Coho.Story.isSaved(uuid))
+        return false;
 
+    savedStories = localStorage.getItem('savedStories');
+    if (!savedStories) return false;
+
+    console.log("removing story "+uuid+" from saved stories");
+
+    stat = Coho.Story.removeStoryFromStorage(uuid);
+
+    // taking advantage of JSON here for speed
+    var index = savedStories.indexOf(uuid);
+    if (index > 2) {
+        // uuid found and it is not the first one in the list
+        savedStories = savedStories.replace(',"'+uuid+'"', "");
+    } else if (index == 2 && savedStories.length < 45) {
+        // uuid found and it is the only one in the list
+        savedStories = "[]";
+    } else if (index == 2) {
+        // uuid found and it is the first of many in the list
+        savedStories = savedStories.replace('"'+uuid+'",', "");
+    }
+
+    stat = localStorage.setItem('savedStories', savedStories);
     savedStoriesTab.refresh();
 },
 

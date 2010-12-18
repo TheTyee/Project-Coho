@@ -40,13 +40,26 @@ topTabSwitch: function(newCard, oldCard, newIndex, animated)
  */
 storyContextPressed: function(b, e)
 {
-    this.as = new Ext.ActionSheet({
-        items: [
-            { text: "Save story", scope: this, handler: function() { Coho.Story.addSaved(Coho.currentTab.stack[0]); this.as.hide(); } },
-            { text: Coho.currentTab.stack[0] },
-            { text: "Cancel", scope: this, handler: function() { this.as.hide(); } }
-        ]
-    });
+    var uuid = Coho.currentTab.stack[0];
+    if (!uuid) return;
+
+    if (Coho.Story.isSaved(uuid)) {
+        this.as = new Ext.ActionSheet({
+            items: [
+                { text: "Remove from saved stories", scope: this, handler: function() { Coho.Story.removeSaved(uuid); this.as.hide(); } },
+                { text: uuid },
+                { text: "Cancel", scope: this, handler: function() { this.as.hide(); } }
+            ]
+        });
+    } else {
+        this.as = new Ext.ActionSheet({
+            items: [
+                { text: "Save story", scope: this, handler: function() { Coho.Story.addSaved(uuid); this.as.hide(); } },
+                { text: uuid },
+                { text: "Cancel", scope: this, handler: function() { this.as.hide(); } }
+            ]
+        });
+    }
 
     this.as.show();
 },
