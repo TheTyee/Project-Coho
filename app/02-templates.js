@@ -2,11 +2,13 @@
 
 var storyListTpl = new Ext.Template(
   '<tpl for="."><div id="{uuid}" class="article">',
-  '<tpl for="thumbnail">',
-  '<tpl for="metadata"><img src="{uri}"></tpl>',
-  '</tpl>',
+  ' <tpl for="related_media[0].thumbnails">',
+  '     <tpl if="width == 90">',
+  '     <img src="{uri}" class="thumnail" />',
+  '     </tpl>',
+  ' </tpl>',
   '<h2>{title}</h2>',
-  '<p>{abstract} <span class="published">{publish_date}</span></p>',
+  '<p>{abstract:ellipsis("256",1)} <span class="published">{publish_date}</span></p>',
   '</div>',
   '</tpl>'
 );
