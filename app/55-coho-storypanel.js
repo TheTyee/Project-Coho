@@ -38,11 +38,12 @@ Coho.StoryListObject = function(config)
     });
 
     // set up our toolbar buttons
-    config.titleBar.items = [
+    if (!config.titleBar.items) config.titleBar.items = [];
+    config.titleBar.items.push(
         { text: "Back", id: config.titleBar.id+"BackButton", ui: "back", handler: Coho.popPanelStack, hidden: true },
         { xtype: "spacer"},
         { text: "Stuff", id: config.titleBar.id+"ContextButton", handler: Coho.Callbacks.storyContextPressed, hidden: true }
-    ];
+    );
 
     this.panel = new Ext.Panel({
         layout: "card",
