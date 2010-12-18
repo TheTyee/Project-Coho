@@ -19,8 +19,6 @@ var latestStoriesTab = new Coho.StoryListObject({
         autoLoad: true
     }),
 
-    onItemDisclosure: Coho.CommonCallbacks.saveStoryDisclosure,
-
     titleBar: {
         xtype: "toolbar",
         dock: "top",
