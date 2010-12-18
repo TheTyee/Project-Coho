@@ -7,6 +7,7 @@ Coho.StoryListObject = function(config)
 {
     var me = this;
 
+    // store and list for the main display
     this.store = config.store;
 
     this.list = new Ext.List({
@@ -29,13 +30,19 @@ Coho.StoryListObject = function(config)
                 if (config.saveToSessionOnRender)
                     Coho.Story.saveStoryToSession(list.getStore().getAt(index).data);
 
-                // set up the back button
-                Coho.addBackButton();
-
-                Coho.addStoryContextButton();
+                // set up the toolbar buttons
+                me.showBackButton();
+                me.showContextButton();
             }
         }
     });
+
+    // set up our toolbar buttons
+    config.titleBar.items = [
+        { text: "Back", id: config.titleBar.id+"BackButton", ui: "back", handler: Coho.popPanelStack, hidden: true },
+        { xtype: "spacer"},
+        { text: "Stuff", id: config.titleBar.id+"ContextButton", handler: Coho.Callbacks.storyContextPressed, hidden: true }
+    ];
 
     this.panel = new Ext.Panel({
         layout: "card",
@@ -61,6 +68,21 @@ Coho.StoryListObject = function(config)
 
     // to find the story currently on display
     this.stack = [];
+
+    // nice methods
+    this.showBackButton = function() {
+        me.titleBar.getComponent(me.titleBar.id+"BackButton").show();
+    };
+    this.hideBackButton = function() {
+        me.titleBar.getComponent(me.titleBar.id+"BackButton").hide();
+    };
+    this.showContextButton = function() {
+        me.titleBar.getComponent(me.titleBar.id+"ContextButton").show();
+    };
+    this.hideContextButton = function() {
+        me.titleBar.getComponent(me.titleBar.id+"ContextButton").hide();
+    };
+
 }
 
 

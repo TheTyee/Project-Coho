@@ -131,44 +131,10 @@ popPanelStack: function()
 
     // if we're back at the start, kill the toolbar buttons
     if (Coho.currentTab.panel.getActiveItem() == Coho.currentTab.panel.getComponent(0) && Coho.currentTab.titleBar) {
-        Coho.currentTab.titleBar.remove(Coho.currentTab.titleBar.getId()+"BackButton");
-        Coho.currentTab.titleBar.remove(Coho.currentTab.titleBar.getId()+"ContextButton");
-        Coho.currentTab.titleBar.doLayout();
+        Coho.currentTab.hideBackButton();
+        Coho.currentTab.hideContextButton();
     }
 },
-
-/**
- * Add a back button to the current title bar.
- */
-addBackButton: function() {
-    if (!Coho.currentTab || !Coho.currentTab.titleBar) return;
-
-    Coho.currentTab.titleBar.add({
-        text: "Back",
-        id: Coho.currentTab.titleBar.getId()+"BackButton",
-        ui: "back",
-        handler: Coho.popPanelStack
-    });
-    Coho.currentTab.titleBar.doLayout();
-},
-
-
-/**
- * Add a story context button to the current title bar.
- *
- */
-addStoryContextButton: function(uuid)
-{
-    if (!Coho.currentTab || !Coho.currentTab.titleBar) return;
-
-    Coho.currentTab.titleBar.add({
-        text: "Stuff",
-        id: Coho.currentTab.titleBar.getId()+"ContextButton",
-        handler: Coho.Callbacks.storyContextPressed
-    });
-    Coho.currentTab.titleBar.doLayout();
-},
-
 
 // defined elsewhere...
 Story: {},
