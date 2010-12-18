@@ -24,4 +24,10 @@ var savedStoriesTab = new Coho.StoryListObject({
 
 });
 
+savedStoriesTab.refresh = function()
+{
+    savedStoriesTab.store.loadData(Coho.Story.getSavedFull());
+    savedStoriesTab.list.refresh();
+};
+
 

@@ -26,6 +26,9 @@ Coho.StoryListObject = function(config)
                 // push the selected story onto the stack
                 Coho.pushPanelStackItemtap(list, index, item, e);
 
+                if (config.saveToSessionOnRender)
+                    Coho.Story.saveStoryToSession(list.getStore().getAt(index).data);
+
                 // set up the back button
                 Coho.addBackButton();
 
@@ -52,6 +55,9 @@ Coho.StoryListObject = function(config)
             return;
         }
     });
+
+    // to be overridden, if needed
+    this.refresh = function() { };
 
     // to find the story currently on display
     this.stack = [];

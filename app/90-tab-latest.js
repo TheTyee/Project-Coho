@@ -19,6 +19,8 @@ var latestStoriesTab = new Coho.StoryListObject({
         autoLoad: true
     }),
 
+    saveToSessionOnRender: true,
+
     titleBar: {
         xtype: "toolbar",
         dock: "top",

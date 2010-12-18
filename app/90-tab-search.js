@@ -39,6 +39,8 @@ var searchTabStore = new Ext.data.Store({
 var searchTab = new Coho.StoryListObject({
     store: searchTabStore,
 
+    saveToSessionOnRender: true,
+
     titleBar: {
         xtype: "toolbar",
         dock: "top",

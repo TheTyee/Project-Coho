@@ -24,13 +24,26 @@ getStory: function(uuid, callback)
     var c = Coho.Story.getStoryFromSession(uuid);
     if (c) {
         console.log("story "+uuid+" retrieved from session");
-        return callback(c);
+
+        if (callback)
+            return callback(c);
+        else
+            return c;
     }
 
     c = Coho.Story.getStoryFromStorage(uuid);
     if (c) {
         console.log("story "+uuid+" retrieved from local storage");
-        return callback(c);
+
+        if (callback)
+            return callback(c);
+        else
+            return c;
+    }
+
+    if (!callback) {
+        console.log("story "+uuid+" was not found locally and no callback was specified for remote transfer");
+        return {};
     }
 
     console.log("story "+uuid+" retrieved from remote");
@@ -126,6 +139,23 @@ getSaved: function()
 },
 
 /**
+ * Is a particular story saved?
+ *
+ * Doesn't need to process JSON so this should be relatively quick.
+ */
+isStorySaved: function(uuid)
+{
+    savedStories = localStorage.getItem('savedStories');
+    if (!savedStories) return false;
+
+    if (savedStories.indexOf(uuid) >= 0)
+        return true;
+    else
+        return false;
+},
+
+
+/**
  * Get a list of saved stories. This returns the full JSON representation
  * for each story.
  *
@@ -151,11 +181,10 @@ getSavedFull: function()
  * Add a story to the list of saved stories.
  *
  */
-addSaved: function(story)
+addSaved: function(uuid)
 {
-    if ((typeof story != 'object') || (typeof story == 'object' && !story.uuid)) {
+    if (!uuid || Coho.Story.isStorySaved(uuid))
         return false;
-    }
 
     var savedStories = [];
     var aString = localStorage.getItem('savedStories');
@@ -164,11 +193,21 @@ addSaved: function(story)
         savedStories = JSON.parse(aString);
     }
 
-    // try to add the story first in case we're out of room
-    stat = Coho.Story.saveStoryToStorage(story);
+    // since the story is rendered and cached, this should grab it from
+    // session/local storage
+    storyData = Coho.Story.getStory(uuid);
 
-    savedStories.push(story.uuid);
-    return localStorage.setItem('savedStories', JSON.stringify(savedStories));
+    // try to add the story first in case we're out of room
+    stat = Coho.Story.saveStoryToStorage(storyData);
+
+    // TODO: check stat
+    savedStories.push(uuid);
+
+    console.log("adding story "+uuid+" to saved stories");
+
+    stat = localStorage.setItem('savedStories', JSON.stringify(savedStories));
+    // TODO: check stat
+    savedStoriesTab.refresh();
 },
 
 /**
@@ -176,6 +215,9 @@ addSaved: function(story)
  */
 removeSaved: function(story)
 {
+    // TODO: do stuff here
+
+    savedStoriesTab.refresh();
 },
 
 
