@@ -6,11 +6,7 @@
 var mainTabPanels = [
     latestStoriesTab.panel,
     searchTab.panel,
-    {   
-        iconCls: "favorites",
-        title: "Saved",
-        html: "Pressed Saved"
-    },
+    savedStoriesTab.panel,
     {
         iconCls: "doc_drawer",
         title: "Topics",
