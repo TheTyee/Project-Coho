@@ -17,7 +17,8 @@ Ext.regModel('searchResultStory', {
         {name:"uri", mapping: "_source.uri"},
         {name:"related_stories", mapping: "_source.related_stories"},
         {name:"related_media", mapping: "_source.related_media"},
-        {name:"publish_date", mapping: "_source.storyDate"}
+        {name:"publish_date", mapping: "_source.storyDate"},
+        {name:"byline", mapping: "_source.byline"}
     ]
 });
 
