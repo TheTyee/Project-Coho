@@ -53,3 +53,5 @@ var searchTab = new Coho.StoryListObject({
 
 });
 
+searchTab.backLabelStack.unshift("Back");
+

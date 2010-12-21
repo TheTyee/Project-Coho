@@ -19,6 +19,7 @@ var latestStoriesTab = new Coho.StoryListObject({
         autoLoad: true
     }),
 
+    storyRootLabel: "Latest",
     saveToSessionOnRender: true,
 
     titleBar: {
@@ -33,4 +34,5 @@ var latestStoriesTab = new Coho.StoryListObject({
 
 });
 
+latestStoriesTab.backLabelStack.unshift("Latest");
 

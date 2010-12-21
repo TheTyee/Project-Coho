@@ -37,4 +37,5 @@ savedStoriesTab.refresh = function()
     savedStoriesTab.list.refresh();
 };
 
+savedStoriesTab.backLabelStack.unshift("Saved");
 

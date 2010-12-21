@@ -22,17 +22,40 @@ var topicsTab = new Coho.StoryListObject({
     pre: new Ext.List({
         fullscreen: true,
         itemTpl: topicListTpl,
-        store: new Ext.data.JsonStore({model: "topic", data:[{key: "2010 Olympics", topic: "2010 Olympics"},{key: "Education", topic:"Education"}]}),
+        store: new Ext.data.JsonStore({model: "topic", data:[
+            {key:"2010 Olympics", topic:"2010 Olympics"},
+            {key:"Education", topic:"Education"},
+            {key:"Elections", topic:"Elections"},
+            {key:"Energy", topic: "Energy"},
+            {key:"Environment", topic: "Environment"},
+            {key:"Film", topic: "Film"},
+            {key:"Food + Farming", topic: "Food + Farming"},
+            {key:"Gender + Sexuality", topic: "Gender + Sexuality"},
+            {key:"Health", topic: "Health"},
+            {key:"Housing", topic: "Housing"},
+            {key:"Labour + Industry", topic: "Labour + Industry"},
+            {key:"Music", topic: "Music"},
+            {key:"Photo Essays", topic: "Photo Essays"},
+            {key:"Podcasts", topic: "Podcasts"},
+            {key:"Politics", topic: "Politics"},
+            {key:"Rights + Justice", topic: "Rights + Justice"},
+            {key:"Science + Tech", topic: "Science + Tech"},
+            {key:"Transportation", topic: "Transportation"},
+            {key:"Travel", topic: "Travel"},
+            {key:"Tyee News", topic: "Tyee News"},
+            {key:"Urban Design + Architecture", topic: "Urban Design + Architecture"},
+            {key:"Video", topic: "Video"}
+          ]}),
         listeners: { "itemtap": function(list, index, item, e) {
             var topickey = list.getStore().getAt(index).get("key");
             var topicname = list.getStore().getAt(index).get("topic");
 
-            // set up back button label for the story list (future)
-            topicsTab.storyRootLabel = topicname;
-
             // set up back button for right now
+            topicsTab.stack.unshift(topickey);
+            topicsTab.backLabelStack.unshift(topicname);
+            topicsTab.setBackButtonText(topicsTab.backLabelStack[1]);
             topicsTab.showBackButton();
-            topicsTab.setBackButtonText("Topics");
+            topicsTab.hideContextButton();
 
             topicsTab.store.setProxy({
                 type: "scripttag",
@@ -53,4 +76,5 @@ var topicsTab = new Coho.StoryListObject({
     })
 });
 
+topicsTab.backLabelStack.unshift("Topics");
 

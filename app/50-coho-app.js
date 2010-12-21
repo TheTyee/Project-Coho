@@ -103,7 +103,11 @@ pushPanelStackItemtap: function(list, index, item, e)
 },
 
 /**
- * Push a panel onto the stack
+ * Push a panel onto the stack and set up the back button.
+ *
+ * You must push the *new* panel's back button label onto the stack
+ * before calling this method!
+ *
  */
 pushPanelStack: function(panel)
 {
@@ -111,6 +115,9 @@ pushPanelStack: function(panel)
         type: "slide",
         direction: "left"
     });
+
+    Coho.currentTab.setBackButtonText(Coho.currentTab.backLabelStack[1]);
+    Coho.currentTab.showBackButton();
 },
 
 /**
@@ -123,8 +130,9 @@ pushPanelStack: function(panel)
  */
 popPanelStack: function()
 {
-    // remove from our tab's story stack
+    // remove from our tab's information stack
     Coho.currentTab.stack.shift();
+    Coho.currentTab.backLabelStack.shift();
 
     // schedule the old panel to be destroyed after the animation
     // ...unless it has a store, meaning it's a list. Most probably a list
@@ -140,7 +148,11 @@ popPanelStack: function()
         Coho.currentTab.hideBackButton();
         Coho.currentTab.hideContextButton();
     } else {
-        Coho.currentTab.setBackButtonText(Coho.currentTab.backLabelStack.shift());
+        Coho.currentTab.setBackButtonText(Coho.currentTab.backLabelStack[1]);
+
+        // kill the context button if the current panel is a list with a store
+        if (Coho.currentTab.panel.getActiveItem().getStore)
+            Coho.currentTab.hideContextButton();
     }
 },
 

@@ -21,9 +21,6 @@ Coho.StoryListObject = function(config)
 
         // let Coho know where we are
         Coho.currentTab = me;
-        me.stack.unshift(uuid);
-        if (!me.storyRootLabel) me.storyRootLabel = "Back";
-        me.backLabelStack.unshift(me.storyRootLabel);
 
         // push the selected story onto the stack
         Coho.pushPanelStackItemtap(list, index, item, e);
@@ -32,7 +29,6 @@ Coho.StoryListObject = function(config)
             Coho.Story.saveStoryToSession(list.getStore().getAt(index).data);
 
         // set up the toolbar buttons
-        me.showBackButton();
         me.showContextButton();
     };
 
