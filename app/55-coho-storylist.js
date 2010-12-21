@@ -76,10 +76,8 @@ Coho.StoryListObject = function(config)
     // to be overridden, if needed
     this.refresh = function() { };
 
-    // to find the story currently on display
+    // to find the things in the stack
     this.stack = [];
-    // to find the label for the back button
-    this.backLabelStack = [];
 
     // nice methods
     this.showBackButton = function() {

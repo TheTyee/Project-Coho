@@ -34,5 +34,5 @@ var latestStoriesTab = new Coho.StoryListObject({
 
 });
 
-latestStoriesTab.backLabelStack.unshift("Latest");
+latestStoriesTab.stack.unshift({type:"root", uuid:"latest", back:"Latest"});
 

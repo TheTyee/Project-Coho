@@ -51,9 +51,8 @@ var topicsTab = new Coho.StoryListObject({
             var topicname = list.getStore().getAt(index).get("topic");
 
             // set up back button for right now
-            topicsTab.stack.unshift(topickey);
-            topicsTab.backLabelStack.unshift(topicname);
-            topicsTab.setBackButtonText(topicsTab.backLabelStack[1]);
+            topicsTab.stack.unshift({type:"topic", uuid:topickey, back:topicname});
+            topicsTab.setBackButtonText(topicsTab.stack[1].back);
             topicsTab.showBackButton();
             topicsTab.hideContextButton();
 
@@ -76,5 +75,5 @@ var topicsTab = new Coho.StoryListObject({
     })
 });
 
-topicsTab.backLabelStack.unshift("Topics");
+topicsTab.stack.unshift({type:"root", uuid:"topics", back:"Topics"});
 

@@ -40,8 +40,10 @@ topTabSwitch: function(newCard, oldCard, newIndex, animated)
  */
 storyContextPressed: function(b, e)
 {
-    var uuid = Coho.currentTab.stack[0];
-    if (!uuid) return;
+    if (!Coho.currentTab.stack[0] || !Coho.currentTab.stack[0].uuid || Coho.currentTab.stack[0].type != "story")
+        return;
+
+    var uuid = Coho.currentTab.stack[0].uuid;
 
     if (Coho.Story.isSaved(uuid)) {
         this.as = new Ext.ActionSheet({

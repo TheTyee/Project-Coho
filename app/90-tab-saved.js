@@ -37,5 +37,5 @@ savedStoriesTab.refresh = function()
     savedStoriesTab.list.refresh();
 };
 
-savedStoriesTab.backLabelStack.unshift("Saved");
+savedStoriesTab.stack.unshift({type:"root", uuid:"saved", back:"Saved"});
 

@@ -71,8 +71,7 @@ pushPanelStackByUUID: function(uuid)
 {
     var selectedStoryPanel = new Ext.Panel(genericStoryPanel);
 
-    Coho.currentTab.stack.unshift(uuid);
-    Coho.currentTab.backLabelStack.unshift("Back");
+    Coho.currentTab.stack.unshift({type:"story", uuid:uuid, back:"Back"});
 
     selectedStoryPanel.uuid = uuid;
 
@@ -96,8 +95,7 @@ pushPanelStackItemtap: function(list, index, item, e)
     Coho.renderStory(selectedStoryPanel, rec.data);
 
     selectedStoryPanel.uuid = rec.get("uuid");
-    Coho.currentTab.stack.unshift(rec.get("uuid"));
-    Coho.currentTab.backLabelStack.unshift("Back");
+    Coho.currentTab.stack.unshift({type:"story", uuid:rec.get("uuid"), back:"Back"});
 
     Coho.pushPanelStack(selectedStoryPanel);
 },
@@ -116,7 +114,7 @@ pushPanelStack: function(panel)
         direction: "left"
     });
 
-    Coho.currentTab.setBackButtonText(Coho.currentTab.backLabelStack[1]);
+    Coho.currentTab.setBackButtonText(Coho.currentTab.stack[1].back);
     Coho.currentTab.showBackButton();
 },
 
@@ -132,7 +130,6 @@ popPanelStack: function()
 {
     // remove from our tab's information stack
     Coho.currentTab.stack.shift();
-    Coho.currentTab.backLabelStack.shift();
 
     // schedule the old panel to be destroyed after the animation
     // ...unless it has a store, meaning it's a list. Most probably a list
@@ -148,7 +145,7 @@ popPanelStack: function()
         Coho.currentTab.hideBackButton();
         Coho.currentTab.hideContextButton();
     } else {
-        Coho.currentTab.setBackButtonText(Coho.currentTab.backLabelStack[1]);
+        Coho.currentTab.setBackButtonText(Coho.currentTab.stack[1].back);
 
         // kill the context button if the current panel is a list with a store
         if (Coho.currentTab.panel.getActiveItem().getStore)
