@@ -6,7 +6,7 @@
  */
 var popularStoriesTab = new Coho.StoryListObject({
     store: new Ext.data.Store({
-        model: "searchResultStory",
+        model: "story",
         proxy: {
             type: "ajax",
             url: "/json/popular.json",

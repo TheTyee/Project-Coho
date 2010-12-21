@@ -7,7 +7,7 @@
  */
 var savedStoriesTab = new Coho.StoryListObject({
     store: new Ext.data.Store({
-        model: "searchResultStory",
+        model: "story",
         data: Coho.Story.getSavedFull(),
         autoLoad: true
     }),

@@ -31,7 +31,7 @@ var searchTabField = new Ext.form.Search({
     }
 });
 var searchTabStore = new Ext.data.Store({
-    model: "searchResultStory",
+    model: "story",
     storeId: "searchTabStore",
     autoLoad: false
 });

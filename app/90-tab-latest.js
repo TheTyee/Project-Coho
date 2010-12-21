@@ -6,7 +6,7 @@
  */
 var latestStoriesTab = new Coho.StoryListObject({
     store: new Ext.data.Store({
-        model: "searchResultStory",
+        model: "story",
         proxy: {
             type: "scripttag",
             extraParams: {filters: []},

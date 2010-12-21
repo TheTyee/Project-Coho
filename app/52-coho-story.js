@@ -88,7 +88,7 @@ getStoreFromRemote: function(uuid, config)
         if (bubble) bubble(store, records, success);
     };
 
-    config.model = "searchResultStory";
+    config.model = "story";
     config.proxy = {
         type: "scripttag",
         extraParams: {filters: []},

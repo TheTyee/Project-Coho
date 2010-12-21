@@ -1,11 +1,7 @@
 /* models */
 
-// the canonical model for a single story
-Ext.regModel('story', { fields: ['title','teaser','uuid','textWithHtml','uri','storyDate','related_stories','related_media'] });
-
-// a single story as it is wrapped in a search result
-// fields are mapped so this model looks and feels like a regular "story"
-Ext.regModel('searchResultStory', {
+// a single story from ES
+Ext.regModel('story', {
     fields: [
         {name:"index", mapping: "_index"},
         {name:"type", mapping: "_type"},
