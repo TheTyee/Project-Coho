@@ -10,6 +10,9 @@ Coho.StoryListObject = function(config)
     // store and list for the main display
     this.store = config.store;
 
+    // back button for story list root
+    this.storyRootLabel = config.storyRootLabel;
+
     // support for custom listeners (e.g. swipe)
     if (!config.listeners) config.listeners = {};
     // one that likely won't be overridden is the basic tap to view story
@@ -19,6 +22,8 @@ Coho.StoryListObject = function(config)
         // let Coho know where we are
         Coho.currentTab = me;
         me.stack.unshift(uuid);
+        if (!me.storyRootLabel) me.storyRootLabel = "Back";
+        me.backLabelStack.unshift(me.storyRootLabel);
 
         // push the selected story onto the stack
         Coho.pushPanelStackItemtap(list, index, item, e);
@@ -48,12 +53,17 @@ Coho.StoryListObject = function(config)
         { iconCls: "action", iconMask: true, id: config.titleBar.id+"ContextButton", handler: Coho.Callbacks.storyContextPressed, hidden: true }
     );
 
+    // custom items?
+    var items = [this.list];
+    if (config.pre) items.unshift(config.pre);
+    if (config.post) items.push(config.post);
+
     this.panel = new Ext.Panel({
         layout: "card",
         dockedItems: [config.titleBar],
         iconCls: config.panelIcon,
         title: config.panelTitle,
-        items: [this.list],
+        items: items,
         onCardSwitch: Coho.Callbacks.storyPanelStack
     });
 
@@ -72,6 +82,8 @@ Coho.StoryListObject = function(config)
 
     // to find the story currently on display
     this.stack = [];
+    // to find the label for the back button
+    this.backLabelStack = [];
 
     // nice methods
     this.showBackButton = function() {
@@ -85,6 +97,9 @@ Coho.StoryListObject = function(config)
     };
     this.hideContextButton = function() {
         me.titleBar.getComponent(me.titleBar.id+"ContextButton").hide();
+    };
+    this.setBackButtonText = function(text) {
+        me.titleBar.getComponent(me.titleBar.id+"BackButton").setText(text);
     };
 
 }

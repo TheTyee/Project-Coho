@@ -18,3 +18,6 @@ Ext.regModel('story', {
     ]
 });
 
+// list of topics
+Ext.regModel("topic", { fields: ["key", "topic"] });
+

@@ -31,3 +31,7 @@ var relatedStoryTpl = new Ext.Template(
     '{title}'
 );
 
+var topicListTpl = new Ext.Template(
+    '{topic}'
+);
+

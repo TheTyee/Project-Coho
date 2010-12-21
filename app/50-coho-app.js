@@ -72,6 +72,8 @@ pushPanelStackByUUID: function(uuid)
     var selectedStoryPanel = new Ext.Panel(genericStoryPanel);
 
     Coho.currentTab.stack.unshift(uuid);
+    Coho.currentTab.backLabelStack.unshift("Back");
+
     selectedStoryPanel.uuid = uuid;
 
     Coho.Story.getStory(uuid, function(storyData) {
@@ -95,6 +97,7 @@ pushPanelStackItemtap: function(list, index, item, e)
 
     selectedStoryPanel.uuid = rec.get("uuid");
     Coho.currentTab.stack.unshift(rec.get("uuid"));
+    Coho.currentTab.backLabelStack.unshift("Back");
 
     Coho.pushPanelStack(selectedStoryPanel);
 },
@@ -124,7 +127,10 @@ popPanelStack: function()
     Coho.currentTab.stack.shift();
 
     // schedule the old panel to be destroyed after the animation
-    Coho.dyingPanel = Coho.currentTab.panel.getActiveItem();
+    // ...unless it has a store, meaning it's a list. Most probably a list
+    // of stories for a topic.
+    if (!Coho.currentTab.panel.getActiveItem().getStore)
+        Coho.dyingPanel = Coho.currentTab.panel.getActiveItem();
 
     // animate going back
     Coho.currentTab.panel.getLayout().prev({type:"slide",direction:"right"}, false);
@@ -133,6 +139,8 @@ popPanelStack: function()
     if (Coho.currentTab.panel.getActiveItem() == Coho.currentTab.panel.getComponent(0) && Coho.currentTab.titleBar) {
         Coho.currentTab.hideBackButton();
         Coho.currentTab.hideContextButton();
+    } else {
+        Coho.currentTab.setBackButtonText(Coho.currentTab.backLabelStack.shift());
     }
 },
 

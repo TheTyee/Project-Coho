@@ -7,11 +7,7 @@ var mainTabPanels = [
     latestStoriesTab.panel,
     searchTab.panel,
     savedStoriesTab.panel,
-    {
-        iconCls: "doc_drawer",
-        title: "Topics",
-        html: "Pressed Topics"
-    },
+    topicsTab.panel,
     {
         iconCls: "more",
         title: "More",
