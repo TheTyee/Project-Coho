@@ -50,7 +50,7 @@ Ext.apply(Ext, {
     platformVersionDetail: {
         major: 1,
         minor: 0,
-        patch: 0
+        patch: 2
     },
     userAgent: navigator.userAgent.toLowerCase(),
     cache: {},
@@ -1155,7 +1155,9 @@ Ext.util.HashMap = Ext.extend(Ext.util.Observable, {
             
             'replace'
         );
+        
         Ext.util.HashMap.superclass.constructor.call(this, config);
+        
         this.clear(true);
     },
 
@@ -1165,17 +1167,18 @@ Ext.util.HashMap = Ext.extend(Ext.util.Observable, {
     },
     
     
-    getData: function(key, value){
+    getData: function(key, value) {
         
         if (value === undefined) {
             value = key;
             key = this.getKey(value);
         }
-        return [key, value]
+        
+        return [key, value];
     },
     
     
-    getKey: function(o){
+    getKey: function(o) {
         return o.id;    
     },
 
@@ -1185,8 +1188,9 @@ Ext.util.HashMap = Ext.extend(Ext.util.Observable, {
             data;
             
         if (me.containsKey(key)) {
-            throw 'This key already exists in the HashMap';
+            throw new Error('This key already exists in the HashMap');
         }
+        
         data = this.getData(key, value);
         key = data[0];
         value = data[1];
@@ -4634,14 +4638,16 @@ Ext.EventObjectImpl = Ext.extend(Object, {
 Ext.EventObject = new Ext.EventObjectImpl();
 
 Ext.is = {
-    init : function() {
+    init : function(navigator) {
         var platforms = this.platforms,
             ln = platforms.length,
             i, platform;
 
+        navigator = navigator || window.navigator;
+
         for (i = 0; i < ln; i++) {
             platform = platforms[i];
-            this[platform.identity] = platform.regex.test(platform.string);
+            this[platform.identity] = platform.regex.test(navigator[platform.property]);
         }
 
         
@@ -4659,56 +4665,56 @@ Ext.is = {
     
     
     platforms: [{
-        string: navigator.platform,
+        property: 'platform',
         regex: /iPhone/i,
         identity: 'iPhone'
     },
     
     
     {
-        string: navigator.platform,
+        property: 'platform',
         regex: /iPod/i,
         identity: 'iPod'
     },
     
     
     {
-        string: navigator.userAgent,
+        property: 'userAgent',
         regex: /iPad/i,
         identity: 'iPad'
     },
     
     
     {
-        string: navigator.userAgent,
+        property: 'userAgent',
         regex: /Blackberry/i,
         identity: 'Blackberry'
     },
     
     
     {
-        string: navigator.userAgent,
+        property: 'userAgent',
         regex: /Android/i,
         identity: 'Android'
     },
     
     
     {
-        string: navigator.platform,
+        property: 'platform',
         regex: /Mac/i,
         identity: 'Mac'
     },
     
     
     {
-        string: navigator.platform,
+        property: 'platform',
         regex: /Win/i,
         identity: 'Windows'
     },
     
     
     {
-        string: navigator.platform,
+        property: 'platform',
         regex: /Linux/i,
         identity: 'Linux'
     }]
@@ -4744,10 +4750,10 @@ Ext.supports = {
 
     
     OrientationChange: ((typeof window.orientation != 'undefined') && ('onorientationchange' in window)),
-
+    
     
     DeviceMotion: ('ondevicemotion' in window),
-
+    
     
     
     
@@ -4878,6 +4884,24 @@ Ext.supports = {
                 div.style.cssText = options.join(';');
                 
                 return ("" + div.style.backgroundImage).indexOf('gradient') !== -1;
+            }
+        },
+        
+        
+        {
+            identity: 'CSS3BorderRadius',
+            fn: function(doc, div) {
+                var domPrefixes = ['borderRadius', 'BorderRadius', 'MozBorderRadius', 'WebkitBorderRadius', 'OBorderRadius', 'KhtmlBorderRadius'],
+                    pass = false,
+                    i;
+                
+                for (i = 0; i < domPrefixes.length; i++) {
+                    if (document.body.style[domPrefixes[i]] !== undefined) {
+                        return pass = true;
+                    }
+                }
+                
+                return pass;
             }
         },
         
@@ -5017,12 +5041,6 @@ Ext.data.Model = Ext.extend(Ext.util.Stateful, {
     
     constructor: function(data, id) {
         data = data || {};
-        
-        if (this.evented) {
-            this.addEvents(
-                
-            );
-        }
         
         
         this.internalId = (id || id === 0) ? id : Ext.data.Model.id(this);
@@ -8741,9 +8759,10 @@ Ext.data.RestProxy = Ext.extend(Ext.data.AjaxProxy, {
     
     
     buildUrl: function(request) {
-        var record = request.operation.records[0],
-            format = this.format,
-            url    = request.url || this.url;
+        var records = request.operation.records || [],
+            record  = records[0],
+            format  = this.format,
+            url     = request.url || this.url;
         
         if (this.appendId && record) {
             if (!url.match(/\/$/)) {
@@ -8927,7 +8946,7 @@ Ext.data.ScriptTagProxy = Ext.extend(Ext.data.ServerProxy, {
             url = Ext.urlAppend(url, Ext.urlEncode(params));
         }
         
-        if (filters.length) {
+        if (filters && filters.length) {
             for (i = 0; i < filters.length; i++) {
                 filter = filters[i];
                 
@@ -9385,6 +9404,14 @@ Ext.data.Reader = Ext.extend(Object, {
     
     
     implicitIncludes: true,
+    
+    
+    nullResultSet: new Ext.data.ResultSet({
+        total  : 0,
+        count  : 0,
+        records: [],
+        success: true
+    }),
 
     constructor: function(config) {
         Ext.apply(this, config || {});
@@ -9408,12 +9435,16 @@ Ext.data.Reader = Ext.extend(Object, {
     
     read: function(response) {
         var data = response;
+        
+        if (response) {
+            if (response.responseText) {
+                data = this.getResponseData(response);
+            }
 
-        if (response.responseText) {
-            data = this.getResponseData(response);
+            return this.readRecords(data);
+        } else {
+            return this.nullResultSet;
         }
-
-        return this.readRecords(data);
     },
 
     
@@ -10018,10 +10049,10 @@ Ext.data.XmlReader = Ext.extend(Ext.data.Reader, {
         var nodeName = data.nodeName,
             root     = this.root;
         
-        if (nodeName && nodeName == root) {
+        if (!root || (nodeName && nodeName == root)) {
             return data;
         } else {
-            return Ext.DomQuery.select(root, data);
+            return Ext.DomQuery.selectNode(root, data);
         }
     },
 
@@ -10042,11 +10073,9 @@ Ext.data.XmlReader = Ext.extend(Ext.data.Reader, {
         
         
 
-        
         Ext.applyIf(config, {
             idProperty     : config.idPath || config.id,
-            successProperty: config.success,
-            root           : config.record
+            successProperty: config.success
         });
         
         Ext.data.XmlReader.superclass.constructor.call(this, config);
@@ -10176,11 +10205,11 @@ Ext.ControllerManager = new Ext.AbstractManager({
     register: function(id, options) {
         options.id = id;
         
-        var controller = new Ext.Controller(options);
+        Ext.applyIf(options, {
+            application: Ext.ApplicationManager.currentApplication
+        });
         
-        if (this.getCount() > 0) {
-            controller.application = this.all.getValues()[0];
-        }
+        var controller = new Ext.Controller(options);
         
         if (controller.init) {
             controller.init();
@@ -10770,41 +10799,41 @@ Ext.Interaction = Ext.extend(Ext.util.Observable, {
 
 Ext.Application = Ext.extend(Ext.util.Observable, {
     
-    
+
     
     scope: undefined,
-    
+
     
     useHistory: true,
+
     
-    
-    
+
     
     autoUpdateComponentProfiles: true,
-    
+
     
     setProfilesOnLaunch: true,
-    
+
     
 
     constructor: function(config) {
         this.addEvents(
             
             'launch',
-            
+
             
             'beforeprofilechange',
-            
+
             
             'profilechange'
         );
-        
+
         Ext.Application.superclass.constructor.call(this, config);
-        
+
         this.bindReady();
-        
+
         var name = this.name;
-        
+
         if (name) {
             window[name] = this;
 
@@ -10816,46 +10845,49 @@ Ext.Application = Ext.extend(Ext.util.Observable, {
                 name + ".controllers"
             );
         }
-        
+
         if (Ext.addMetaTags) {
             Ext.addMetaTags(config);
         }
     },
-    
+
     
     bindReady : function() {
         Ext.onReady(this.onReady, this);
     },
-    
+
     
     launch: Ext.emptyFn,
-    
+
     
     useLoadMask: false,
-    
+
     
     loadMaskFadeDuration: 1000,
-    
+
     
     loadMaskRemoveDuration: 1050,
+
     
+    autoInitViewport: true,
+
     
     dispatch: function(options) {
         return Ext.dispatch(options);
     },
-    
+
     
     initLoadMask: function() {
         var useLoadMask = this.useLoadMask,
             defaultId   = 'loading-mask',
             loadMaskId  = typeof useLoadMask == 'string' ? useLoadMask : defaultId;
-        
+
         if (useLoadMask) {
             if (loadMaskId == defaultId) {
                 Ext.getBody().createChild({id: defaultId});
             }
-            
-            var loadingMask  = Ext.get('loading-mask'),  
+
+            var loadingMask  = Ext.get('loading-mask'),
                 fadeDuration = this.loadMaskFadeDuration,
                 hideDuration = this.loadMaskRemoveDuration;
 
@@ -10868,19 +10900,13 @@ Ext.Application = Ext.extend(Ext.util.Observable, {
             }, fadeDuration);
         }
     },
+
     
-    
-    onReady: function() {
+    onBeforeLaunch: function() {
         var History    = Ext.History,
             useHistory = History && this.useHistory,
             profile    = this.determineProfile(true);
-        
-        if (this.useLoadMask) {
-            this.initLoadMask();
-        }
-        
-        Ext.EventManager.onOrientationChange(this.determineProfile, this);
-        
+
         if (useHistory) {
             this.historyForm = Ext.getBody().createChild({
                 id    : 'history-form',
@@ -10905,56 +10931,71 @@ Ext.Application = Ext.extend(Ext.util.Observable, {
                     }
                 ]
             });
-            
+
             History.init();
             History.on('change', this.onHistoryChange, this);
-            
+
             var token = History.getToken();
-            
+
             if (this.launch.call(this.scope || this, profile) !== false) {
                 Ext.redirect(token || this.defaultUrl || {controller: 'application', action: 'index'});
             }
         } else {
             this.launch.call(this.scope || this, profile);
         }
-        
+
         this.launched = true;
-        
+
         this.fireEvent('launch', this);
-        
+
         if (this.setProfilesOnLaunch) {
             this.updateComponentProfiles(profile);
         }
-        
+    },
+
+    
+    onReady: function() {
+        if (this.useLoadMask) {
+            this.initLoadMask();
+        }
+
+        Ext.EventManager.onOrientationChange(this.determineProfile, this);
+
+        if (this.autoInitViewport) {
+            Ext.Viewport.init(this.onBeforeLaunch, this);
+        } else {
+            this.onBeforeLaunch();
+        }
+
         return this;
     },
-    
+
     
     determineProfile: function(silent) {
         var currentProfile = this.currentProfile,
             profiles       = this.profiles,
             name;
-        
+
         for (name in profiles) {
             if (profiles[name]() === true) {
                 if (name != currentProfile && this.fireEvent('beforeprofilechange', name, currentProfile) !== false) {
                     if (this.autoUpdateComponentProfiles) {
                         this.updateComponentProfiles(name);
                     }
-                    
+
                     if (silent !== true) {
                         this.fireEvent('profilechange', name, currentProfile);
                     }
                 }
-                
+
                 this.currentProfile = name;
                 break;
             }
         }
-        
+
         return this.currentProfile;
     },
-    
+
     
     updateComponentProfiles: function(profile) {
         Ext.ComponentMgr.each(function(key, component){
@@ -10963,12 +11004,12 @@ Ext.Application = Ext.extend(Ext.util.Observable, {
             }
         });
     },
-    
+
     
     getProfile: function() {
         return this.currentProfile;
     },
-    
+
     
     onHistoryChange: function(token) {
         return Ext.redirect(token);
@@ -10986,6 +11027,8 @@ Ext.ApplicationManager = new Ext.AbstractManager({
         var application = new Ext.Application(options);
         
         this.all.add(application);
+        
+        this.currentApplication = application;
         
         return application;
     }
@@ -13823,186 +13866,6 @@ Ext.apply(Ext, {
     }
 });
 
-Ext.Viewport = new (Ext.extend(Ext.util.Observable, {
-    constructor: function() {
-        var me = this;
-        
-        this.addEvents(
-            'orientationchange',
-            'resize'
-        );
-            
-        this.stretchSizes = {};
-
-        if (Ext.supports.OrientationChange) {
-            window.addEventListener('orientationchange', Ext.createDelegate(me.onOrientationChange, me), false);
-        }
-        else {
-            window.addEventListener('resize', Ext.createDelegate(me.onResize, me), false);
-        }
-
-        if (!Ext.desktop) {
-            document.addEventListener('touchstart', Ext.createDelegate(me.onTouchStartCapturing, me), true);
-        }
-    },
-
-    init: function(fn) {
-        var me = this,
-            stretchSize = Math.max(window.innerHeight, window.innerWidth) * 2,
-            body = Ext.getBody();
-
-        me.updateOrientation();
-
-        this.initialHeight = window.innerHeight;
-        this.initialOrientation = this.orientation;
-
-        body.setHeight(stretchSize);
-        this.scrollToTop();
-
-        setTimeout(function() {
-            me.scrollToTop();
-            me.initialHeight = Math.max(me.initialHeight, window.innerHeight);
-            
-            fn();
-
-            me.updateBodySize();
-        }, 500);
-    },
-
-    scrollToTop: function() {
-        if (Ext.is.iOS) {
-            document.body.scrollTop = document.body.scrollHeight;
-        }
-        else {
-            window.scrollTo(0, 1);
-        }
-    },
-
-    updateBodySize: function() {
-        Ext.getBody().setSize(window.innerWidth, window.innerHeight);
-    },
-    
-    updateOrientation: function() {
-        this.lastSize = this.getSize();
-        this.orientation = this.getOrientation();
-    },
-
-    onTouchStartCapturing: function(e) {
-        if (!Ext.currentlyFocusedField && Ext.is.iOS) {
-            this.scrollToTop();
-        }
-    },
-
-    onOrientationChange: function() {
-        var me = this,
-            body = Ext.getBody();
-
-        body.setHeight(body.getWidth());
-
-        this.updateOrientation();
-
-        this.fireEvent('orientationchange', this, this.orientation);
-
-
-            setTimeout(function() {
-                me.scrollToTop();
-                setTimeout(function() {
-                    me.updateBodySize();
-                    me.fireResizeEvent();
-                }, 100);
-            }, 100);
-
-
-
-
-
-    },
-
-    fireResizeEvent: function() {
-        var me = this;
-
-        if (!Ext.is.iOS) {
-            if (this.resizeEventTimer) {
-                clearTimeout(this.resizeEventTimer);
-            }
-
-            this.resizeEventTimer = setTimeout(function() {
-                me.fireEvent('resize', me, me.getSize());
-            }, 500);
-        } else {
-            me.fireEvent('resize', me, me.getSize());
-        }
-    },
-
-    onResize: function() {
-        if (this.orientation != this.getOrientation()) {
-            this.onOrientationChange();
-        } else {
-            var size = this.getSize();
-
-            if (!Ext.is.iOS) {
-                if ((size.width == this.lastSize.width && size.height > this.lastSize.height) ||
-                    (size.height == this.lastSize.height && size.width > this.lastSize.width)) {
-                    this.fireEvent('resize', this, size);
-                }
-            } else {
-                this.fireEvent('resize', this, size);
-            }
-        }
-    },
-
-    getSize: function() {
-        return {
-            width: window.innerWidth,
-            height: (this.orientation == this.initialOrientation) ? 
-                        Math.max(this.initialHeight, window.innerHeight) :
-                        window.innerHeight
-        };
-    },
-
-    getOffset: function() {
-        return {
-            x: window.pageXOffset,
-            y: window.pageYOffset
-        };
-    },
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
-    getOrientation: function() {
-        var size = this.getSize();
-
-        if (window.hasOwnProperty('orientation')) {
-            return (window.orientation == 0 || window.orientation == 180) ? 'portrait' : 'landscape';
-        }
-        else {
-            if (!Ext.is.iOS) {
-                if ((size.width == this.lastSize.width && size.height < this.lastSize.height) ||
-                    (size.height == this.lastSize.height && size.width < this.lastSize.width)) {
-                    return this.orientation;
-                }
-            }
-            
-            return (window.innerHeight > window.innerWidth) ? 'portrait' : 'landscape';
-        }
-
-    }
-
-}));
 
 
 (function() {
@@ -14049,6 +13912,189 @@ Ext.Viewport = new (Ext.extend(Ext.util.Observable, {
     }
 })();
 
+
+
+Ext.Viewport = new (Ext.extend(Ext.util.Observable, {
+    constructor: function() {
+        var me = this;
+
+        this.addEvents(
+            'orientationchange',
+            'resize'
+        );
+
+        this.stretchSizes = {};
+
+        if (Ext.supports.OrientationChange) {
+            window.addEventListener('orientationchange', Ext.createDelegate(me.onOrientationChange, me), false);
+        }
+        else {
+            window.addEventListener('resize', Ext.createDelegate(me.onResize, me), false);
+        }
+
+        if (!Ext.desktop) {
+            document.addEventListener('touchstart', Ext.createDelegate(me.onTouchStartCapturing, me), true);
+        }
+    },
+
+    init: function(fn, scope) {
+        var me = this,
+            stretchSize = Math.max(window.innerHeight, window.innerWidth) * 2,
+            body = Ext.getBody();
+
+        me.updateOrientation();
+
+        this.initialHeight = window.innerHeight;
+        this.initialOrientation = this.orientation;
+
+        body.setHeight(stretchSize);
+
+        Ext.gesture.Manager.freeze();
+
+        this.scrollToTop();
+        
+        
+        
+        setTimeout(function() {
+            me.scrollToTop();
+            setTimeout(function() {
+                me.scrollToTop();
+                me.initialHeight = Math.max(me.initialHeight, window.innerHeight);
+
+                if (fn) {
+                    fn.apply(scope || window);
+                }
+
+                me.updateBodySize();
+
+                Ext.gesture.Manager.thaw();
+            }, 500);
+        }, 500);
+
+    },
+
+    scrollToTop: function() {
+        if (Ext.is.iOS) {
+            document.body.scrollTop = document.body.scrollHeight;
+        }
+        else {
+            window.scrollTo(0, 1);
+        }
+    },
+
+    updateBodySize: function() {
+        Ext.getBody().setSize(window.innerWidth, window.innerHeight);
+    },
+
+    updateOrientation: function() {
+        this.lastSize = this.getSize();
+        this.orientation = this.getOrientation();
+    },
+
+    onTouchStartCapturing: function(e) {
+        if (!Ext.currentlyFocusedField && Ext.is.iOS) {
+            this.scrollToTop();
+        }
+    },
+
+    onOrientationChange: function() {
+        var me = this,
+            body = Ext.getBody();
+
+        Ext.gesture.Manager.freeze();
+
+        body.setHeight(body.getWidth());
+
+        this.updateOrientation();
+
+        this.fireEvent('orientationchange', this, this.orientation);
+
+        setTimeout(function() {
+            me.scrollToTop();
+            setTimeout(function() {
+                me.updateBodySize();
+                me.fireResizeEvent();
+
+                Ext.gesture.Manager.thaw();
+            }, 200);
+        }, 200);
+    },
+
+    fireResizeEvent: function() {
+        var me = this;
+
+        if (!Ext.is.iOS) {
+            if (this.resizeEventTimer) {
+                clearTimeout(this.resizeEventTimer);
+            }
+
+            this.resizeEventTimer = setTimeout(function() {
+                me.fireEvent('resize', me, me.getSize());
+            }, 500);
+        } else {
+            me.fireEvent('resize', me, me.getSize());
+        }
+    },
+
+    onResize: function() {
+        if (this.orientation != this.getOrientation()) {
+            this.onOrientationChange();
+        } else {
+            var size = this.getSize();
+
+            if (!Ext.is.iOS && !Ext.is.Desktop) {
+                if ((size.width == this.lastSize.width && size.height > this.lastSize.height) ||
+                    (size.height == this.lastSize.height && size.width > this.lastSize.width)) {
+                    this.fireEvent('resize', this, size);
+                }
+            } else {
+                this.fireEvent('resize', this, size);
+            }
+        }
+    },
+
+    getSize: function() {
+        var size = {
+            width: window.innerWidth,
+            height: window.innerHeight
+        };
+
+        if (!Ext.is.Desktop) {
+            size.height = (this.orientation == this.initialOrientation) ?
+                            Math.max(this.initialHeight, size.height) :
+                            size.height
+        }
+
+        return size;
+    },
+
+    getOffset: function() {
+        return {
+            x: window.pageXOffset,
+            y: window.pageYOffset
+        };
+    },
+
+    getOrientation: function() {
+        var size = this.getSize();
+
+        if (window.hasOwnProperty('orientation')) {
+            return (window.orientation == 0 || window.orientation == 180) ? 'portrait' : 'landscape';
+        }
+        else {
+            if (!Ext.is.iOS && !Ext.is.Desktop) {
+                if ((size.width == this.lastSize.width && size.height < this.lastSize.height) ||
+                    (size.height == this.lastSize.height && size.width < this.lastSize.width)) {
+                    return this.orientation;
+                }
+            }
+
+            return (window.innerHeight > window.innerWidth) ? 'portrait' : 'landscape';
+        }
+
+    }
+
+}));
 
 Ext.util.TapRepeater = Ext.extend(Ext.util.Observable, {
 
@@ -17996,6 +18042,14 @@ Ext.gesture.Manager = new Ext.AbstractManager({
         this.attachListeners();
     },
 
+    freeze: function() {
+        this.isFrozen = true;
+    },
+
+    thaw: function() {
+        this.isFrozen = false;
+    },
+
     getEventSimulator: function() {
         if (!this.eventSimulator) {
             this.eventSimulator = new Ext.util.EventSimulator();
@@ -18049,6 +18103,10 @@ Ext.gesture.Manager = new Ext.AbstractManager({
                 e.preventDefault();
             }
         }
+
+        if (this.isFrozen) {
+            return;
+        }
         
         
         
@@ -18090,6 +18148,10 @@ Ext.gesture.Manager = new Ext.AbstractManager({
             e.preventDefault();
         }
 
+        if (this.isFrozen) {
+            return;
+        }
+
         var gestures = this.currentGestures,
             gesture,
             touch = e.changedTouches ? e.changedTouches[0] : e;
@@ -18115,6 +18177,10 @@ Ext.gesture.Manager = new Ext.AbstractManager({
 
     
     onTouchEnd: function(e) {
+        if (this.isFrozen) {
+            return;
+        }
+        
         var gestures = this.currentGestures.slice(0),
             ln = gestures.length,
             i, gesture, endPoint,
@@ -28220,6 +28286,8 @@ Ext.form.Select = Ext.extend(Ext.form.Text, {
 
     
     useMask: true,
+
+    monitorOrientation: true,
     
     
     initComponent: function() {
@@ -28312,6 +28380,13 @@ Ext.form.Select = Ext.extend(Ext.form.Text, {
     },
 
     
+    onOrientationChange: function() {
+        if (this.isActive && !Ext.is.Phone) {
+            this.listPanel.showBy(this.el, false, false);
+        }
+    },
+
+    
     onMaskTap: function() {
         if (this.disabled) {
             return;
@@ -28332,6 +28407,8 @@ Ext.form.Select = Ext.extend(Ext.form.Text, {
             listPanel.showBy(this.el, 'fade', false);
             listPanel.down('#list').getSelectionModel().select(index != -1 ? index: 0, false, true);
         }
+
+        this.isActive = true;
     },
 
     
@@ -28346,6 +28423,8 @@ Ext.form.Select = Ext.extend(Ext.form.Text, {
             out: true,
             scope: this
         });
+
+        this.isActive = false;
     },
 
     
@@ -28357,6 +28436,8 @@ Ext.form.Select = Ext.extend(Ext.form.Text, {
             this.setValue(newValue);
             this.fireEvent('change', this, newValue);
         }
+
+        this.isActive = false;
     },
 
     
