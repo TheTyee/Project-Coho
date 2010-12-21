@@ -46,5 +46,17 @@ get '/search/(*query)' => sub {
     $m->render(text => $r->content, format => ($m->param("callback") ? "js" : "json"));
 };
 
+get '/topic/:topic' => sub {
+    my $m = shift;
+
+    my $ua = LWP::UserAgent->new;
+    my $elastic = { size => 25, query => {field => { topics => $m->param("topic") } } };
+
+    my $r = $ua->post("http://localhost:9200/tyee/story/_search".($m->param("callback") ? "?callback=".$m->param("callback") : ""),
+        Content => encode_json($elastic));
+
+    $m->render(text => $r->content, format => ($m->param("callback") ? "js" : "json"));
+};
+
 app->start;
 
