@@ -78,6 +78,9 @@ pushPanelStackByUUID: function(uuid)
     Coho.Story.getStory(uuid, function(storyData) {
         Coho.renderStory(selectedStoryPanel, storyData);
         selectedStoryPanel.doLayout();
+        if (storyData.uuid == Coho.currentTab.stack[0].uuid) {
+            Coho.currentTab.stack[0].storyData = storyData;
+        }
     });
 
     Coho.pushPanelStack(selectedStoryPanel);
@@ -95,7 +98,7 @@ pushPanelStackItemtap: function(list, index, item, e)
     Coho.renderStory(selectedStoryPanel, rec.data);
 
     selectedStoryPanel.uuid = rec.get("uuid");
-    Coho.currentTab.stack.unshift({type:"story", uuid:rec.get("uuid"), back:"Back"});
+    Coho.currentTab.stack.unshift({type:"story", uuid:rec.get("uuid"), back:"Back", storyData:rec.data});
 
     Coho.pushPanelStack(selectedStoryPanel);
 },

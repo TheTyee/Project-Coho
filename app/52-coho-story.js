@@ -21,24 +21,33 @@ Coho.Story = {
  */
 getStory: function(uuid, callback)
 {
-    var c = Coho.Story.getStoryFromSession(uuid);
+    var c;
+
+    // is it the currently displayed story?
+    if (Coho.currentTab.stack[0] && Coho.currentTab.stack[0].type=="story" && Coho.currentTab.stack[0].uuid==uuid && Coho.currentTab.stack[0].storyData) {
+        console.log("story "+uuid+" retrieved from story stack");
+        c = Coho.currentTab.stack[0].storyData;
+
+        if (callback) return callback(c);
+        else          return c;
+    }
+
+    // session storage?
+    c = Coho.Story.getStoryFromSession(uuid);
     if (c) {
         console.log("story "+uuid+" retrieved from session");
 
-        if (callback)
-            return callback(c);
-        else
-            return c;
+        if (callback) return callback(c);
+        else          return c;
     }
 
+    // local storage?
     c = Coho.Story.getStoryFromStorage(uuid);
     if (c) {
         console.log("story "+uuid+" retrieved from local storage");
 
-        if (callback)
-            return callback(c);
-        else
-            return c;
+        if (callback) return callback(c);
+        else          return c;
     }
 
     if (!callback) {
