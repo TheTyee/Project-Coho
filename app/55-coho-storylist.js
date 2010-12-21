@@ -10,31 +10,34 @@ Coho.StoryListObject = function(config)
     // store and list for the main display
     this.store = config.store;
 
+    // support for custom listeners (e.g. swipe)
+    if (!config.listeners) config.listeners = {};
+    // one that likely won't be overridden is the basic tap to view story
+    if (!config.listeners.itemtap) config.listeners.itemtap = function(list, index, item, e) {
+        var uuid = list.getStore().getAt(index).get("uuid");
+
+        // let Coho know where we are
+        Coho.currentTab = me;
+        me.stack.unshift(uuid);
+
+        // push the selected story onto the stack
+        Coho.pushPanelStackItemtap(list, index, item, e);
+
+        if (config.saveToSessionOnRender)
+            Coho.Story.saveStoryToSession(list.getStore().getAt(index).data);
+
+        // set up the toolbar buttons
+        me.showBackButton();
+        me.showContextButton();
+    };
+
     this.list = new Ext.List({
         fullscreen: true,
         itemTpl: storyListTpl,
         itemSelector: "div.article",
         store: this.store,
         onItemDisclosure: config.onItemDisclosure,
-        listeners: {
-            "itemtap": function(list, index, item, e) {
-                var uuid = list.getStore().getAt(index).get("uuid");
-
-                // let Coho know where we are
-                Coho.currentTab = me;
-                me.stack.unshift(uuid);
-
-                // push the selected story onto the stack
-                Coho.pushPanelStackItemtap(list, index, item, e);
-
-                if (config.saveToSessionOnRender)
-                    Coho.Story.saveStoryToSession(list.getStore().getAt(index).data);
-
-                // set up the toolbar buttons
-                me.showBackButton();
-                me.showContextButton();
-            }
-        }
+        listeners: config.listeners
     });
 
     // set up our toolbar buttons

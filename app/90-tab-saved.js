@@ -20,8 +20,15 @@ var savedStoriesTab = new Coho.StoryListObject({
     },
 
     panelTitle: "Saved",
-    panelIcon: "favorites"
+    panelIcon: "favorites",
 
+    listeners: {
+        "itemswipe": function(list, index, item, e) {
+            var uuid = list.getStore().getAt(index).get("uuid");
+            // TODO: delete button magic
+            Coho.Story.removeSaved(uuid);
+        }
+    }
 });
 
 savedStoriesTab.refresh = function()
