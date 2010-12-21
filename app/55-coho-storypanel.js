@@ -42,7 +42,7 @@ Coho.StoryListObject = function(config)
     config.titleBar.items.push(
         { text: "Back", id: config.titleBar.id+"BackButton", ui: "back", handler: Coho.popPanelStack, hidden: true },
         { xtype: "spacer"},
-        { text: "Stuff", id: config.titleBar.id+"ContextButton", handler: Coho.Callbacks.storyContextPressed, hidden: true }
+        { iconCls: "action", iconMask: true, id: config.titleBar.id+"ContextButton", handler: Coho.Callbacks.storyContextPressed, hidden: true }
     );
 
     this.panel = new Ext.Panel({
