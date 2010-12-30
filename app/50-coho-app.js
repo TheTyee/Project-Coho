@@ -20,6 +20,17 @@ renderStory: function(storyPanel, storyData) {
 
     // related stories?
     if (storyData.related_stories && storyData.related_stories[0]) {
+        var relatedStore = new Ext.data.JsonStore({
+            model: "story",
+            data: storyData.related_stories
+        });
+
+        storyPanel.add(new Ext.Panel({
+            items: [{xtype:"panel", tpl:relatedStoryTpl, layout:"fit", data: storyData.related_stories }],
+            layout: { type: "vbox" }
+        }));
+
+        /*
         storyPanel.add(new Ext.Panel({
             items: [ {
                 xtype: "fieldset",
@@ -61,6 +72,7 @@ renderStory: function(storyPanel, storyData) {
                 } ]
             } ]
         }));
+        */
     }
 },
 

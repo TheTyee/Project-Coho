@@ -27,8 +27,11 @@ var storyDetailTpl = new Ext.XTemplate(
     '</div>'
 );
 
-var relatedStoryTpl = new Ext.Template(
-    '{title}'
+var relatedStoryTpl = new Ext.XTemplate(
+    '<p id="gregtest">Related stories:</p>',
+    '<ul>',
+    '<tpl for="."><li><a href="#" id="rel_{uuid}" onclick="Coho.pushPanelStackByUUID(\'{uuid}\');return false;">{title}</a></li></tpl>',
+    '</ul>'
 );
 
 var topicListTpl = new Ext.Template(
