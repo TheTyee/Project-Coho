@@ -293,6 +293,18 @@ saveStoryToStorage: function(json)
     return localStorage.setItem(json.uuid, JSON.stringify(json));
 },
 
+/**
+ * Definition for a generic panel for a single story.
+ */
+genericStoryPanel: {
+    hidden: true,
+    items: [{xtype:"panel",tpl:Coho.Templates.storyDetail,layout:"fit"}],
+    layout: {
+        type: "vbox"
+    },
+    scroll: "vertical"
+},
+
 
 };
 

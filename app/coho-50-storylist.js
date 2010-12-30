@@ -23,7 +23,7 @@ Coho.StoryListObject = function(config)
         Coho.currentTab = me;
 
         // push the selected story onto the stack
-        Coho.pushPanelStackItemtap(list, index, item, e);
+        Coho.View.pushPanelStackItemtap(list, index, item, e);
 
         if (config.saveToSessionOnRender)
             Coho.Story.saveStoryToSession(list.getStore().getAt(index).data);
@@ -34,7 +34,7 @@ Coho.StoryListObject = function(config)
 
     this.list = new Ext.List({
         fullscreen: true,
-        itemTpl: storyListTpl,
+        itemTpl: Coho.Templates.storyList,
         itemSelector: "div.article",
         store: this.store,
         onItemDisclosure: config.onItemDisclosure,
@@ -44,7 +44,7 @@ Coho.StoryListObject = function(config)
     // set up our toolbar buttons
     if (!config.titleBar.items) config.titleBar.items = [];
     config.titleBar.items.push(
-        { text: "Back", id: config.titleBar.id+"BackButton", ui: "back", handler: Coho.popPanelStack, hidden: true },
+        { text: "Back", id: config.titleBar.id+"BackButton", ui: "back", handler: Coho.View.popPanelStack, hidden: true },
         { xtype: "spacer"},
         { iconCls: "action", iconMask: true, id: config.titleBar.id+"ContextButton", handler: Coho.Callbacks.storyContextPressed, hidden: true }
     );

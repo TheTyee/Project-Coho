@@ -1,15 +1,10 @@
-// The main project Coho super-object
 // Code in this file keeps track of positioning, story stacks,
-// performs some rendering, etc.
+// and other screen rendering things
 
-var Coho = {
+// in case we're testing this file on its own for some reason
+if (!Coho) Coho = {};
 
-// configuration
-apiURL: "http://preview.app.thetyee.ca/proxy/v1",
-
-// quasi-globals
-currentTab: null,
-dyingPanel: null,
+Coho.View = {
 
 /**
  * render a story to a story panel
@@ -26,7 +21,7 @@ renderStory: function(storyPanel, storyData) {
         });
 
         storyPanel.add(new Ext.Panel({
-            items: [{xtype:"panel", tpl:relatedStoryTpl, layout:"fit", data: storyData.related_stories }],
+            items: [{xtype:"panel", tpl:Coho.Templates.relatedStory, layout:"fit", data: storyData.related_stories }],
             layout: { type: "vbox" }
         }));
 
@@ -44,14 +39,14 @@ renderStory: function(storyPanel, storyData) {
                         });
                         if (!storyPanel.relatedStoriesList) {
                             storyPanel.relatedStoriesList = new Ext.List({
-                                itemTpl: relatedStoryTpl,
+                                itemTpl: Coho.Templates.relatedStory,
                                 store: relatedStore,
                                 listeners: {
                                     "itemtap": function(list, index, item, e) {
                                         storyPanel.relatedStoriesOverlay.hide();
                                         var uuid = list.getStore().getAt(index).get("uuid");
                                         if (uuid) {
-                                            Coho.pushPanelStackByUUID(uuid);
+                                            Coho.View.pushPanelStackByUUID(uuid);
                                         }
                                     }
                                 }
@@ -81,21 +76,21 @@ renderStory: function(storyPanel, storyData) {
  */
 pushPanelStackByUUID: function(uuid)
 {
-    var selectedStoryPanel = new Ext.Panel(genericStoryPanel);
+    var selectedStoryPanel = new Ext.Panel(Coho.Story.genericStoryPanel);
 
     Coho.currentTab.stack.unshift({type:"story", uuid:uuid, back:"Back"});
 
     selectedStoryPanel.uuid = uuid;
 
     Coho.Story.getStory(uuid, function(storyData) {
-        Coho.renderStory(selectedStoryPanel, storyData);
+        Coho.View.renderStory(selectedStoryPanel, storyData);
         selectedStoryPanel.doLayout();
         if (storyData.uuid == Coho.currentTab.stack[0].uuid) {
             Coho.currentTab.stack[0].storyData = storyData;
         }
     });
 
-    Coho.pushPanelStack(selectedStoryPanel);
+    Coho.View.pushPanelStack(selectedStoryPanel);
 },
 
 /**
@@ -104,15 +99,15 @@ pushPanelStackByUUID: function(uuid)
  */
 pushPanelStackItemtap: function(list, index, item, e)
 {
-    var selectedStoryPanel = new Ext.Panel(genericStoryPanel);
+    var selectedStoryPanel = new Ext.Panel(Coho.Story.genericStoryPanel);
 
     var rec = list.getStore().getAt(index);
-    Coho.renderStory(selectedStoryPanel, rec.data);
+    Coho.View.renderStory(selectedStoryPanel, rec.data);
 
     selectedStoryPanel.uuid = rec.get("uuid");
     Coho.currentTab.stack.unshift({type:"story", uuid:rec.get("uuid"), back:"Back", storyData:rec.data});
 
-    Coho.pushPanelStack(selectedStoryPanel);
+    Coho.View.pushPanelStack(selectedStoryPanel);
 },
 
 /**
@@ -168,10 +163,5 @@ popPanelStack: function()
     }
 },
 
-// defined elsewhere...
-Story: {},
-
-CommonCallbacks: {},
-
-}; // end Coho
+}; // end Coho.View
 

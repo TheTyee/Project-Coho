@@ -1,6 +1,8 @@
 // templates
 
-var storyListTpl = new Ext.Template(
+Coho.Templates = {
+
+storyList: new Ext.Template(
   '<tpl for="."><div id="{uuid}" class="article">',
   ' <tpl for="related_media[0].thumbnails[0]">',
   '     <tpl if="width == 90">',
@@ -11,9 +13,9 @@ var storyListTpl = new Ext.Template(
   '<p>{abstract:ellipsis("140",1)} <span class="byline">By {byline}.</span> <span class="published">{publish_date}</span></p>',
   '</div>',
   '</tpl>'
-);
+),
 
-var storyDetailTpl = new Ext.XTemplate(
+storyDetail: new Ext.XTemplate(
     '<div id="{uuid}" class="storyDetail">',
     '<h1>{title}</h1>',
     '<h2>{abstract}</h2>',
@@ -25,16 +27,18 @@ var storyDetailTpl = new Ext.XTemplate(
     ' </tpl>',
     '<div class="storyContent">{content}</div>',
     '</div>'
-);
+),
 
-var relatedStoryTpl = new Ext.XTemplate(
+relatedStory: new Ext.XTemplate(
     '<p id="gregtest">Related stories:</p>',
     '<ul>',
-    '<tpl for="."><li><a href="#" id="rel_{uuid}" onclick="Coho.pushPanelStackByUUID(\'{uuid}\');return false;">{title}</a></li></tpl>',
+    '<tpl for="."><li><a href="#" id="rel_{uuid}" onclick="Coho.View.pushPanelStackByUUID(\'{uuid}\');return false;">{title}</a></li></tpl>',
     '</ul>'
-);
+),
 
-var topicListTpl = new Ext.Template(
+topicList: new Ext.Template(
     '{topic}'
-);
+),
+
+};
 
