@@ -17,6 +17,7 @@ storyList: new Ext.Template(
 
 storyDetail: new Ext.XTemplate(
     '<div id="{uuid}" class="storyDetail">',
+    '<div id="debug">{debug}</div>',
     '<h1>{title}</h1>',
     '<h2>{abstract}</h2>',
     '<div class="meta"><span class="byline">By {byline}.</span> <span class="published">{storyDate}</span></div>',
@@ -30,7 +31,7 @@ storyDetail: new Ext.XTemplate(
 ),
 
 relatedStory: new Ext.XTemplate(
-    '<p id="gregtest">Related stories:</p>',
+    '<p>Related stories:</p>',
     '<ul>',
     '<tpl for="."><li><a href="#" id="rel_{uuid}" onclick="Coho.View.pushPanelStackByUUID(\'{uuid}\');return false;">{title}</a></li></tpl>',
     '</ul>'
