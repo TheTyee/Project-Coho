@@ -10,8 +10,56 @@ Coho.View = {
  * render a story to a story panel
  */
 renderStory: function(storyPanel, storyData) {
-    // template magic
+    // main story template
     storyPanel.getComponent(0).update(storyData);
+
+    // slideshow?
+    if (storyData.related_media && storyData.related_media.length > 1) {
+        var carouselItems = [];
+        var thumbnail;
+        for (i=0; i < storyData.related_media.length; i++) {
+            if (!storyData.related_media[i].thumbnails || storyData.related_media[i].thumbnails.length < 1)
+                continue;
+
+            for (j=0; j < storyData.related_media[i].thumbnails.length; j++) {
+                if (!thumbnail && storyData.related_media[i].thumbnails[j] && storyData.related_media[i].thumbnails[j].width == "90") {
+                    thumbnail = storyData.related_media[i].thumbnails[j].uri;
+                }
+
+                if (storyData.related_media[i].thumbnails[j] && storyData.related_media[i].thumbnails[j].width == "300") {
+                    console.log("adding "+storyData.related_media[i].thumbnails[j].uri+" to slideshow");
+                    carouselItems.push({tpl: Coho.Templates.slideshowSlide, data: {uri: storyData.related_media[i].thumbnails[j].uri, caption: storyData.related_media[i].caption}});
+                }
+            }
+        }
+
+        if (carouselItems.length > 1) {
+            storyPanel.add(new Ext.Panel({
+                items: [ {
+                    xtype: "fieldset",
+                    items: [ {
+                        xtype: "button",
+                        text: "Slideshow",
+                        icon: thumbnail,
+                        handler: function() {
+                            if (!storyPanel.slideshowOverlay) {
+                                storyPanel.slideshowOverlay = new Ext.Carousel({
+                                    width: 308, height: 320, xtype: "carousel", ui: "light", direction: "horizontal",
+                                    items: carouselItems,
+                                    floating: true,
+                                    modal: true,
+                                    centered: true
+                                });
+                            }
+
+                            storyPanel.slideshowOverlay.show();
+                        }
+                    } ]
+                } ]
+            }));
+
+        }
+    }
 
     // related stories?
     if (storyData.related_stories && storyData.related_stories[0]) {
@@ -21,53 +69,8 @@ renderStory: function(storyPanel, storyData) {
         });
 
         storyPanel.add(new Ext.Panel({
-            items: [{xtype:"panel", tpl:Coho.Templates.relatedStory, layout:"fit", data: storyData.related_stories }],
-            layout: { type: "vbox" }
+            items: [{xtype:"panel", tpl:Coho.Templates.relatedStory, layout:"auto", data: storyData.related_stories }]
         }));
-
-        /*
-        storyPanel.add(new Ext.Panel({
-            items: [ {
-                xtype: "fieldset",
-                items: [ {
-                    xtype: "button",
-                    text: "Related stories",
-                    handler: function() {
-                        var relatedStore = new Ext.data.JsonStore({
-                            model: "story",
-                            data: storyData.related_stories
-                        });
-                        if (!storyPanel.relatedStoriesList) {
-                            storyPanel.relatedStoriesList = new Ext.List({
-                                itemTpl: Coho.Templates.relatedStory,
-                                store: relatedStore,
-                                listeners: {
-                                    "itemtap": function(list, index, item, e) {
-                                        storyPanel.relatedStoriesOverlay.hide();
-                                        var uuid = list.getStore().getAt(index).get("uuid");
-                                        if (uuid) {
-                                            Coho.View.pushPanelStackByUUID(uuid);
-                                        }
-                                    }
-                                }
-                            });
-                        } else {
-                            storyPanel.relatedStoriesList.deselect(storyPanel.relatedStoriesList.getSelectedRecords());
-                        }
-
-                        storyPanel.relatedStoriesOverlay = new Ext.Panel({
-                            floating: true,
-                            modal: true,
-                            centered: true,
-                            items: [ storyPanel.relatedStoriesList ]
-                        });
-
-                        storyPanel.relatedStoriesOverlay.show();
-                    }
-                } ]
-            } ]
-        }));
-        */
     }
 },
 

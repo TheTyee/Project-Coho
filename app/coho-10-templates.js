@@ -6,7 +6,7 @@ storyList: new Ext.Template(
   '<tpl for="."><div id="{uuid}" class="article">',
   ' <tpl for="related_media[0].thumbnails[0]">',
   '     <tpl if="width == 90">',
-  '     <img src="{uri}" class="thumnail" />',
+  '     <img src="{uri}" class="thumbnail">',
   '     </tpl>',
   ' </tpl>',
   '<h2>{title}</h2>',
@@ -23,7 +23,7 @@ storyDetail: new Ext.XTemplate(
     '<div class="meta"><span class="byline">By {byline}.</span> <span class="published">{storyDate}</span></div>',
     ' <tpl for="related_media[0]">',
     //'   <tpl if="width == 300">',
-    '       <img src="http://i.tinysrc.mobi/{uri}" class="thumnail" />', // Trying out tinysrc
+    //'       <img src="http://i.tinysrc.mobi/{uri}" class="thumbnail">', // Trying out tinysrc
     //'   </tpl>',
     ' </tpl>',
     '<div class="storyContent">{content}</div>',
@@ -39,6 +39,11 @@ relatedStory: new Ext.XTemplate(
 
 topicList: new Ext.Template(
     '{topic}'
+),
+
+slideshowSlide: new Ext.Template(
+    '<p><img src="{uri}"></p>',
+    '<p>{caption:ellipsis("140",1)}</p>'
 ),
 
 };

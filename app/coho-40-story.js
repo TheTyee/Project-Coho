@@ -298,7 +298,7 @@ saveStoryToStorage: function(json)
  */
 genericStoryPanel: {
     hidden: true,
-    items: [{xtype:"panel",tpl:Coho.Templates.storyDetail,layout:"fit"}],
+    items: [{xtype:"panel",tpl:Coho.Templates.storyDetail,layout:"auto",id:"thestory"}],
     layout: {
         type: "vbox"
     },
