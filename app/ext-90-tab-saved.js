@@ -24,9 +24,20 @@ Coho.tabs.savedStoriesTab = new Coho.StoryListObject({
 
     listeners: {
         "itemswipe": function(list, index, item, e) {
+            var el = Ext.get(item);
             var uuid = list.getStore().getAt(index).get("uuid");
+            var active = false;
+
+            console.log("item swipe on "+uuid);
+
+            Ext.select("div.delete-button", el.dom).each(function(e,c,i){if (e.dom.style.display=='block')active=true;});
+
+            Ext.select("div.delete-button", this.el.dom).each(function(e,c,i){e.setStyle({display:'none'});});
+            if (!active)
+                Ext.select("div.delete-button", el.dom).each(function(e,c,i){e.setStyle({display:'block'});});
+
             // TODO: delete button magic
-            Coho.Story.removeSaved(uuid);
+            //Coho.Story.removeSaved(uuid);
         }
     }
 });
