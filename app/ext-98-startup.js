@@ -4,10 +4,10 @@
  * Set up the top-level navigation
  */
 var mainTabPanels = [
-    latestStoriesTab.panel,
-    searchTab.panel,
-    savedStoriesTab.panel,
-    topicsTab.panel,
+    Coho.tabs.latestStoriesTab.panel,
+    Coho.tabs.searchTab.panel,
+    Coho.tabs.savedStoriesTab.panel,
+    Coho.tabs.topicsTab.panel,
     {
         iconCls: "more",
         title: "More",

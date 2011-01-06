@@ -36,7 +36,7 @@ var searchTabStore = new Ext.data.Store({
     autoLoad: false
 });
 
-var searchTab = new Coho.StoryListObject({
+Coho.tabs.searchTab = new Coho.StoryListObject({
     store: searchTabStore,
 
     saveToSessionOnRender: true,
@@ -53,5 +53,5 @@ var searchTab = new Coho.StoryListObject({
 
 });
 
-searchTab.stack.unshift({type:"root", uuid:"search", back:"Back"});
+Coho.tabs.searchTab.stack.unshift({type:"root", uuid:"search", back:"Back"});
 

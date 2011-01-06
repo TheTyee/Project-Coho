@@ -1,7 +1,7 @@
 /* nothing here yet */
 
 // topics is just a modified StoryListObject.
-var topicsTab = new Coho.StoryListObject({
+Coho.tabs.topicsTab = new Coho.StoryListObject({
     store: new Ext.data.Store({
         model: "story",
         data: [],
@@ -51,12 +51,12 @@ var topicsTab = new Coho.StoryListObject({
             var topicname = list.getStore().getAt(index).get("topic");
 
             // set up back button for right now
-            topicsTab.stack.unshift({type:"topic", uuid:topickey, back:topicname});
-            topicsTab.setBackButtonText(topicsTab.stack[1].back);
-            topicsTab.showBackButton();
-            topicsTab.hideContextButton();
+            Coho.tabs.topicsTab.stack.unshift({type:"topic", uuid:topickey, back:topicname});
+            Coho.tabs.topicsTab.setBackButtonText(Coho.tabs.topicsTab.stack[1].back);
+            Coho.tabs.topicsTab.showBackButton();
+            Coho.tabs.topicsTab.hideContextButton();
 
-            topicsTab.store.setProxy({
+            Coho.tabs.topicsTab.store.setProxy({
                 type: "scripttag",
                 extraParams: {filters: []},
                 url: Coho.apiURL+"/topic/"+topickey,
@@ -65,15 +65,15 @@ var topicsTab = new Coho.StoryListObject({
                     root: "hits.hits"
                 }
             });
-            topicsTab.store.load();
-            topicsTab.list.bindStore(topicsTab.store);
-            //topicsTab.list.refresh();
+            Coho.tabs.topicsTab.store.load();
+            Coho.tabs.topicsTab.list.bindStore(Coho.tabs.topicsTab.store);
+            //Coho.tabs.topicsTab.list.refresh();
 
-            topicsTab.panel.setActiveItem(1, {type:"slide", direction:"left"});
+            Coho.tabs.topicsTab.panel.setActiveItem(1, {type:"slide", direction:"left"});
             console.log("switch to topic: "+Coho.apiURL+"/topic/"+topickey);
         } }
     })
 });
 
-topicsTab.stack.unshift({type:"root", uuid:"topics", back:"Topics"});
+Coho.tabs.topicsTab.stack.unshift({type:"root", uuid:"topics", back:"Topics"});
 

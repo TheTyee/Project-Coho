@@ -4,7 +4,7 @@
  * Inherits from the magical Coho.StoryListObject.
  *
  */
-var latestStoriesTab = new Coho.StoryListObject({
+Coho.tabs.latestStoriesTab = new Coho.StoryListObject({
     store: new Ext.data.Store({
         model: "story",
         proxy: {
@@ -34,5 +34,5 @@ var latestStoriesTab = new Coho.StoryListObject({
 
 });
 
-latestStoriesTab.stack.unshift({type:"root", uuid:"latest", back:"Latest"});
+Coho.tabs.latestStoriesTab.stack.unshift({type:"root", uuid:"latest", back:"Latest"});
 

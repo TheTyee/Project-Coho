@@ -5,7 +5,7 @@
  * tabs is that saved story data is stored locally.
  *
  */
-var savedStoriesTab = new Coho.StoryListObject({
+Coho.tabs.savedStoriesTab = new Coho.StoryListObject({
     store: new Ext.data.Store({
         model: "story",
         data: Coho.Story.getSavedFull(),
@@ -31,11 +31,11 @@ var savedStoriesTab = new Coho.StoryListObject({
     }
 });
 
-savedStoriesTab.refresh = function()
+Coho.tabs.savedStoriesTab.refresh = function()
 {
-    savedStoriesTab.store.loadData(Coho.Story.getSavedFull());
-    savedStoriesTab.list.refresh();
+    Coho.tabs.savedStoriesTab.store.loadData(Coho.Story.getSavedFull());
+    Coho.tabs.savedStoriesTab.list.refresh();
 };
 
-savedStoriesTab.stack.unshift({type:"root", uuid:"saved", back:"Saved"});
+Coho.tabs.savedStoriesTab.stack.unshift({type:"root", uuid:"saved", back:"Saved"});
 

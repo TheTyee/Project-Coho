@@ -217,7 +217,7 @@ addSaved: function(uuid)
 
     stat = localStorage.setItem('savedStories', JSON.stringify(savedStories));
     // TODO: check stat
-    savedStoriesTab.refresh();
+    Coho.tabs.savedStoriesTab.refresh();
 },
 
 /**
@@ -249,7 +249,7 @@ removeSaved: function(uuid)
     }
 
     stat = localStorage.setItem('savedStories', savedStories);
-    savedStoriesTab.refresh();
+    Coho.tabs.savedStoriesTab.refresh();
 },
 
 

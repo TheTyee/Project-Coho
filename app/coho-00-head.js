@@ -8,5 +8,7 @@ apiURL: "http://preview.app.thetyee.ca/proxy/v1",
 currentTab: null,
 dyingPanel: null,
 
+tabs: {}
+
 };
 
