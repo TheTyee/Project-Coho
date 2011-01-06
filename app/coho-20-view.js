@@ -44,7 +44,7 @@ renderStory: function(storyPanel, storyData) {
                         handler: function() {
                             if (!storyPanel.slideshowOverlay) {
                                 storyPanel.slideshowOverlay = new Ext.Carousel({
-                                    width: 308, height: 320, xtype: "carousel", ui: "light", direction: "horizontal",
+                                    width: 308, height: 320, xtype: "carousel", ui: "dark", direction: "horizontal",
                                     items: carouselItems,
                                     floating: true,
                                     modal: true,
