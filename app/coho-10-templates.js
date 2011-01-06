@@ -11,6 +11,7 @@ storyList: new Ext.Template(
   ' </tpl>',
   '<h2>{title}</h2>',
   '<p>{abstract:ellipsis("140",1)} <span class="byline">By {byline}.</span> <span class="published">{publish_date}</span></p>',
+  '<div id="delete-button-{uuid}" class="action delete-button x-button">Delete</div>',
   '</div>',
   '</tpl>'
 ),

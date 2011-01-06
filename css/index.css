@@ -20,6 +20,17 @@
 .x-list-item .byline {
 
 }
+div.article .delete-button {
+    display: none;
+    float:right;
+    color:#fff;
+    font-size:0.7em;
+    padding:5px 8px;
+    border-color:#555;
+    background-image:-webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #d17e84), color-stop(100%, #bd1421));
+    background-image:linear-gradient(top, #d17e84 0%, #bd1421 24px)
+}
+
 .storyDetail {
     padding: 14px;
     background: rgb(255,255,255);
