@@ -47,5 +47,9 @@ slideshowSlide: new Ext.Template(
     '<p>{caption:ellipsis("140",1)}</p>'
 ),
 
+morePanel: new Ext.Template(
+    '<p>This is the MORE panel!</p>'
+),
+
 };
 
