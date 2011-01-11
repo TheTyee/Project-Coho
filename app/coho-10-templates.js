@@ -6,7 +6,7 @@ storyList: new Ext.Template(
   '<tpl for="."><div id="{uuid}" class="article">',
   ' <tpl for="related_media[0].thumbnails[0]">',
   '     <tpl if="width == 90">',
-  '     <img src="{uri}" class="thumbnail">',
+  '     <img src="{uri}" width="{width}" height="{height}" class="thumbnail">',
   '     </tpl>',
   ' </tpl>',
   '<h2>{title}</h2>',
