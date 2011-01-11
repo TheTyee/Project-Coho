@@ -46,6 +46,7 @@ Coho.StoryListObject = function(config)
         itemTpl: Coho.Templates.storyList,
         itemSelector: "div.article",
         store: this.store,
+        grouped: config.groupedList ? true : false,
         onItemDisclosure: config.onItemDisclosure,
         listeners: config.listeners
     });
