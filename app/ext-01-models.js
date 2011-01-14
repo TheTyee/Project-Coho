@@ -16,7 +16,10 @@ Ext.regModel('story', {
         {name:"related_stories", mapping: "_source.related_stories"},
         {name:"related_media", mapping: "_source.related_media"},
         {name:"publish_date", mapping: "_source.storyDate"},
-        {name:"byline", mapping: "_source.byline"}
+        {name:"byline", mapping: "_source.byline"},
+        {name:"book_profile", mapping: "_source.book_profile"},
+        {name:"podcast", mapping: "_source.related_podcast_audio"},
+        {name:"video", mapping: "_source.primary_video"}
     ]
 });
 
