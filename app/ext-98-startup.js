@@ -5,9 +5,9 @@
  */
 var mainTabPanels = [
     Coho.tabs.latestStoriesTab.panel,
+    Coho.tabs.topicsTab.panel,
     Coho.tabs.searchTab.panel,
     Coho.tabs.savedStoriesTab.panel,
-    Coho.tabs.topicsTab.panel,
     {
         xtype: "panel",
         dockedItems: [{xtype: "toolbar", dock: "top", title: "TheTyee.ca"}],
