@@ -13,7 +13,7 @@ Coho.tabs.latestStoriesTab = new Coho.StoryListObject({
         proxy: {
             type: "scripttag",
             extraParams: {filters: []},
-            url: Coho.apiURL+"/latest/grouped",
+            url: Coho.config.apiURL+"/latest/grouped",
             reader: {
                 type: "json",
                 root: "hits.hits"

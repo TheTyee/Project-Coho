@@ -101,7 +101,7 @@ getStoreFromRemote: function(uuid, config)
     config.proxy = {
         type: "scripttag",
         extraParams: {filters: []},
-        url: Coho.apiURL+"/story/"+uuid,
+        url: Coho.config.apiURL+"/story/"+uuid,
         reader: {
             type: "json",
             root: "hits.hits"

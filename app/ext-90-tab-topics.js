@@ -59,7 +59,7 @@ Coho.tabs.topicsTab = new Coho.StoryListObject({
             Coho.tabs.topicsTab.store.setProxy({
                 type: "scripttag",
                 extraParams: {filters: []},
-                url: Coho.apiURL+"/topic/"+topickey,
+                url: Coho.config.apiURL+"/topic/"+topickey,
                 reader: {
                     type: "json",
                     root: "hits.hits"
@@ -70,7 +70,7 @@ Coho.tabs.topicsTab = new Coho.StoryListObject({
             //Coho.tabs.topicsTab.list.refresh();
 
             Coho.tabs.topicsTab.panel.setActiveItem(1, {type:"slide", direction:"left"});
-            console.log("switch to topic: "+Coho.apiURL+"/topic/"+topickey);
+            console.log("switch to topic: "+Coho.config.apiURL+"/topic/"+topickey);
         } }
     })
 });
