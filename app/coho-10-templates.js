@@ -13,7 +13,10 @@ storyList: new Ext.Template(
   '<p>{abstract:ellipsis("140",1)} <span class="byline">By {byline}.</span> <span class="published">{publish_date}</span></p>',
   '<div id="delete-button-{uuid}" class="action delete-button x-button">Delete</div>',
   '</div>',
-  '</tpl>'
+  '</tpl>',
+  {
+      // member functions
+  }
 ),
 
 storyDetail: new Ext.XTemplate(
@@ -21,14 +24,45 @@ storyDetail: new Ext.XTemplate(
     '<div id="debug">{debug}</div>',
     '<h1>{title}</h1>',
     '<h2>{abstract}</h2>',
-    '<div class="meta"><span class="byline">By {byline}.</span> <span class="published">{storyDate}</span></div>',
+    '<div class="meta"><span class="byline">By {byline}.</span> <span class="published">{publish_date}</span></div>',
+    ' <tpl if="video">',
+    '   <tpl for="video">',
+    '     <dl class="video"><dt>{caption}</dt>',
+    '       <dd class="video"><a href="{uri}">Watch video</a></dd>',
+    '     </dl>',
+    '   </tpl>',
+    ' </tpl>',   
     ' <tpl for="related_media[0]">',
-    //'   <tpl if="width == 300">',
+    '   <tpl if="width == 300">',
     //'       <img src="http://i.tinysrc.mobi/{uri}" class="thumbnail">', // Trying out tinysrc
-    //'   </tpl>',
+    '     <img src="{uri}" width="{width}" height="{height}" class="thumbnail" />',
+    '   </tpl>',
+    ' </tpl>',
+    ' <tpl if="book_profile">',
+    '   <dl class="book_pofile">',
+    '     <tpl for="book_profile">',
+    '       <dt>{title}</dt>',
+    '         <dd class="author">By {author}</dd>',
+    '         <dd class="publisher">{publisher} ({date})</dd>',
+    '         <dd>{num_pages}</dd>',
+    '         <dd>ISBN: {isbn}</dd>',
+    '         <dd><a href="{buy_link}">Buy this book</a></dd>',
+    '     </tpl>',
+    '   </dl>',
+    ' </tpl>',
+    ' <tpl if="podcast">',
+    '   <tpl for="podcast">',
+    '     <dl class="podcast"><dt>{title}</dt>',
+    '       <dd class="summary">{summary}</dd>',
+    '       <dd class="audio"><audio hidden="false" src="{uri}" preload="auto" controls="controls" loop="loop"></audio></dd>',
+    '     </dl>',
+    '   </tpl>',
     ' </tpl>',
     '<div class="storyContent">{content}</div>',
-    '</div>'
+    '</div>',
+    {
+        // member functions:
+    }
 ),
 
 relatedStory: new Ext.XTemplate(
