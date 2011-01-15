@@ -69,7 +69,7 @@ renderStory: function(storyPanel, storyData) {
         });
 
         storyPanel.add(new Ext.Panel({
-            items: [{xtype:"panel", tpl:Coho.Templates.relatedStory, layout:"auto", data: storyData.related_stories }]
+            items: [{xtype:"panel", tpl:Coho.Templates.relatedStory, layout:"auto", baseCls:"related-stories", data: storyData.related_stories }]
         }));
     }
 },

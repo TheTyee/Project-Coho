@@ -8,23 +8,27 @@
 .x-list-item h2 {
     font-weight: bold;
     font-family: Georgia, 'Times New Roman', serif;
+    font-size: .9em;
+    font-style: italic;
 }
 /* font-family: 'Lucida Grande', Verdana, sans-serif; */
 .x-list-item p {
     font-family: 'Lucida Grande', Verdana, sans-serif;
     font-size: small;
 }
+.x-list-item .meta {
+    font-style: italic;
+}
+
 .x-list-item .published  {
-    color: rgb(200, 200, 200);
 }
 .x-list-item .byline {
-
 }
 div.article .delete-button {
     display: none;
     float:right;
     color:#fff;
-    font-size:0.7em;
+    font-size: .7em;
     padding:5px 8px;
     border-color:#555;
     background-image:-webkit-gradient(linear, 0% 0%, 0% 100%, color-stop(0%, #d17e84), color-stop(100%, #bd1421));
@@ -32,26 +36,61 @@ div.article .delete-button {
 }
 
 .storyDetail {
-    padding: 14px;
+    padding: 10px;
     background: rgb(255,255,255);
 }
 .storyDetail h1 {
-    font-size: xx-large;
+    font-size: 1.3em;
     font-weight: bold;
     font-family:  Georgia, 'Times New Roman', serif;
+    font-style: italic;
+    margin-bottom: 6px;
 }
 .storyDetail h2 {
     font-family: 'Lucida Grande', Verdana, sans-serif;
-    color: rgb(100, 100, 100);
-    font-size: large;
+    color: rgb(80, 80, 80);
+    font-size: .8em;
 }
 .storyDetail .byline {
+}
+.storyDetail .meta {
+    font-family:  Georgia, 'Times New Roman', serif;
+    font-size: .8em;
     font-style: italic;
-    color: rgb(200,200,200);
+    margin-bottom: 10px;
 }
 .storyDetail .storyContent {
     font-family: 'Lucida Grande', Verdana, sans-serif;
 }
 .storyDetail .storyContent p {
     margin-bottom: 20px;
+    font-size: .8em;
 }
+.storyDetail .storyContent strong {
+    font-weight: bold;
+}
+.related-stories dt {
+    -webkit-box-shadow: rgba(0, 0, 0, 0.296875) 0px 0.1em 0.3em;
+    background-color: #3B679B;
+    background-image: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#97B5D8), color-stop(0.02, #4D80BC), to(#315681));
+    border-bottom: 1px solid #1F3651;
+    border-top: 1px solid #3B679B;
+    color: #0D1116;
+    font-size: 0.8em;
+    font-weight: bold;
+    text-shadow: rgba(0, 0, 0, 0.496094);
+}
+.related-stories dl {
+    background: #F7F7F7;
+    border-top: 1px solid #d1d1d1;
+}
+.related-stories dl dd {
+    border-bottom: 1px solid #d1d1d1;
+    padding: 14px 10px 14px 10px;
+    font-family: 'Helvetica Neue', HelveticaNeue, Helvetica-Neue, Helvetica, 'BBAlpha Sans', sans-serif;
+}
+.related-stories dl dd a {
+    text-decoration: none;
+    color: rgb(0, 0, 0);
+}
+

@@ -6,7 +6,7 @@ var Coho = {
 // please override these defaults in coho-configuration.js
 config: {
     apiURL: "http://preview.app.thetyee.ca/proxy/v1",
-    shortDateFormat: "D M j, Y",
+    shortDateFormat: "j M, Y",
     longDateFormat: "l F j, Y",
 },
 

@@ -10,7 +10,7 @@ storyList: new Ext.Template(
   '     </tpl>',
   ' </tpl>',
   '<h2>{title}</h2>',
-  '<p>{abstract:ellipsis("140",1)} <span class="byline">By {byline}.</span> <span class="published">{publish_date:date("'+Coho.config.shortDateFormat+'")}</span></p>',
+  '<p>{abstract:ellipsis("140",1)} <span class="meta"><span class="byline">By {byline}</span>, <span class="published">{publish_date:date("'+Coho.config.shortDateFormat+'")}</span></span></p>',
   '<div id="delete-button-{uuid}" class="action delete-button x-button">Delete</div>',
   '</div>',
   '</tpl>',
@@ -24,7 +24,13 @@ storyDetail: new Ext.XTemplate(
     '<div id="debug">{debug}</div>',
     '<h1>{title}</h1>',
     '<h2>{abstract}</h2>',
-    '<div class="meta"><span class="byline">By {byline}.</span> <span class="published">{publish_date:date("'+Coho.config.longDateFormat+'")}</span></div>',
+    '<div class="meta"><span class="byline">By {byline}</span>, <span class="published">{publish_date:date("'+Coho.config.shortDateFormat+'")}</span></div>',
+    ' <tpl for="related_media[0]">',
+    '   <tpl if="width == 300">',
+    //'       <img src="http://i.tinysrc.mobi/{uri}" class="thumbnail">', // Trying out tinysrc
+    '     <img src="{uri}" width="{width}" height="{height}" class="thumbnail" />',
+    '   </tpl>',
+    ' </tpl>',
     ' <tpl if="video">',
     '   <tpl for="video">',
     '     <dl class="video"><dt>{caption}</dt>',
@@ -32,12 +38,6 @@ storyDetail: new Ext.XTemplate(
     '     </dl>',
     '   </tpl>',
     ' </tpl>',   
-    ' <tpl for="related_media[0]">',
-    '   <tpl if="width == 300">',
-    //'       <img src="http://i.tinysrc.mobi/{uri}" class="thumbnail">', // Trying out tinysrc
-    '     <img src="{uri}" width="{width}" height="{height}" class="thumbnail" />',
-    '   </tpl>',
-    ' </tpl>',
     ' <tpl if="book_profile">',
     '   <dl class="book_pofile">',
     '     <tpl for="book_profile">',
@@ -59,6 +59,11 @@ storyDetail: new Ext.XTemplate(
     '   </tpl>',
     ' </tpl>',
     '<div class="storyContent">{content}</div>',
+    ' <tpl if="factbox">',
+    '   <tpl for="factbox">',
+    '    <p>I have a fact box!</p>',
+    '   </tpl>',
+    ' </tpl>',
     '</div>',
     {
         // member functions:
@@ -66,10 +71,10 @@ storyDetail: new Ext.XTemplate(
 ),
 
 relatedStory: new Ext.XTemplate(
-    '<p>Related stories:</p>',
-    '<ul>',
-    '<tpl for="."><li><a href="#" id="rel_{uuid}" onclick="Coho.View.pushPanelStackByUUID(\'{uuid}\');return false;">{title}</a></li></tpl>',
-    '</ul>'
+    '<dl>',
+    '<dt>Related stories:</dt>',
+    '<tpl for="."><dd><a href="#" id="rel_{uuid}" onclick="Coho.View.pushPanelStackByUUID(\'{uuid}\');return false;">{title}</a></dd></tpl>',
+    '</dl>'
 ),
 
 topicList: new Ext.Template(
