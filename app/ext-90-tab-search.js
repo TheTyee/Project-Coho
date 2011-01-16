@@ -8,33 +8,39 @@
  * and code re-use and the best kind of programmer laziness.
  *
  */
-var searchTabField = new Ext.form.Search({
-    placeHolder: "Search TheTyee.ca",
-    name: "searchfield",
-    autoCapitalize: false,
-    autoComplete: false,
-    listeners: {
-        action: function(s,e) {
-            searchTabStore.setProxy({
-                type: "scripttag",
-                extraParams: {filters: []},
-                url: Coho.config.apiURL+"/search/"+escape(s.getValue()),
-                reader: {
-                    type: "json",
-                    root: "hits.hits"
-                }
-            });
-            searchTabStore.load(function(records, operation, success) {
-                // do something?
-            });
-        }
-    }
-});
 var searchTabStore = new Ext.data.Store({
     model: "story",
     storeId: "searchTabStore",
     autoLoad: false
 });
+
+var searchTabFields = [
+    new Ext.form.Search({
+        xtype: "searchfield",
+        placeHolder: "Search TheTyee.ca",
+        name: "searchfield",
+        id: "searchfield",
+        autoCapitalize: false,
+        autoComplete: false,
+        listeners: {
+            action: function(s,e) {
+                searchTabStore.setProxy({
+                    type: "scripttag",
+                    extraParams: {filters: []},
+                    url: Coho.config.apiURL+"/search/"+escape(s.getValue()),
+                    reader: {
+                        type: "json",
+                        root: "hits.hits"
+                    }
+                });
+                searchTabStore.load(function(records, operation, success) {
+                    // do something?
+                });
+            }
+        }
+    })
+];
+
 
 Coho.tabs.searchTab = new Coho.StoryListObject({
     store: searchTabStore,
@@ -45,7 +51,7 @@ Coho.tabs.searchTab = new Coho.StoryListObject({
         xtype: "toolbar",
         dock: "top",
         id: "searchTitleBar",
-        items: [ searchTabField ]
+        items: searchTabFields
     },
 
     panelTitle: "Search",
@@ -53,5 +59,5 @@ Coho.tabs.searchTab = new Coho.StoryListObject({
 
 });
 
-Coho.tabs.searchTab.stack.unshift({type:"root", uuid:"search", back:"Back"});
+Coho.tabs.searchTab.stack.unshift({type:"root", uuid:"search", back:"Search"});
 
