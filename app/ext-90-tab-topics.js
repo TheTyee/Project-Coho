@@ -1,5 +1,3 @@
-/* nothing here yet */
-
 // topics is just a modified StoryListObject.
 Coho.tabs.topicsTab = new Coho.StoryListObject({
     store: new Ext.data.Store({
@@ -50,27 +48,20 @@ Coho.tabs.topicsTab = new Coho.StoryListObject({
             var topickey = list.getStore().getAt(index).get("key");
             var topicname = list.getStore().getAt(index).get("topic");
 
-            // set up back button for right now
+            // set up back button
             Coho.tabs.topicsTab.stack.unshift({type:"topic", uuid:topickey, back:topicname});
             Coho.tabs.topicsTab.setBackButtonText(Coho.tabs.topicsTab.stack[1].back);
             Coho.tabs.topicsTab.showBackButton();
             Coho.tabs.topicsTab.hideContextButton();
 
-            Coho.tabs.topicsTab.store.setProxy({
-                type: "scripttag",
-                extraParams: {filters: []},
-                url: Coho.config.apiURL+"/topic/"+topickey,
-                reader: {
-                    type: "json",
-                    root: "hits.hits"
-                }
-            });
-            Coho.tabs.topicsTab.store.load();
-            Coho.tabs.topicsTab.list.bindStore(Coho.tabs.topicsTab.store);
-            //Coho.tabs.topicsTab.list.refresh();
+            // set the story list's data source
+            // this can be session storage or remote
+            Coho.tabs.topicsTab.store = Coho.Story.getStoryListStoreForTopic(topickey);
 
+            // the order of these next three lines is important for layout
             Coho.tabs.topicsTab.panel.setActiveItem(1, {type:"slide", direction:"left"});
-            console.log("switch to topic: "+Coho.config.apiURL+"/topic/"+topickey);
+            Coho.tabs.topicsTab.list.bindStore(Coho.tabs.topicsTab.store);
+            Coho.tabs.topicsTab.list.scroller.scrollTo({x:0, y:0});
         } }
     })
 });

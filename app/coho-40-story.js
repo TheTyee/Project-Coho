@@ -293,6 +293,52 @@ saveStoryToStorage: function(json)
     return localStorage.setItem(json.uuid, JSON.stringify(json));
 },
 
+
+/**
+ * Return an Ext.data.Store to power a story list for a topic.
+ * the data could come from session storage or remote
+ */
+getStoryListStoreForTopic: function(topickey)
+{
+    var sstored = sessionStorage.getItem("list-"+topickey);
+    var stimestamp = sessionStorage.getItem("timestamp-"+topickey);
+    if (sstored && sstored!='undefined' && stimestamp > (+new Date() - (Coho.config.topicListCacheTime*60*1000))) {
+        console.log("stories for topic "+topickey+" cached from session ("+Math.round((+new Date() - +stimestamp)/1000/60)+" mins old of "+Math.round(Coho.config.topicListCacheTime)+" mins allowed)");
+        return new Ext.data.Store({
+            model: "story",
+            data: JSON.parse(sstored),
+            autoLoad: true
+        });
+    } else {
+        console.log("stories for topic "+topickey+" loading from remote");
+        return new Ext.data.Store({
+            model: "story",
+            autoLoad: true,
+            proxy: {
+                type: "scripttag",
+                extraParams: {filters: []},
+                url: Coho.config.apiURL+"/topic/"+topickey,
+                reader: {
+                    type: "json",
+                    root: "hits.hits"
+                }
+            },
+            listeners: { load: function(st, records, success) {
+                if (!success || !st || !st.getCount()) return;
+
+                var tostorage = [];
+                st.each(function(rec) { tostorage.push(rec.data); });
+
+                sessionStorage.setItem("list-"+topickey, JSON.stringify(tostorage));
+                sessionStorage.setItem("timestamp-"+topickey, +new Date());
+                console.log("story list for topic "+topickey+" finished loading and saved to session");
+            } }
+        });
+    }
+
+},
+
+
 /**
  * Definition for a generic panel for a single story.
  */
