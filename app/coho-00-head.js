@@ -12,7 +12,7 @@ config: {
     shortDateFormat: "j M, Y",
 
     // long date, used on story display
-    longDateFormat: "l F j, Y",
+    longDateFormat: "j M, Y",
 
     // time (in minutes) before cached topic story lists are expired
     topicListCacheTime: 60,

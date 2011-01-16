@@ -15,11 +15,14 @@ Ext.regModel('story', {
         {name:"group", mapping: "_source.group"},
         {name:"related_stories", mapping: "_source.related_stories"},
         {name:"related_media", mapping: "_source.related_media"},
-        {name:"publish_date", mapping: "_source.storyDate", type: "date", dateFormat: "c"},
+        {name:"publish_date", mapping: "_source.storyDate"},
         {name:"byline", mapping: "_source.byline"},
         {name:"book_profile", mapping: "_source.book_profile"},
         {name:"podcast", mapping: "_source.related_podcast_audio"},
-        {name:"video", mapping: "_source.primary_video"}
+        {name:"video", mapping: "_source.primary_video"},
+        // these two are fictional and are created on the fly
+        {name:"publish_date_short", convert: function(v,r) {if (!r.get('publish_date')) return ""; return Date.parseDate(r.get('publish_date'),'c').format(Coho.config.shortDateFormat); } },
+        {name:"publish_date_long", convert: function(v,r) {if (!r.get('publish_date')) return ""; return Date.parseDate(r.get('publish_date'),'c').format(Coho.config.longDateFormat); } },
     ]
 });
 
