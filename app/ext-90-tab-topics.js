@@ -49,7 +49,7 @@ Coho.tabs.topicsTab = new Coho.StoryListObject({
             var topicname = list.getStore().getAt(index).get("topic");
 
             // set up back button
-            Coho.tabs.topicsTab.stack.unshift({type:"topic", uuid:topickey, back:topicname});
+            Coho.tabs.topicsTab.stack.unshift({type:"topic", uuid:topickey, back:"Back"});
             Coho.tabs.topicsTab.setBackButtonText(Coho.tabs.topicsTab.stack[1].back);
             Coho.tabs.topicsTab.showBackButton();
             Coho.tabs.topicsTab.hideContextButton();
