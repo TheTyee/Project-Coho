@@ -6,7 +6,7 @@ int:
 
 prod:
 	cat app/coho*.js targets/production/coho-configuration.js app/ext*.js | sed 's/console\.log(.*);//g' | ./jsmin "project coho; by Phillip Smith and Greg Heo" > coho.js
-	cp -v targets/integration/index.html targets/integration/cache.manifest .
+	cp -v targets/production/index.html targets/production/cache.manifest .
 	echo "# built on `date`" >> cache.manifest
 
 clean:
