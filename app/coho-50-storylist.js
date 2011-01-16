@@ -70,7 +70,10 @@ Coho.StoryListObject = function(config)
         iconCls: config.panelIcon,
         title: config.panelTitle,
         items: items,
-        onCardSwitch: Coho.Callbacks.storyPanelStack
+        listeners: {
+            cardswitch: Coho.Callbacks.storyListPanelDidChange,
+            beforecardswitch: Coho.Callbacks.storyListPanelWillChange
+        }
     });
 
     this.panel.wrapperObject = me;

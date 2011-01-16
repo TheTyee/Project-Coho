@@ -7,15 +7,39 @@ if (!Coho) Coho = {};
 Coho.Callbacks = {
 
 /**
+ * Right before a middle-level container tab is about to slide left or right.
+ *
+ * Only used for the search tab to hide/show things in the titlebar.
+ */
+storyListPanelWillChange: function(panel, newCard, oldCard, newIndex, animated)
+{
+    console.log("about to switch to tab "+newIndex);
+    if (Coho.currentTab == Coho.tabs.searchTab) {
+        if (newIndex == 0) {
+            Coho.currentTab.titleBar.getComponent("searchfield").show();
+            Coho.currentTab.titleBar.hideTitle();
+        } else {
+            Coho.currentTab.titleBar.getComponent("searchfield").hide();
+            Coho.currentTab.titleBar.setTitle("TheTyee.ca");
+            Coho.currentTab.titleBar.showTitle();
+        }
+    }
+},
+
+
+/**
  * For when a the middle-level container tab (containing latest, popular,
  * saved, etc.) slides left or right.
  *
  * We really only care about the user going "back" in which case we destroy
  * the old panel.
+ *
  */
-storyPanelStack: function(newCard, oldCard, newIndex, animated)
+storyListPanelDidChange: function(panel, newCard, oldCard, newIndex, animated)
 {
+    console.log("switched to tab "+newIndex);
     if (Coho.dyingPanel && Coho.dyingPanel == oldCard) {
+        console.log("previous panel "+oldCard.id+" was KILLED");
         Coho.currentTab.panel.remove(oldCard);
         Coho.dyingPanel = null;
     }
