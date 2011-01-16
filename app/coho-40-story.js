@@ -295,6 +295,57 @@ saveStoryToStorage: function(json)
 
 
 /**
+ * Return an Ext.data.Store to power the latest stories list
+ * the data could come from local storage or remote
+ */
+getStoryListStoreForLatest: function()
+{
+    var sstored = localStorage.getItem("list-latest");
+    var stimestamp = localStorage.getItem("timestamp-latest");
+    if (sstored && sstored!='undefined' && stimestamp > (+new Date() - (Coho.config.latestListCacheTime*60*1000))) {
+        console.log("latest stories for cached from session ("+Math.round((+new Date() - +stimestamp)/1000/60)+" mins old of "+Math.round(Coho.config.latestListCacheTime)+" mins allowed)");
+        return new Ext.data.Store({
+            model: "story",
+            getGroupString: function(r) {
+                return r.get("group");
+            },
+            data: JSON.parse(sstored),
+            autoLoad: true
+        });
+    } else {
+        console.log("latest stories loading from remote");
+        return new Ext.data.Store({
+            model: "story",
+            getGroupString: function(r) {
+                return r.get("group");
+            },
+            proxy: {
+                type: "scripttag",
+                extraParams: {filters: []},
+                url: Coho.config.apiURL+"/latest/grouped",
+                reader: {
+                    type: "json",
+                    root: "hits.hits"
+                }
+            },
+            autoLoad: true,
+            listeners: { load: function(st, records, success) {
+                if (!success || !st || !st.getCount()) return;
+
+                var tostorage = [];
+                st.each(function(rec) { tostorage.push(rec.data); });
+
+                localStorage.setItem("list-latest", JSON.stringify(tostorage));
+                localStorage.setItem("timestamp-latest", +new Date());
+                console.log("latest story list finished loading and saved to local storage");
+            } }
+        });
+    }
+
+},
+
+
+/**
  * Return an Ext.data.Store to power a story list for a topic.
  * the data could come from session storage or remote
  */

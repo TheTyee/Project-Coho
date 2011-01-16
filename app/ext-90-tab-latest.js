@@ -5,22 +5,7 @@
  *
  */
 Coho.tabs.latestStoriesTab = new Coho.StoryListObject({
-    store: new Ext.data.Store({
-        model: "story",
-        getGroupString: function(r) {
-            return r.get("group");
-        },
-        proxy: {
-            type: "scripttag",
-            extraParams: {filters: []},
-            url: Coho.config.apiURL+"/latest/grouped",
-            reader: {
-                type: "json",
-                root: "hits.hits"
-            }
-        },
-        autoLoad: true
-    }),
+    store: Coho.Story.getStoryListStoreForLatest(),
 
     groupedList: true,
 

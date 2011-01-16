@@ -16,6 +16,9 @@ config: {
 
     // time (in minutes) before cached topic story lists are expired
     topicListCacheTime: 60,
+
+    // time (in minutes) before the cached latest story list is expired
+    latestListCacheTime: 15,
 },
 
 // quasi-globals
