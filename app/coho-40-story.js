@@ -302,6 +302,11 @@ getStoryListStoreForLatest: function()
 {
     var sstored = localStorage.getItem("list-latest");
     var stimestamp = localStorage.getItem("timestamp-latest");
+
+    // offline override
+    if (!window.navigator.onLine)
+        stimestamp = +new Date();
+
     if (sstored && sstored!='undefined' && stimestamp > (+new Date() - (Coho.config.latestListCacheTime*60*1000))) {
         console.log("latest stories for cached from session ("+Math.round((+new Date() - +stimestamp)/1000/60)+" mins old of "+Math.round(Coho.config.latestListCacheTime)+" mins allowed)");
         return new Ext.data.Store({
