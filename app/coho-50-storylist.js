@@ -47,6 +47,7 @@ Coho.StoryListObject = function(config)
         itemSelector: "div.article",
         store: this.store,
         grouped: config.groupedList ? true : false,
+        pinHeaders: (Ext.is.Desktop || Ext.is.Tablet ? true : false),
         onItemDisclosure: config.onItemDisclosure,
         listeners: config.listeners
     });
