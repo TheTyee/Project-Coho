@@ -73,7 +73,6 @@ storyContextPressed: function(b, e)
         this.as = new Ext.ActionSheet({
             items: [
                 { text: "Remove from saved stories", scope: this, handler: function() { Coho.Story.removeSaved(uuid); this.as.hide(); } },
-                { text: uuid },
                 { text: "Cancel", scope: this, handler: function() { this.as.hide(); } }
             ]
         });
@@ -81,7 +80,6 @@ storyContextPressed: function(b, e)
         this.as = new Ext.ActionSheet({
             items: [
                 { text: "Save story", scope: this, handler: function() { Coho.Story.addSaved(uuid); this.as.hide(); } },
-                { text: uuid },
                 { text: "Cancel", scope: this, handler: function() { this.as.hide(); } }
             ]
         });
