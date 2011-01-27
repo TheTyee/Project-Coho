@@ -4,8 +4,8 @@ Coho.Templates = {
 
 storyList: new Ext.Template(
   '<tpl for="."><div id="{uuid}" class="article">',
-  ' <tpl for="related_media[0].thumbnails[0]">',
-  '     <tpl if="width == 90">',
+  ' <tpl for="related_media[0].thumbnails">',
+  '     <tpl if="width <= 90">',
   '     <img src="{uri}" width="{width}" height="{height}" class="thumbnail">',
   '     </tpl>',
   ' </tpl>',
@@ -25,9 +25,9 @@ storyDetail: new Ext.XTemplate(
     '<h1>{title}</h1>',
     '<h2>{abstract}</h2>',
     '<div class="meta"><span class="byline">By {byline}</span>, <span class="published">{publish_date_long}</span></div>',
-    ' <tpl for="related_media[0]">',
+    ' <tpl for="related_media[0].thumbnails">',
     '   <tpl if="width == 300">',
-    //'       <img src="http://i.tinysrc.mobi/{uri}" class="thumbnail">', // Trying out tinysrc
+    //'       <img src="http://i.tinysrc.mobi/300/{uri}" class="thumbnail" width="300" height="200" />', // Trying out tinysrc
     '     <img src="{uri}" width="{width}" height="{height}" class="thumbnail" />',
     '   </tpl>',
     ' </tpl>',

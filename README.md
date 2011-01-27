@@ -4,6 +4,10 @@ You should be able to run this by cloning the repository and running the files
 through a local webserver (this part is important!). You'll also need to view
 the files in a Webkit browser. That's it. 
 
+Important change to the build procedure: running "make" now overwrites index.html and cache.manifest. If you need to edit them, the real files are stored in the targets/ directory tree.
+
+"make" will build the development integration version (with debugging, console logging, etc.) "make prod" will build the production version (minified, cached, etc.)
+
 ## Application outline
 
 ### Home Screen
