@@ -24,9 +24,11 @@ Coho.currentTab = mainTabPanels[0].wrapperObject;
 
 // initialize the main application panel
 var mainPanel = new Ext.TabPanel({
+    id: "mainPanel",
     fullscreen: "true",
     items: [mainTabPanels],
     tabBar: {
+        id: "tabBar",
         dock: "bottom",
         scroll: {
             direction: "horizontal",

@@ -111,6 +111,8 @@ pushPanelStackItemtap: function(list, index, item, e)
     selectedStoryPanel.uuid = rec.get("uuid");
     Coho.currentTab.stack.unshift({type:"story", uuid:rec.get("uuid"), back:"Back", storyData:rec.data});
 
+    Coho.View.hideTabBar();
+
     Coho.View.pushPanelStack(selectedStoryPanel);
 },
 
@@ -158,13 +160,33 @@ popPanelStack: function()
     if (Coho.currentTab.panel.getActiveItem() == Coho.currentTab.panel.getComponent(0) && Coho.currentTab.titleBar) {
         Coho.currentTab.hideBackButton();
         Coho.currentTab.hideContextButton();
+        Coho.View.showTabBar();
     } else {
         Coho.currentTab.setBackButtonText(Coho.currentTab.stack[1].back);
 
         // kill the context button if the current panel is a list with a store
-        if (Coho.currentTab.panel.getActiveItem().getStore)
+        if (Coho.currentTab.panel.getActiveItem().getStore) {
             Coho.currentTab.hideContextButton();
+            Coho.View.showTabBar();
+        }
     }
+},
+
+showTabBar: function()
+{
+    var mainPanel = Ext.getCmp("mainPanel");
+    if (mainPanel.getDockedItems().length) return;
+
+    mainPanel.addDocked(Coho.tabBar, false);
+},
+
+hideTabBar: function()
+{
+    var mainPanel = Ext.getCmp("mainPanel");
+    if (!mainPanel.getDockedItems().length) return;
+
+    Coho.tabBar = Ext.getCmp("tabBar");
+    mainPanel.removeDocked(Coho.tabBar, false);
 },
 
 }; // end Coho.View
