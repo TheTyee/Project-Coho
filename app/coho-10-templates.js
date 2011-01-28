@@ -3,7 +3,10 @@
 Coho.Templates = {
 
 storyList: new Ext.Template(
-  '<tpl for="."><div id="{uuid}" class="article">',
+  '<tpl for=".">',
+  '<div id="{uuid}" class="article">',
+  '<tpl if="html_override">{html_override}</tpl>',
+  '<tpl if="!html_override">',
   ' <tpl for="related_media[0].thumbnails">',
   '     <tpl if="width <= 90">',
   '     <img src="{uri}" width="{width}" height="{height}" class="thumbnail">',
@@ -16,6 +19,7 @@ storyList: new Ext.Template(
   '<spn class="organization">{organization}</span>',
   '</span></p>',
   '<div id="delete-button-{uuid}" class="action delete-button x-button">Delete</div>',
+  '</tpl>',
   '</div>',
   '</tpl>',
   {
@@ -95,6 +99,12 @@ slideshowSlide: new Ext.Template(
 morePanel: new Ext.Template(
     '<p>This is the MORE panel!</p>'
 ),
+
+// note: savedHelpHTML and searchHelpHTML are straight text,
+// NOT Ext.Template objects!
+savedHelpHTML: 'Tap the arrow at the top right of a story to save it to this page.<br />Swipe a story to delete it from this page.',
+
+searchHelpHTML: 'Tap the search box and type to find any Tyee story.',
 
 };
 

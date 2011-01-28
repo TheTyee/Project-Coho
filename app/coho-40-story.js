@@ -187,6 +187,16 @@ getSavedFull: function()
     return data;
 },
 
+
+/**
+ * Like getSavedFull() but adds the help item at the top
+ */
+getSavedFullUI: function()
+{
+    //return [{html_override: Coho.Templates.savedHelpHTML}].concat(Coho.Story.getSavedFull());
+    return [{uuid: "Help", title: "Help", html_override: Coho.Templates.savedHelpHTML}].concat(Coho.Story.getSavedFull());
+},
+
 /**
  * Add a story to the list of saved stories.
  *

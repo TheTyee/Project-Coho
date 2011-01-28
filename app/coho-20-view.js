@@ -103,9 +103,10 @@ pushPanelStackByUUID: function(uuid)
  */
 pushPanelStackItemtap: function(list, index, item, e)
 {
-    var selectedStoryPanel = new Ext.Panel(Coho.Story.genericStoryPanel);
-
     var rec = list.getStore().getAt(index);
+    if (!rec.data || !rec.data.uuid || rec.data.html_override) return false;
+
+    var selectedStoryPanel = new Ext.Panel(Coho.Story.genericStoryPanel);
     Coho.View.renderStory(selectedStoryPanel, rec.data);
 
     selectedStoryPanel.uuid = rec.get("uuid");

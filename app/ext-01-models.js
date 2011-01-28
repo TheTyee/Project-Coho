@@ -21,6 +21,8 @@ Ext.regModel('story', {
         {name:"podcast", mapping: "_source.related_podcast_audio"},
         {name:"video", mapping: "_source.primary_video"},
         {name:"organization", mapping: "_source.organization"},
+        // for dummy list items
+        {name:"html_override"},
         // these two are fictional and are created on the fly
         {name:"publish_date_short", convert: function(v,r) {if (!r.get('publish_date')) return ""; return Date.parseDate(r.get('publish_date'),'c').format(Coho.config.shortDateFormat); } },
         {name:"publish_date_long", convert: function(v,r) {if (!r.get('publish_date')) return ""; return Date.parseDate(r.get('publish_date'),'c').format(Coho.config.longDateFormat); } },

@@ -11,7 +11,8 @@
 var searchTabStore = new Ext.data.Store({
     model: "story",
     storeId: "searchTabStore",
-    autoLoad: false
+    data: [{title:"Help", uuid:"Help", html_override:Coho.Templates.searchHelpHTML}],
+    autoLoad: true
 });
 
 var searchTabFields = [

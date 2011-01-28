@@ -17,8 +17,13 @@ Coho.StoryListObject = function(config)
     if (!config.listeners) config.listeners = {};
     // one that likely won't be overridden is the basic tap to view story
     if (!config.listeners.itemtap) config.listeners.itemtap = function(list, index, item, e) {
-        var uuid = list.getStore().getAt(index).get("uuid");
-        console.log('itemtap on '+uuid+' / '+e.getTarget().id);
+        var rec = list.getStore().getAt(index);
+        var uuid = rec.data.uuid;
+
+        // short-circuit for dummy HTML list items
+        if (uuid == 'Help' || rec.data.html_override) return false;
+
+        console.log('itemtap on #'+index+' story '+uuid);
 
         // delete button? (saved tab only)
         if (e.getTarget('div.delete-button')) {

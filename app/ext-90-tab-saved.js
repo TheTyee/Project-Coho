@@ -8,7 +8,7 @@
 Coho.tabs.savedStoriesTab = new Coho.StoryListObject({
     store: new Ext.data.Store({
         model: "story",
-        data: Coho.Story.getSavedFull(),
+        data: Coho.Story.getSavedFullUI(),
         autoLoad: true
     }),
 
@@ -44,7 +44,7 @@ Coho.tabs.savedStoriesTab = new Coho.StoryListObject({
 
 Coho.tabs.savedStoriesTab.refresh = function()
 {
-    Coho.tabs.savedStoriesTab.store.loadData(Coho.Story.getSavedFull());
+    Coho.tabs.savedStoriesTab.store.loadData(Coho.Story.getSavedFullUI());
     Coho.tabs.savedStoriesTab.list.refresh();
 };
 
