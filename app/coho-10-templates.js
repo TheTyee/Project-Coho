@@ -81,9 +81,9 @@ storyDetail: new Ext.XTemplate(
 ),
 
 relatedStory: new Ext.XTemplate(
-    '<dl>',
-    '<dt>Related stories:</dt>',
-    '<tpl for="."><dd><a href="#" id="rel_{uuid}" onclick="Coho.View.pushPanelStackByUUID(\'{uuid}\');return false;">{title}</a></dd></tpl>',
+    '<dl class="x-list">',
+    '<dt class="x-list-header">Related stories:</dt>',
+    '<tpl for="."><dd class="x-list-item"><div class="x-list-item-body"><a href="#" id="rel_{uuid}" onclick="Coho.View.pushPanelStackByUUID(\'{uuid}\');return false;">{title}</a></div></dd></tpl>',
     '</dl>'
 ),
 
