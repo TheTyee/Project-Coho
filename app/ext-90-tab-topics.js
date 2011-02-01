@@ -21,6 +21,12 @@ Coho.tabs.topicsTab = new Coho.StoryListObject({
         fullscreen: true,
         itemTpl: Coho.Templates.topicList,
         store: new Ext.data.JsonStore({model: "topic", data:[
+            {key:"News", topic:"News"},
+            {key:"Opinion", topic:"Opinion"},
+            {key:"Mediacheck", topic:"Mediacheck"},
+            {key:"Arts & Culture", topic:"Arts & Culture"},
+            {key:"Books", topic:"Books"},
+            {key:"Life", topic:"Life"},
             {key:"2010 Olympics", topic:"2010 Olympics"},
             {key:"Education", topic:"Education"},
             {key:"Elections", topic:"Elections"},
