@@ -69,6 +69,7 @@ storyDetail: new Ext.XTemplate(
     '   </tpl>',
     ' </tpl>',
     '<div class="storyContent">{content}</div>',
+    '<div class="authorinfo">{authorinfo}</div>',
     ' <tpl if="factbox">',
     '   <tpl for="factbox">',
     '    <p>I have a fact box!</p>',
@@ -104,6 +105,7 @@ searchHelpHTML: 'Tap the search box and type to find any Tyee story.',
 
 morePanel: new Ext.Template(
     '<div class="storyDetail">',
+    '<div class="storyContent">',
     '<h1>Application Help</h1>',
     '<ul>',
     '   <li><p><a href="#save">Save app to phone home screen</a></p></li>',
@@ -139,6 +141,7 @@ morePanel: new Ext.Template(
     '<p>To search for any story on TheTyee.ca, go to the Search screen and type the search terms in the box',
     'at the top of the screen. This searches the entire Tyee archive (and requires an Internet connection).</p>',  
     '<p>To see The Tyee team, go <a href="http://www.youtube.com/watch?v=32UGD0fV45g" target="_blank">here</a>.</p>',
+    '</div>',
     '</div>'
 ),
 
