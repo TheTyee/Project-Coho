@@ -69,22 +69,18 @@ storyContextPressed: function(b, e)
 
     var uuid = Coho.currentTab.stack[0].uuid;
 
-    if (Coho.Story.isSaved(uuid)) {
-        this.as = new Ext.ActionSheet({
-            items: [
-                { text: "Remove from saved stories", scope: this, handler: function() { Coho.Story.removeSaved(uuid); this.as.hide(); } },
-                { text: "Cancel", scope: this, handler: function() { this.as.hide(); } }
-            ]
-        });
-    } else {
-        this.as = new Ext.ActionSheet({
-            items: [
-                { text: "Save story", scope: this, handler: function() { Coho.Story.addSaved(uuid); this.as.hide(); } },
-                { text: "Cancel", scope: this, handler: function() { this.as.hide(); } }
-            ]
-        });
-    }
+    var items = [
+      { text: "<a style='color: black; display: block; text-decoration: none;' href='http://m.facebook.com/sharer.php?u="+escape(Coho.currentTab.stack[0].storyData.uri)+"&t="+escape(Coho.currentTab.stack[0].storyData.title)+"' onclick=''>Share on Facebook</a>" },
+      { text: "<a style='color: black; display: block; text-decoration: none;' href='http://twitter.com/home?status="+escape(Coho.currentTab.stack[0].storyData.title+": "+Coho.currentTab.stack[0].storyData.uri)+" via @TheTyee' onclick=''>Share on Twitter</a>" },
+      { text: "Cancel", scope: this, handler: function() { this.as.hide(); } }
+    ];
 
+    if (Coho.Story.isSaved(uuid))
+        items.unshift({ text: "Remove from saved stories", scope: this, handler: function() { Coho.Story.removeSaved(uuid); this.as.hide(); } });
+    else
+        items.unshift({ text: "Save story", scope: this, handler: function() { Coho.Story.addSaved(uuid); this.as.hide(); } });
+
+    this.as = new Ext.ActionSheet({"items":items});
     this.as.show();
 },
 
