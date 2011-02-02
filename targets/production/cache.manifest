@@ -1,7 +1,6 @@
 CACHE MANIFEST
 index.html
-sencha-touch/resources/css/sencha-touch.css
-css/index.css
+css/coho.css
 sencha-touch/sencha-touch.js
 coho.js
 
