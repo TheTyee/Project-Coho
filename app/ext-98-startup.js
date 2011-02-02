@@ -16,6 +16,7 @@ var mainTabPanels = [
         layout: "auto",
         iconCls: "more",
         title: "More",
+        scroll: "vertical"
     }
 ];
 
