@@ -21,6 +21,8 @@ Ext.regModel('story', {
         {name:"podcast", mapping: "_source.related_podcast_audio"},
         {name:"video", mapping: "_source.primary_video"},
         {name:"organization", mapping: "_source.organization"},
+        // see Coho.Templates.storyTopImageSingle and storyTopImageSlideshow; either an image or slideshow link
+        {name:"top_image_html"},
         // for dummy list items
         {name:"html_override"},
         // these two are fictional and are created on the fly
