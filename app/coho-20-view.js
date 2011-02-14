@@ -10,11 +10,8 @@ Coho.View = {
  * render a story to a story panel
  */
 renderStory: function(storyPanel, storyData) {
-    // main story template
-    storyPanel.getComponent(0).update(storyData);
-
     // slideshow?
-    if (storyData.related_media && storyData.related_media.length > 1) {
+    if (storyData.related_media && storyData.related_media.length > 0) {
         var carouselItems = [];
         var thumbnail;
         for (i=0; i < storyData.related_media.length; i++) {
@@ -28,38 +25,32 @@ renderStory: function(storyPanel, storyData) {
 
                 if (storyData.related_media[i].thumbnails[j] && storyData.related_media[i].thumbnails[j].width == "300") {
                     console.log("adding "+storyData.related_media[i].thumbnails[j].uri+" to slideshow");
-                    carouselItems.push({tpl: Coho.Templates.slideshowSlide, data: {uri: storyData.related_media[i].thumbnails[j].uri, caption: storyData.related_media[i].caption}});
+                    carouselItems.push({tpl: Coho.Templates.slideshowSlide, data: {uri: storyData.related_media[i].thumbnails[j].uri, caption: storyData.related_media[i].caption, width: storyData.related_media[i].thumbnails[j].width, height: storyData.related_media[i].thumbnails[j].height}});
                 }
             }
         }
 
-        if (carouselItems.length > 1) {
-            storyPanel.add(new Ext.Panel({
-                items: [ {
-                    xtype: "fieldset",
-                    items: [ {
-                        xtype: "button",
-                        text: "Slideshow",
-                        icon: thumbnail,
-                        handler: function() {
-                            if (!storyPanel.slideshowOverlay) {
-                                storyPanel.slideshowOverlay = new Ext.Carousel({
-                                    width: 308, height: 320, xtype: "carousel", ui: "dark", direction: "horizontal",
-                                    items: carouselItems,
-                                    floating: true,
-                                    modal: true,
-                                    centered: true
-                                });
-                            }
+        // if only one item, show the single image
+        // otherwise, set up a slideshow
+        if (carouselItems.length == 1) {
+            storyData.top_image_html = Coho.Templates.storyTopImageSingle.apply(carouselItems[0].data);
+        } else if (carouselItems.length > 1) {
+            storyData.top_image_html = Coho.Templates.storyTopImageSlideshow.apply(carouselItems[0].data);
 
-                            storyPanel.slideshowOverlay.show();
-                        }
-                    } ]
-                } ]
-            }));
+            storyPanel.slideshowOverlay = new Ext.Carousel({
+                width: 308, height: 320, xtype: "carousel", ui: "dark", direction: "horizontal",
+                items: carouselItems,
+                floating: true,
+                modal: true,
+                centered: true
+            });
 
+            Coho.currentTab.storyPanel = storyPanel;
         }
     }
+
+    // main story template
+    storyPanel.getComponent(0).update(storyData);
 
     // related stories?
     if (storyData.related_stories && storyData.related_stories[0]) {

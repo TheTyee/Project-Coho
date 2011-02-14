@@ -35,12 +35,7 @@ storyDetail: new Ext.XTemplate(
     '<div class="meta"><span class="byline">By {byline}</span>, ',
     '<span class="published">{publish_date_long}</span>, ', 
     '<span class="organization">{organization}</span></div>',
-    ' <tpl for="related_media[0].thumbnails">',
-    '   <tpl if="width == 300">',
-    //'       <img src="http://i.tinysrc.mobi/300/{uri}" class="thumbnail" width="300" height="200" />', // Trying out tinysrc
-    '     <img src="{uri}" width="{width}" height="{height}" class="thumbnail" />',
-    '   </tpl>',
-    ' </tpl>',
+    '{top_image_html}',
     ' <tpl if="video">',
     '   <tpl for="video">',
     '     <dl class="video"><dt>{caption}</dt>',
@@ -97,8 +92,18 @@ slideshowSlide: new Ext.Template(
     '<p>{caption:ellipsis("140",1)}</p>'
 ),
 
-// note: savedHelpHTML and searchHelpHTML are straight text,
-// NOT Ext.Template objects!
+storyTopImageSingle: new Ext.Template(
+    '<div class="storyTopSingle">',
+    '<img src="{uri}" width="{width}" height="{height}" class="thumbnail">',
+    '</div>'),
+
+storyTopImageSlideshow: new Ext.Template(
+    '<div class="storyTopSlideshow">',
+    '<a href="#" onclick="Coho.currentTab.storyPanel.slideshowOverlay.show();return false;">',
+    '<img src="{uri}" width="{width}" height="{height}" class="thumbnail">',
+    '</a></div>'),
+
+// note: some of these are HTML text strings, NOT Ext.Template objects!
 savedHelpHTML: 'Tap the arrow at the top right of a story to save it. Swipe a story to delete it from this page.',
 
 searchHelpHTML: 'Tap the search box and type to find any Tyee story.',

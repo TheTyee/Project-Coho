@@ -23,6 +23,8 @@ Ext.regModel('story', {
         {name:"organization", mapping: "_source.organization"},
         {name:"author_info", mapping: "_source.author_info"},
         {name:"factbox", mapping: "_source.factbox"},
+        // see Coho.Templates.storyTopImageSingle and storyTopImageSlideshow; either an image or slideshow link
+        {name:"top_image_html"},
         // for dummy list items
         {name:"html_override"},
         // these two are fictional and are created on the fly
