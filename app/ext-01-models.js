@@ -21,6 +21,8 @@ Ext.regModel('story', {
         {name:"podcast", mapping: "_source.related_podcast_audio"},
         {name:"video", mapping: "_source.primary_video"},
         {name:"organization", mapping: "_source.organization"},
+        {name:"author_info", mapping: "_source.author_info"},
+        {name:"factbox", mapping: "_source.factbox"},
         // for dummy list items
         {name:"html_override"},
         // these two are fictional and are created on the fly
