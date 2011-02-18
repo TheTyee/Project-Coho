@@ -50,9 +50,9 @@ get '/latest/grouped' => sub {
         push @{$structure->{'hits'}->{'hits'}}, @{$j->{'hits'}->{'hits'}};
     }
 
-    $m->render(text => ($m->param("callback") ? $m->param("callback")."(" : "").encode_json($structure).($m->param("callback") ? ");" : ""),
-        format => ($m->param("callback") ? "js" : "json"));
-
+    # package up and render
+    my $json = nice_encode_json($structure);
+    proxy_render($m, $json);
 };
 
 get '/latest/:count' => [count => qr/\d+/] => {count => 20} => sub {
@@ -65,11 +65,10 @@ get '/latest/:count' => [count => qr/\d+/] => {count => 20} => sub {
     my $now = strftime("%Y-%m-%dT%TZ", @time);
 
     my $ua = LWP::UserAgent->new;
-    my $r = $ua->post("http://localhost:9200/tyee/story/_search".($m->param("callback") ? "?callback=".$m->param("callback") : ""),
+    my $r = $ua->post("http://localhost:9200/tyee/story/_search",
         Content => '{ "from": 0, "size": '.$count.', "sort" : [ { "storyDate" : { "reverse" : true } } ], "query" : { "range" : { "storyDate": { "to" : "' . $now . '"} } } }');
 
-    $m->render(text => $r->content, format => ($m->param("callback") ? "js" : "json"));
-
+    proxy_render($m, json_to_json($r->content));
 };
 
 get '/latest/short/:count' => [count => qr/\d+/] => {count => 20} => sub {
@@ -82,21 +81,20 @@ get '/latest/short/:count' => [count => qr/\d+/] => {count => 20} => sub {
     my $now = strftime("%Y-%m-%dT%TZ", @time);
 
     my $ua = LWP::UserAgent->new;
-    my $r = $ua->post("http://localhost:9200/tyee/story/_search".($m->param("callback") ? "?callback=".$m->param("callback") : ""),
+    my $r = $ua->post("http://localhost:9200/tyee/story/_search",
         Content => '{ "script_fields": {"title": {"script":"_source.title"}, "teaser": {"script":"_source.teaser"}}, "from": 0, "size": '.$count.', "sort" : [ { "storyDate" : { "reverse" : true } } ], "query" : { "range" : { "storyDate": { "to" : "' . $now . '"} } } }');
 
-    $m->render(text => $r->content, format => ($m->param("callback") ? "js" : "json"));
-
+    proxy_render($m, json_to_json($r->content));
 };
 
 get '/story/:uuid' => sub {
     my $m = shift;
 
     my $ua = LWP::UserAgent->new;
-    my $r = $ua->post("http://localhost:9200/tyee/story/_search".($m->param("callback") ? "?callback=".$m->param("callback") : ""),
+    my $r = $ua->post("http://localhost:9200/tyee/story/_search",
         Content => '{ "query": {"term": { "_id": "'.$m->param("uuid").'"} } }');
 
-    $m->render(text => $r->content, format => ($m->param("callback") ? "js" : "json"));
+    proxy_render($m, json_to_json($r->content));
 };
 
 get '/search/(*query)' => sub {
@@ -105,10 +103,10 @@ get '/search/(*query)' => sub {
     my $ua = LWP::UserAgent->new;
     my $elastic = { size => 25, query => {field => { title => $m->param("query") } } };
 
-    my $r = $ua->post("http://localhost:9200/tyee/story/_search".($m->param("callback") ? "?callback=".$m->param("callback") : ""),
+    my $r = $ua->post("http://localhost:9200/tyee/story/_search",
         Content => encode_json($elastic));
 
-    $m->render(text => $r->content, format => ($m->param("callback") ? "js" : "json"));
+    proxy_render($m, json_to_json($r->content));
 };
 
 get '/topic/:topic' => sub {
@@ -119,11 +117,44 @@ get '/topic/:topic' => sub {
                     "sort" => [ { "storyDate" => { "reverse" => 1 } } ],
                     query => {field => { topics => $m->param("topic") } } };
 
-    my $r = $ua->post("http://localhost:9200/tyee/story/_search".($m->param("callback") ? "?callback=".$m->param("callback") : ""),
+    my $r = $ua->post("http://localhost:9200/tyee/story/_search",
         Content => encode_json($elastic));
 
-    $m->render(text => $r->content, format => ($m->param("callback") ? "js" : "json"));
+    proxy_render($m, json_to_json($r->content));
 };
 
+app->types->type(js => 'application/x-javascript; charset=utf-8');
+app->types->type(json => 'application/json; charset=utf-8');
+
 app->start;
+
+
+### helper functions ###
+
+# Takes a JSON string and outputs a nicely encoded JSON string
+sub json_to_json
+{
+    my $json = shift;
+
+    return nice_encode_json(decode_json($json));
+}
+
+# Nicely encodes an object to a JSON string. Unicode characters too!
+sub nice_encode_json
+{
+    my $obj = shift;
+
+    return JSON->new->ascii(1)->encode($obj);
+}
+
+# Tells Mojo to render some JSON.
+# Handles the JSON/JSONP formatting too.
+sub proxy_render
+{
+    my $m = shift;
+    my $json = shift;
+
+    $json = $m->param("callback")."(".$json.");" if $m->param("callback");
+    $m->render(text => $json, format => ($m->param("callback") ? "js" : "json"));
+}
 
