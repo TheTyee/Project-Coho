@@ -22,7 +22,9 @@ Ext.regModel('story', {
         {name:"video", mapping: "_source.primary_video"},
         {name:"organization", mapping: "_source.organization"},
         {name:"author_info", mapping: "_source.author_info"},
-        {name:"factbox", mapping: "_source.factbox"},
+        {name:"fact_box", mapping: "_source.fact_box"},
+        {name:"related_documents", mapping: "_source.related_documents"},
+        {name:"story_type", mapping: "_source.story_type"},
         // see Coho.Templates.storyTopImageSingle and storyTopImageSlideshow; either an image or slideshow link
         {name:"top_image_html"},
         // for dummy list items

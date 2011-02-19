@@ -8,7 +8,7 @@ storyList: new Ext.Template(
   '<tpl if="html_override">{html_override}</tpl>',
   '<tpl if="!html_override">',
   ' <tpl for="related_media[0].thumbnails">',
-  '     <tpl if="width <= 90">',
+  '     <tpl if="width == 90">',
   '     <img src="{uri}" width="{width}" height="{height}" class="thumbnail">',
   '     </tpl>',
   ' </tpl>',
@@ -31,7 +31,7 @@ storyDetail: new Ext.XTemplate(
     '<div id="{uuid}" class="storyDetail">',
     '<div id="debug">{debug}</div>',
     '<h1>{title}</h1>',
-    '<h2>{abstract}</h2>',
+    '<tpl if="story_type == story"><h2>{abstract}</h2></tpl>',
     '<div class="meta"><span class="byline">By {byline}</span>, ',
     '<span class="published">{publish_date_long}</span>, ', 
     '<span class="organization">{organization}</span></div>',
@@ -64,13 +64,21 @@ storyDetail: new Ext.XTemplate(
     '   </tpl>',
     ' </tpl>',
     '<div class="storyContent">{content}</div>',
-    '<div class="authorinfo">{authorinfo}</div>',
-    ' <tpl if="factbox">',
-    '   <tpl for="factbox">',
-    '    <p>I have a fact box!</p>',
-    '   </tpl>',
-    ' </tpl>',
+    '<tpl for="fact_box">',
+    '<dl class="fact_box">',
+    '<dt>{title}</dt>',
+    '<dd><div>{content}</div></dd>',
+    '</dl>',
+    '</tpl>',   '<div class="authorinfo">{authorinfo}</div>',
     '</div>',
+    '<tpl for="related_documents">',
+    '<dl class="x-list">',
+    '<dt class="x-list-header">{heading}</dt>',
+    '<tpl for="documents">',
+    '<a href="{uri}" title="{description}"><dd class="x-list-item"><div class="x-list-item-body">{title}</div></dd></a>',
+    '</tpl>',
+    '</dl>  ',
+    '</tpl>',
     {
         // member functions:
     }
@@ -79,7 +87,7 @@ storyDetail: new Ext.XTemplate(
 relatedStory: new Ext.XTemplate(
     '<dl class="x-list">',
     '<dt class="x-list-header">Related stories:</dt>',
-    '<tpl for="."><dd class="x-list-item"><div class="x-list-item-body"><a href="#" id="rel_{uuid}" onclick="Coho.View.pushPanelStackByUUID(\'{uuid}\');return false;">{title}</a></div></dd></tpl>',
+    '<tpl for="."><a href="#" id="rel_{uuid}" onclick="Coho.View.pushPanelStackByUUID(\'{uuid}\');return false;"><dd class="x-list-item"><div class="x-list-item-body">{title}</div></dd></a></tpl>',
     '</dl>'
 ),
 
@@ -101,7 +109,9 @@ storyTopImageSlideshow: new Ext.Template(
     '<div class="storyTopSlideshow">',
     '<a href="#" onclick="Coho.currentTab.storyPanel.slideshowOverlay.show();return false;">',
     '<img src="{uri}" width="{width}" height="{height}" class="thumbnail">',
-    '</a></div>'),
+    '</a>',
+    '<img class="button" src="http://thetyee.cachefly.net/ui/img/badge-photoessay.png" />',
+    '</div>'),
 
 // note: some of these are HTML text strings, NOT Ext.Template objects!
 savedHelpHTML: 'Tap the arrow at the top right of a story to save it. Swipe a story to delete it from this page.',
