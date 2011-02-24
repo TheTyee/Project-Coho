@@ -15,10 +15,9 @@ renderStory: function(storyPanel, storyData) {
         var carouselItems = [];
         var thumbnail;
         for (i=0; i < storyData.related_media.length; i++) {
-            if (!storyData.related_media[i].thumbnails || storyData.related_media[i].thumbnails.length < 1)
-                continue;
+            var gotSized = false;
 
-            for (j=0; j < storyData.related_media[i].thumbnails.length; j++) {
+            for (j=0; storyData.related_media[i].thumbnails && j < storyData.related_media[i].thumbnails.length; j++) {
                 if (!thumbnail && storyData.related_media[i].thumbnails[j] && storyData.related_media[i].thumbnails[j].width == "90") {
                     thumbnail = storyData.related_media[i].thumbnails[j].uri;
                 }
@@ -26,7 +25,23 @@ renderStory: function(storyPanel, storyData) {
                 if (storyData.related_media[i].thumbnails[j] && storyData.related_media[i].thumbnails[j].width == "300") {
                     console.log("adding "+storyData.related_media[i].thumbnails[j].uri+" to slideshow");
                     carouselItems.push({tpl: Coho.Templates.slideshowSlide, data: {uri: storyData.related_media[i].thumbnails[j].uri, caption: storyData.related_media[i].caption, width: storyData.related_media[i].thumbnails[j].width, height: storyData.related_media[i].thumbnails[j].height}});
+                    gotSized = true;
+                    break;
                 }
+            }
+
+            if (!gotSized) {
+                var n_width, n_height;
+                console.log("adding tinysrc'ed "+storyData.related_media[i].uri+" to slideshow");
+                if (storyData.related_media[i].width > storyData.related_media[i].height) {
+                    n_width = 300;
+                    n_height = Math.round(n_width / storyData.related_media[i].width * storyData.related_media[i].height);
+                } else {
+                    n_height = 240;
+                    n_height = Math.round(n_height / storyData.related_media[i].height * storyData.related_media[i].width);
+                }
+
+                carouselItems.push({tpl: Coho.Templates.slideshowSlide, data: {uri: "http://i.tinysrc.mobi/"+n_width+"/"+n_height+"/"+storyData.related_media[i].uri, caption: storyData.related_media[i].caption, width: n_width, height: n_height}});
             }
         }
 
