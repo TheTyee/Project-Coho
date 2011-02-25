@@ -13,16 +13,13 @@ renderStory: function(storyPanel, storyData) {
     // slideshow?
     if (storyData.related_media && storyData.related_media.length > 0) {
         var carouselItems = [];
-        var thumbnail;
+        var max_width = 300, max_height = 240;
+
         for (i=0; i < storyData.related_media.length; i++) {
             var gotSized = false;
 
             for (j=0; storyData.related_media[i].thumbnails && j < storyData.related_media[i].thumbnails.length; j++) {
-                if (!thumbnail && storyData.related_media[i].thumbnails[j] && storyData.related_media[i].thumbnails[j].width == "90") {
-                    thumbnail = storyData.related_media[i].thumbnails[j].uri;
-                }
-
-                if (storyData.related_media[i].thumbnails[j] && storyData.related_media[i].thumbnails[j].width == "300") {
+                if (storyData.related_media[i].thumbnails[j] && storyData.related_media[i].thumbnails[j].width == max_width) {
                     console.log("adding "+storyData.related_media[i].thumbnails[j].uri+" to slideshow");
                     carouselItems.push({tpl: Coho.Templates.slideshowSlide, data: {uri: storyData.related_media[i].thumbnails[j].uri, caption: storyData.related_media[i].caption, width: storyData.related_media[i].thumbnails[j].width, height: storyData.related_media[i].thumbnails[j].height}});
                     gotSized = true;
@@ -34,10 +31,10 @@ renderStory: function(storyPanel, storyData) {
                 var n_width, n_height;
                 console.log("adding tinysrc'ed "+storyData.related_media[i].uri+" to slideshow");
                 if (storyData.related_media[i].width > storyData.related_media[i].height) {
-                    n_width = 300;
+                    n_width = max_width;
                     n_height = Math.round(n_width / storyData.related_media[i].width * storyData.related_media[i].height);
                 } else {
-                    n_height = 240;
+                    n_height = max_height;
                     n_height = Math.round(n_height / storyData.related_media[i].height * storyData.related_media[i].width);
                 }
 
@@ -50,7 +47,14 @@ renderStory: function(storyPanel, storyData) {
         if (carouselItems.length == 1) {
             storyData.top_image_html = Coho.Templates.storyTopImageSingle.apply(carouselItems[0].data);
         } else if (carouselItems.length > 1) {
-            storyData.top_image_html = Coho.Templates.storyTopImageSlideshow.apply(carouselItems[0].data);
+            var m_height = Math.round(200 / storyData.related_media[0].width * storyData.related_media[0].height);
+            var thumbnail = {uri: "http://i.tinysrc.mobi/120/"+m_height+"/"+storyData.related_media[0].uri,
+                             width: 200,
+                             height: m_height};
+
+            //storyData.top_image_html = Coho.Templates.storyTopImageSlideshow.apply(carouselItems[0].data);
+            carouselItems.shift();
+            storyData.top_image_html = Coho.Templates.storyTopImageSlideshow.apply(thumbnail);
 
             storyPanel.slideshowOverlay = new Ext.Carousel({
                 width: 308, height: 320, xtype: "carousel", ui: "dark", direction: "horizontal",
