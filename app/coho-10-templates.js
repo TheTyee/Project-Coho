@@ -97,7 +97,7 @@ topicList: new Ext.Template(
 
 slideshowSlide: new Ext.Template(
     '<p><img src="{uri}"></p>',
-    '<p>{caption:ellipsis("140",1)}</p>'
+    '<p>{caption:ellipsis("100",1)}</p>'
 ),
 
 storyTopImageSingle: new Ext.Template(

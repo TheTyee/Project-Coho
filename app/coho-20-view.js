@@ -57,7 +57,7 @@ renderStory: function(storyPanel, storyData) {
             storyData.top_image_html = Coho.Templates.storyTopImageSlideshow.apply(thumbnail);
 
             storyPanel.slideshowOverlay = new Ext.Carousel({
-                width: 308, height: 320, xtype: "carousel", ui: "dark", direction: "horizontal",
+                width: 308, height: 340, xtype: "carousel", ui: "dark", direction: "horizontal",
                 items: carouselItems,
                 floating: true,
                 modal: true,
