@@ -70,8 +70,9 @@ storyContextPressed: function(b, e)
     var uuid = Coho.currentTab.stack[0].uuid;
 
     var items = [
+      { text: "<a style='color: black; display: block; text-decoration: none;' href='mailto:?&subject="+escape(Coho.currentTab.stack[0].storyData.title)+"&body="+escape(Coho.currentTab.stack[0].storyData.uri)+"' onclick='')'>E-mail this story</a>" },
       { text: "<a style='color: black; display: block; text-decoration: none;' href='http://m.facebook.com/sharer.php?u="+escape(Coho.currentTab.stack[0].storyData.uri)+"&t="+escape(Coho.currentTab.stack[0].storyData.title)+"' onclick=''>Share on Facebook</a>" },
-      { text: "<a style='color: black; display: block; text-decoration: none;' href='http://twitter.com/home?status="+escape(Coho.currentTab.stack[0].storyData.title+": "+Coho.currentTab.stack[0].storyData.uri)+" via @TheTyee' onclick=''>Share on Twitter</a>" },
+      { text: "<a style='color: black; display: block; text-decoration: none;' href='http://mobile.twitter.com/home?status="+escape(Coho.currentTab.stack[0].storyData.title+": "+Coho.currentTab.stack[0].storyData.uri)+" via @TheTyee' onclick=''>Share on Twitter</a>" },
       { text: "Cancel", scope: this, handler: function() { this.as.hide(); } }
     ];
 
