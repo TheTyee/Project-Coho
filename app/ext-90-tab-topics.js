@@ -10,7 +10,7 @@ Coho.tabs.topicsTab = new Coho.StoryListObject({
         xtype: "toolbar",
         dock: "top",
         id: "topicsTitleBar",
-        title: "TheTyee.ca"
+        //title: "TheTyee.ca"
     },
 
     panelTitle: "Topics",

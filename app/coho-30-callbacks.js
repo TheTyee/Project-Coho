@@ -20,7 +20,7 @@ storyListPanelWillChange: function(panel, newCard, oldCard, newIndex, animated)
             Coho.currentTab.titleBar.hideTitle();
         } else {
             Coho.currentTab.titleBar.getComponent("searchfield").hide();
-            Coho.currentTab.titleBar.setTitle("TheTyee.ca");
+            //Coho.currentTab.titleBar.setTitle("TheTyee.ca");
             Coho.currentTab.titleBar.showTitle();
         }
     }

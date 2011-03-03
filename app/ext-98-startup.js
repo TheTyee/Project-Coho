@@ -10,7 +10,7 @@ var mainTabPanels = [
     Coho.tabs.savedStoriesTab.panel,
     {
         xtype: "panel",
-        dockedItems: [{xtype: "toolbar", dock: "top", title: "TheTyee.ca"}],
+        dockedItems: [{xtype: "toolbar", dock: "top"}],
         tpl: Coho.Templates.morePanel,
         data: {},
         layout: "auto",

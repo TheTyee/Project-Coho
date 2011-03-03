@@ -22,7 +22,7 @@ Coho.tabs.popularStoriesTab = new Coho.StoryListObject({
         xtype: "toolbar",
         dock: "top",
         id: "popularTitleBar",
-        title: "TheTyee.ca"
+        //title: "TheTyee.ca"
     },
 
     panelTitle: "Popular",

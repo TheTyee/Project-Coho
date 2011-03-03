@@ -16,7 +16,7 @@ Coho.tabs.latestStoriesTab = new Coho.StoryListObject({
         xtype: "toolbar",
         dock: "top",
         id: "latestTitleBar",
-        title: "TheTyee.ca"
+        //title: "TheTyee.ca"
     },
 
     panelTitle: "Latest",

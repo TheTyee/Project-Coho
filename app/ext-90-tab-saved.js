@@ -16,7 +16,7 @@ Coho.tabs.savedStoriesTab = new Coho.StoryListObject({
         xtype: "toolbar",
         dock: "top",
         id: "savedTitleBar",
-        title: "TheTyee.ca"
+        //title: "TheTyee.ca"
     },
 
     panelTitle: "Saved",
