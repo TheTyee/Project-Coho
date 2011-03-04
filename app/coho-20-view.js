@@ -35,7 +35,7 @@ renderStory: function(storyPanel, storyData) {
                     n_height = Math.round(n_width / storyData.related_media[i].width * storyData.related_media[i].height);
                 } else {
                     n_height = max_height;
-                    n_height = Math.round(n_height / storyData.related_media[i].height * storyData.related_media[i].width);
+                    n_width = Math.round(n_height / storyData.related_media[i].height * storyData.related_media[i].width);
                 }
 
                 carouselItems.push({tpl: Coho.Templates.slideshowSlide, data: {uri: "http://i.tinysrc.mobi/"+n_width+"/"+n_height+"/"+storyData.related_media[i].uri, caption: storyData.related_media[i].caption, width: n_width, height: n_height}});
