@@ -114,14 +114,15 @@ storyTopImageSlideshow: new Ext.Template(
     '</div>'),
 
 // note: some of these are HTML text strings, NOT Ext.Template objects!
-savedHelpHTML: 'Tap the arrow at the top right of a story to save it. Swipe a story to delete it from this page.',
+savedHelpHTML: 'Save tool is at the top-right corner of story screens. Swipe stories to delete from this list.',
 
-searchHelpHTML: 'Tap the search box and type to find any Tyee story.',
+searchHelpHTML: 'Type search words above. Tap "Return" to start search.',
 
 morePanel: new Ext.Template(
     '<div class="storyDetail" id="more-page">',
     '<div class="storyContent">',
     '<h1>Application Help</h1>',
+    '<p>This is version 1.0 of the Tyee mobile app.</p>
     '<ul>',
     '   <li><p><a href="#save">Save app to phone home screen</a></p></li>',
     '   <li><p><a href="#about">About this app</a></p></li>',
