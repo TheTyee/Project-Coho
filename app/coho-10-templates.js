@@ -119,7 +119,7 @@ savedHelpHTML: 'Tap the arrow at the top right of a story to save it. Swipe a st
 searchHelpHTML: 'Tap the search box and type to find any Tyee story.',
 
 morePanel: new Ext.Template(
-    '<div class="storyDetail">',
+    '<div class="storyDetail" id="more-page">',
     '<div class="storyContent">',
     '<h1>Application Help</h1>',
     '<ul>',
@@ -129,7 +129,7 @@ morePanel: new Ext.Template(
     '   <li><p>Find out more <a href="http://thetyee.ca/About/Intro/">about The Tyee</a></p></li>',
     '   <li><p><a href="mailto:info@thetyee.ca?subject=Mobile%20App%20Feedback">Send feedback on this app</a></p></li>',
     '   <li><p><a href="http://subscribe.thetyee.ca/" target="_blank">Sign up for our FREE newsletter!</a></p></li>',
-    '<h2 id="save">Add this app to your phone</h2>',
+    '<h1 id="save">Add this app to your phone</h1>',
     '<ol>',
     '<li>Open a web browser and go to <strong><a href="http://app.thetyee.ca">http://app.thetyee.ca</a></strong>.',
     '<p><img width="150" height="255" src="img/step1.jpg"></p></li>',
@@ -142,8 +142,8 @@ morePanel: new Ext.Template(
     '<li>Enjoy!',
     '<p><img width="150" height="255" src="img/step5.jpg"></p>',
     '</li></ol>',
-    '<h2 id="about">About The Tyee News App</h2>',
-    '<p>The Tyee news app was built by Phillip Smith and Greg Heo using ',
+    '<h1 id="about">About The Tyee News App</h1>',
+    '<p>The Tyee news app was produced by Phillip Smith and Greg Heo using ',
     '<a href="http://http://www.sencha.com/products/touch/">Sencha Touch</a>, a HTML5 mobile JavaScript framework</p>',
     '<p>The source code for this application is open source and can be found on ',
     '<a href="https://github.com/phillipadsmith/A-Slippery-Fish">Github</a></p>',
