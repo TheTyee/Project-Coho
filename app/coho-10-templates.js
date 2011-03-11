@@ -122,7 +122,7 @@ morePanel: new Ext.Template(
     '<div class="storyDetail" id="more-page">',
     '<div class="storyContent">',
     '<h1>Application Help</h1>',
-    '<p>This is version 1.0 of the Tyee mobile app.</p>
+    '<p>This is version 1.0 of the Tyee mobile app.</p>',
     '<ul>',
     '   <li><p><a href="#save">Save app to phone home screen</a></p></li>',
     '   <li><p><a href="#about">About this app</a></p></li>',
