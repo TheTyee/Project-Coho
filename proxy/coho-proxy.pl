@@ -111,11 +111,11 @@ get '/search/(*query)' => sub {
 
 get '/topic/:topic' => sub {
     my $m = shift;
-
+    my $topic = $m->param("topic");
     my $ua = LWP::UserAgent->new;
     my $elastic = { "size" => 25,
                     "sort" => [ { "storyDate" => { "reverse" => 1 } } ],
-                    query => {field => { topics => $m->param("topic") } } };
+                    query => {field => { topics => '"'. $topic . '"' } } };
 
     my $r = $ua->post("http://localhost:9200/tyee/story/_search",
         Content => encode_json($elastic));
@@ -144,7 +144,7 @@ sub nice_encode_json
 {
     my $obj = shift;
 
-    return JSON->new->ascii(1)->encode($obj);
+    return JSON->new->ascii(1)->pretty(1)->encode($obj);
 }
 
 # Tells Mojo to render some JSON.
@@ -157,4 +157,5 @@ sub proxy_render
     $json = $m->param("callback")."(".$json.");" if $m->param("callback");
     $m->render(text => $json, format => ($m->param("callback") ? "js" : "json"));
 }
+
 
