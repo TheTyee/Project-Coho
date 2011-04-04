@@ -115,7 +115,7 @@ get '/topic/:topic' => sub {
     my $ua = LWP::UserAgent->new;
     my $elastic = { "size" => 25,
                     "sort" => [ { "storyDate" => { "reverse" => 1 } } ],
-                    query => {field => { section => $m->param("topic") } } };
+                    query => {field => { topics => $m->param("topic") } } };
 
     my $r = $ua->post("http://localhost:9200/tyee/story/_search",
         Content => encode_json($elastic));
