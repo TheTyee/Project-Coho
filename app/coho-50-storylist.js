@@ -47,7 +47,6 @@ Coho.StoryListObject = function(config)
     };
 
     this.list = new Ext.List({
-        fullscreen: true,
         itemTpl: Coho.Templates.storyList,
         itemSelector: "div.article",
         store: this.store,
