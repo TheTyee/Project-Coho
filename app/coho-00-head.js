@@ -6,7 +6,7 @@ var Coho = {
 // please override these defaults in coho-configuration.js
 config: {
     // base URL for the proxy. No trailing slash, please!
-    apiURL: "http://preview.app.thetyee.ca/proxy/v1",
+    apiURL: "http://app.thetyee.ca/proxy/v1",
 
     // short date, used on story lists
     shortDateFormat: "j M, Y",
