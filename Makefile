@@ -1,6 +1,5 @@
 int:
 	cat app/coho*.js targets/integration/coho-configuration.js app/ext*.js > coho-debug.js
-	cat app/coho*.js targets/integration/coho-configuration.js app/ext*.js | sed 's/console\.log(.*);//g' | ./jsmin "project coho; by Phillip Smith and Greg Heo" > coho.js
 	cp -v targets/integration/index.html targets/integration/cache.manifest .
 	echo "# built on `date`" >> cache.manifest
 
