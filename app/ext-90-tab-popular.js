@@ -3,6 +3,8 @@
  *
  * Inherits from the magical Coho.StoryListObject.
  *
+ * NOT USED
+ *
  */
 Coho.tabs.popularStoriesTab = new Coho.StoryListObject({
     store: new Ext.data.Store({
