@@ -5,6 +5,8 @@ sencha-touch/sencha-touch.js
 coho.js
 
 NETWORK:
+http://api.thetyee.ca
+http://preview.api.thetyee.ca
 http://app.thetyee.ca
 http://preview.app.thetyee.ca
 http://thetyee.cachefly.net
