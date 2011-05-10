@@ -144,7 +144,11 @@ getStoryFromStorage: function(uuid)
  */
 getSaved: function()
 {
-    return JSON.parse(localStorage.getItem('savedStories'));
+    saved = localStorage.getItem('savedStories');
+    if (saved) 
+        return JSON.parse(saved);
+    else
+        return [];
 },
 
 /**
