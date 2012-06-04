@@ -5,6 +5,7 @@
  */
 var mainTabPanels = [
     Coho.tabs.latestStoriesTab.panel,
+    Coho.tabs.recent.panel,
     Coho.tabs.topicsTab.panel,
     Coho.tabs.searchTab.panel,
     Coho.tabs.savedStoriesTab.panel,

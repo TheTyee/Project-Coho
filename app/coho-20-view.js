@@ -102,6 +102,7 @@ pushPanelStackByUUID: function(uuid)
         if (storyData.uuid == Coho.currentTab.stack[0].uuid) {
             Coho.currentTab.stack[0].storyData = storyData;
         }
+        Coho.Story.addRecent(uuid);
     });
 
     Coho.View.pushPanelStack(selectedStoryPanel);
@@ -122,8 +123,9 @@ pushPanelStackItemtap: function(list, index, item, e)
     selectedStoryPanel.uuid = rec.get("uuid");
     Coho.currentTab.stack.unshift({type:"story", uuid:rec.get("uuid"), back:"Back", storyData:rec.data});
 
-    Coho.View.hideTabBar();
+    Coho.Story.addRecent(selectedStoryPanel.uuid);
 
+    Coho.View.hideTabBar();
     Coho.View.pushPanelStack(selectedStoryPanel);
 },
 

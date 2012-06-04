@@ -7,6 +7,11 @@ if (!Coho) Coho = {};
 Coho.Story = {
 
 /**
+ * Maximum size of the recently read list
+ */
+MAX_RECENT: 10, 
+
+/**
  * Get a JSON story record via callback.
  *
  * Since the story might need to be fetched asynchronously, this function
@@ -24,7 +29,7 @@ getStory: function(uuid, callback)
     var c;
 
     // is it the currently displayed story?
-    if (Coho.currentTab.stack[0] && Coho.currentTab.stack[0].type=="story" && Coho.currentTab.stack[0].uuid==uuid && Coho.currentTab.stack[0].storyData) {
+    if (Coho.currentTab && Coho.currentTab.stack[0] && Coho.currentTab.stack[0].type=="story" && Coho.currentTab.stack[0].uuid==uuid && Coho.currentTab.stack[0].storyData) {
         console.log("story "+uuid+" retrieved from story stack");
         c = Coho.currentTab.stack[0].storyData;
 
@@ -202,6 +207,44 @@ getSavedFullUI: function()
 },
 
 /**
+ * Add a story to the list of recent stories.
+ */
+addRecent: function(uuid)
+{
+    if (!uuid)
+        return false;
+
+    var recentStories;
+    var aString = localStorage.getItem('list-recent');
+
+    if (aString) {
+        recentStories = JSON.parse(aString);
+    } else {
+    	recentStories = [];
+    }
+
+    // since the story is rendered and cached, this should grab it from
+    // session/local storage
+    storyData = Coho.Story.getStory(uuid);
+
+    // try to add the story first in case we're out of room
+    stat = Coho.Story.saveStoryToStorage(storyData);
+
+	var newRecentStories = [ uuid ];
+	for (var i = 0; i < recentStories.length && newRecentStories.length <= Coho.Story.MAX_RECENT; i++) {
+		if (recentStories[i] !== uuid) {
+			newRecentStories.push(recentStories[i]);
+		}
+	}
+
+    console.log("adding story "+uuid+" to list of recent stories");
+
+    stat = localStorage.setItem('list-recent', JSON.stringify(newRecentStories));
+    // TODO: check stat
+    Coho.tabs.recent.refresh();
+},
+
+/**
  * Add a story to the list of saved stories.
  *
  */
@@ -361,6 +404,32 @@ getStoryListStoreForLatest: function()
         });
     }
 
+},
+
+/**
+ * Synchronously grabs all stories in the recents list
+ * Stories that are not already in local storage are not included in the list
+ */
+getRecent: function()
+{
+	var stored = localStorage.getItem("list-recent");
+	if (!stored) {
+		return [];
+	}
+	
+	stored = JSON.parse(stored);
+	var recent = [];
+	
+    for (i = 0; i < stored.length; i++) {
+    	console.log("Getting recent story:");
+    	console.log(stored[i]);
+        var story = Coho.Story.getStory(stored[i]);
+    	if (story.uuid) {
+    		recent.push(story);
+        }
+    }
+
+    return recent;
 },
 
 
