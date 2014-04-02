@@ -38,7 +38,7 @@ renderStory: function(storyPanel, storyData) {
                     n_width = Math.round(n_height / storyData.related_media[i].height * storyData.related_media[i].width);
                 }
 
-                carouselItems.push({tpl: Coho.Templates.slideshowSlide, data: {uri: "http://i.tinysrc.mobi/"+n_width+"/"+n_height+"/"+storyData.related_media[i].uri, caption: storyData.related_media[i].caption, width: n_width, height: n_height}});
+                carouselItems.push({tpl: Coho.Templates.slideshowSlide, data: {uri: "http://src.sencha.io/"+n_width+"/"+n_height+"/"+storyData.related_media[i].uri, caption: storyData.related_media[i].caption, width: n_width, height: n_height}});
             }
         }
 
@@ -48,7 +48,7 @@ renderStory: function(storyPanel, storyData) {
             storyData.top_image_html = Coho.Templates.storyTopImageSingle.apply(carouselItems[0].data);
         } else if (carouselItems.length > 1) {
             var m_height = Math.round(200 / storyData.related_media[0].width * storyData.related_media[0].height);
-            var thumbnail = {uri: "http://i.tinysrc.mobi/120/"+m_height+"/"+storyData.related_media[0].uri,
+            var thumbnail = {uri: "http://src.sencha.io/120/"+m_height+"/"+storyData.related_media[0].uri,
                              width: 200,
                              height: m_height};
 
