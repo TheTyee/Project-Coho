@@ -13,4 +13,3 @@ clean:
 
 jsmin: src/jsmin.c
 	gcc -o jsmin src/jsmin.c
-
